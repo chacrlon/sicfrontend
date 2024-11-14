@@ -1,0 +1,42 @@
+<div class="page">
+  <div class="container">
+    <div class="left">
+      <div class="login">
+      	<img alt="" src="assets/images/LogoSolo.png" style="width: 72%; margin-top: -16%;margin-left: 11%;">
+
+      	</div>
+
+      <div class="eula">
+      	<p class="subTitulo" style="margin-top: -9%;"><b>GIOM</b></p>
+        <p style="font-size: 14px; text-align: center; margin-top: -5%;">(Gestión Interna de Operaciones Masivas)</p>
+      </div>
+    </div>
+    <div class="right">
+      <form [formGroup]="loginForm">
+        <div class="form">
+          <mat-form-field appearance="legacy" style="width: 100%;">
+            <mat-label style="font-family: nunito;">Usuario</mat-label>
+            <input matInput formControlName="codUsuario" placeholder="NMXXXXX" autocomplete="off" maxlength="7">
+          </mat-form-field>
+          <mat-form-field appearance="legacy" style="width: 100%;">
+            <mat-label style="font-family: nunito;">Contraseña</mat-label>
+            <input matInput [type]="hide ? 'password' : 'text'"  formControlName="clave" autocomplete="off">
+            <button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+              <mat-icon style="color: rgb(17, 17, 17);">{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+          </mat-form-field>
+	        <button type="submit" id="submit" (click)="login()" mat-raised-button color="primary">Enviar</button>
+          <div style="color: black; cursor: pointer;"><a target="_blank" href="http://sun1305.banvenez.corp:7004/gtc/gtcContrasena.action"> Autogestión de Contraseña <img src="assets/images/changePasseord.png" alt="" style="width: 30%; margin-left: 79%; margin-top: -18%;"></a></div>
+          <!-- <div class="section-center">
+            <a type="button" class="btn-rojobdv" href="http://sun1305.banvenez.corp:7004/gtc/gtcContrasena.action" target="_blank" mat-flat-button>Autogestión de Contraseña  <mat-icon class="material-icons2">vpn_key</mat-icon></a>
+          </div> -->
+	      </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<div id="cover"></div>
+
+
+<div #container></div>

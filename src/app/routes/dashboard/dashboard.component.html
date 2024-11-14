@@ -1,0 +1,40 @@
+<header class="w3-display-container w3-wide" style="display: flex; justify-content: center; align-items: center;">
+  <div fxLayout="row wrap" class="matero-row" style="padding-top: 50px;">
+    <div class="matero-col" fxFlex="100">
+    <img class="w3-image" src="./assets/images/LogoSolo.png" alt="GIOM" class="w3-image" width="600" height="auto" >
+    <div class="container display-flex" style="display: flex; justify-content: center; align-items: center;">
+      <h1 class="w3-text-white p-0" style="display: flex; justify-content: center; align-items: center; font-size: 40px; color: #373736; font-weight: unset;"><b>GIOM  </b>  <span style="margin-left: 5px;"> Gestión Interna de Operaciones Masivas</span></h1>
+    </div>
+    <div class="container display-flex" style="display: flex; justify-content: center; align-items: center;">
+      <h2 class="w3-jumbo w3-text-white w3-hide-small" style="display: flex; justify-content: center; align-items: center; font-size: 30px; color: #373736; font-weight: unset;"><b>Bienvenido(a)</b></h2>
+    </div>
+    <div class="container display-flex" style="display: flex; justify-content: center; align-items: center;">
+      <h2 class="w3-jumbo w3-text-white w3-hide-small" style="display: flex; justify-content: center; align-items: center; font-size: 25px; color: #373736; font-weight: unset; text-transform: capitalize;">{{ user.nombres == undefined ? 'USUARIO': user.nombres}} {{ user.apellidos == undefined ? 'BDV': user.apellidos }}</h2>
+    </div>
+  </div>
+</div>
+</header>
+
+<div fxLayout="row wrap" class="matero-row">
+  <div class="matero-col" fxFlex="100">
+  <div class="col-md-12">
+    <mat-card-content>
+      <div  class="row-info" >
+        <div class="row-data">
+          <div class="col-md-12">
+            <p ><i class="inline-icon material-icons">access_time</i></p>
+            <p class="subtitle"  *ngIf="servicioActivo"> Horario Activos </p>
+            <div *ngFor="let serv of servicioActivo">
+            <p class="text-service" >
+              {{serv.valorConfigurado}}
+            <!-- {{serv.horainicio || serv.horainicio === null ? serv.horainicio : 'No hay Horarios.'}}
+              {{serv.horafin || serv.horafin === null ? serv.horafin : 'No hay Horarios.'}}-->
+            </p>
+          </div>
+          </div>
+        </div>
+      </div>
+    </mat-card-content>
+    </div>
+  </div>
+</div>

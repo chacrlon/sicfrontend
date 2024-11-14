@@ -1,0 +1,38 @@
+.buttonSnack{
+    box-sizing: border-box;
+    position: relative;
+    -webkit-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    outline: none;
+    border: none;
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    display: inline-block;
+    white-space: nowrap;
+    text-decoration: none;
+    vertical-align: baseline;
+    text-align: center;
+    margin: 0;
+    min-width: 64px;
+    line-height: 36px;
+    padding: 0 16px;
+    border-radius: 4px;
+    overflow: visible;
+    background: #004a72;
+    color: white;
+}
+
+
+.buttonSnack.primary{
+    color: #004a72;
+}
+
+
+.button-align{
+    margin-left: 20px !important;
+}
+
+
+.mat-snack-bar-container2{
+    background: #0067b1 !important;
+}

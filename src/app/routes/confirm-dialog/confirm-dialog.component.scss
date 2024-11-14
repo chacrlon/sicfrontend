@@ -1,0 +1,39 @@
+.btn-blanco {
+    background-color: white;
+    color: #DB0032 ;
+    text-align: center;
+    justify-content: center;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 18px;
+    font-family: nunito;
+  }
+  .btn-rojoconfirmar {
+    background-color: #DB0032;
+    color: white ;
+    text-align: center;
+    justify-content: center;
+    margin-left: 5px;
+    margin-right: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 18px;
+    font-family: nunito;
+  }
+
+  .mat-dialog-actions {
+    padding: 20px;
+    display: flex;
+    flex-wrap: wrap;
+    min-height: auto;
+    align-items: center;
+    box-sizing: content-box;
+    margin-bottom: -10px;
+    font-family: nunito;
+  }

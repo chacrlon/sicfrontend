@@ -1,0 +1,40 @@
+<div fxLayout="row wrap" class="matero-row">
+<div class="matero-col" fxFlex="100">
+  <span><i>Seguimiento del Lote N° {{idLoteGiom}} </i></span><br>
+<mat-card>
+
+<!------------------------------------------------------------------SEGUIMIENTO---------------------------------------------------------------------------------->
+<div class="row">
+<div class="col-md-6">
+</div>
+<div class="col-md-12">
+ <div class="mat-elevation-z8">
+   <table mat-table [dataSource]="dataSource" matSort style="width: 100%;" matSortActive="idLoteGiom" matSortDirection="desc">
+    <ng-container matColumnDef="idGiomSeguimiento">
+      <th mat-header-cell *matHeaderCellDef class="sort-header-content">ID de Seguimiento</th>
+      <td mat-cell *matCellDef="let row" class="text-data-json">{{row.idGiomSeguimiento}}</td>
+    </ng-container>
+  <ng-container matColumnDef="descripcion">
+    <th mat-header-cell *matHeaderCellDef  class="sort-header-content">Actividad del Lote</th>
+    <td mat-cell *matCellDef="let row" class="text-data-json">{{row.descripcion}}</td>
+  </ng-container>
+  <ng-container matColumnDef="fechaCreacion">
+    <th mat-header-cell *matHeaderCellDef class="sort-header-content">Fecha y Hora de la Actividad</th>
+    <td mat-cell *matCellDef="let row" class="text-data-json">{{row.fechaCreacion}}</td>
+  </ng-container>
+   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+   <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+     <tr class="mat-row" *matNoDataRow>
+       <td class="mat-cell" colspan="5">No se encuentra actividad en el lote</td>
+     </tr>
+   </table>
+   <mat-paginator class="sort-header-content" [pageSizeOptions]="[5,10,50, 100]"
+   showFirstLastButtons>
+ </mat-paginator>
+ </div>
+</div>
+</div>
+</mat-card>
+</div>
+</div>
+<!--------------------------------------------------------------------------SEGUIMIENTO LOTE------------------------------------------------------------------------------------------------>

@@ -1,0 +1,23 @@
+<div class="matero-col" fxFlex.gt-sm="100" fxFlex.gt-xs="50" fxFlex="100" >
+  <h3 class="title-form" style="text-align: center;">Editar Horario</h3>
+  <mat-card-content class="flexbox" style="margin-bottom: 35px;">
+<!---------------------------------------------------------------------------FORMULARIO HORARIO LOTE------------------------------------------------------------------------------------------------>
+      <form [formGroup]="horaFormulario" >
+      <mat-form-field appearance="outline" class="p-4">
+        <mat-label>Modificar Hora Inicial</mat-label>
+        <input class="text-center" formControlName="horainicio" matInput type="time" autocomplete="off" >
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="p-4">
+        <mat-label>Modificar Hora Final</mat-label>
+        <input class="text-center" formControlName="horafin" matInput type="time" autocomplete="off" >
+      </mat-form-field>
+      </form>
+      <button class="btn-azulbdv2 btn-large"   (click)="changeHorario()" mat-flat-button >Guardar Hora</button>
+<!---------------------------------------------------------------------------FORMULARIO HORARIO LOTE------------------------------------------------------------------------------------------------>
+    </mat-card-content>
+    <div class="col-md-12">
+      <div style="display: flex; justify-content: center; align-items: center; margin-top: 20px;">
+      <button class="btn-rojobdv2 btn-large-2"   (click)="regresar()" mat-flat-button >Volver</button>
+    </div>
+    </div>
+</div>

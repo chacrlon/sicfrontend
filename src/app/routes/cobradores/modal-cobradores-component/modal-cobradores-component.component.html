@@ -1,0 +1,35 @@
+
+<div class="modal">
+  <h2>Editar Cobrador</h2>
+
+  <div class="alert" *ngIf="showErrorAlert">
+    <div class="alert-message">
+      {{ errorAlertMessage }}
+    </div>
+    <span class="close-btn" (click)="showErrorAlert = false">&times;</span>
+  </div>
+
+  <form>
+    <label for="nombre">Nombre:</label>
+    <input type="text" placeholder="Nombre" name="nombre" [(ngModel)]="cobradorEditado.collector_name" required>
+
+    <label for="horaInicial">Hora Inicial:</label>
+    <input type="text" placeholder="Hora Inicial (HH:mm:ss)" name="horaInicial" [(ngModel)]="cobradorEditado.start_time" required>
+
+    <label for="horaFinal">Hora Final:</label>
+    <input type="text" placeholder="Hora Final (HH:mm:ss)" name="horaFinal" [(ngModel)]="cobradorEditado.final_time" required>
+
+    <label for="estatus">Estatus:</label>
+    <select name="estatus" [(ngModel)]="cobradorEditado.status" required>
+      <option value="Activo">Activo</option>
+      <option value="Inactivo">Inactivo</option>
+    </select>
+
+    <label for="prioridad">Prioridad:</label>
+    <input type="number" placeholder="Prioridad" name="prioridad" [(ngModel)]="cobradorEditado.priority" required>
+
+    <button type="button" class="update-btn" (click)="updateCobrador()">Actualizar Cobrador</button>
+
+    <button type="button" class="delete-btn" (click)="deleteCobrador(cobradorEditado.collector_id)">Eliminar Cobrador</button>
+  </form>
+</div>

@@ -1,0 +1,15 @@
+<mat-toolbar class="matero-toolbar">
+  <button mat-icon-button class="matero-toolbar-button" *ngIf="showToggle"
+          (click)="toggleSidenav.emit()">
+    <mat-icon>menu</mat-icon>
+  </button>
+
+  <app-branding *ngIf="showBranding"></app-branding>
+  <span class="tituloHeader" fxFlex>GIOM</span>
+
+
+  <button mat-icon-button class="matero-toolbar-button" fxHide.lt-sm
+          (click)="toggleFullscreen()">
+    <mat-icon>fullscreen</mat-icon>
+  </button>
+</mat-toolbar>

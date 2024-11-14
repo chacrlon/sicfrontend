@@ -1,0 +1,69 @@
+
+<page-header class="p-t-32 p-b-48 m-b--24 bg-rojobdv textColor" title="Aprobación de Lotes" hideBreadcrumb>
+</page-header>
+<div fxLayout="row wrap" class="matero-row">
+<div class="matero-col" fxFlex="100">
+<mat-card>
+<!------------------------------------------------------------------CONSULTA-APROBACION---------------------------------------------------------------------------------->
+<div class="row">
+<div class="col-md-6">
+<mat-form-field appearance="outline" class="width50">
+<input matInput class="text-uppercase" (keyup)="applyFilter($event)" placeholder="Buscar Lote" #tooltip="matTooltip" [matTooltipClass]="'my-tooltip'"  matTooltipPosition="right"   matTooltip="Para solo consultar información" #input>
+</mat-form-field>
+</div>
+<div class="col-md-12">
+ <div class="mat-elevation-z8">
+   <table mat-table [dataSource]="dataSource" matSort style="width: 100%;" matSortActive="idlote" matSortDirection="desc" >
+    <ng-container matColumnDef="idlote">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Número de Lote</th>
+      <td mat-cell *matCellDef="let row" class="text-data-json">{{row.idlote}}</td>
+    </ng-container>
+    <ng-container matColumnDef="estadolote">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Estado del Lote</th>
+    <td mat-cell *matCellDef="let row" class="text-data-json">
+      <p *ngIf="row.estadolote === 'A'" > Aprobado</p>
+      <p *ngIf="row.estadolote === 'X'" > Por Aprobar</p>
+    </td> <!--row.estadolote === 0 row.estadolote : 'Por Aprobación' {{row.estadolote}}-->
+  </ng-container>
+  <ng-container matColumnDef="unidad">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Unidad Asignada</th>
+    <td mat-cell *matCellDef="let row" class="text-data-json">{{row.unidad}}</td>
+  </ng-container>
+  <ng-container matColumnDef="nombrearchivo">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Nombre del Archivo</th>
+    <td mat-cell *matCellDef="let row" class="text-data-json">{{row.nombrearchivo}}</td>
+  </ng-container>
+  <ng-container matColumnDef="fechaInicio">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Fecha de Inicio del Lote</th>
+    <td mat-cell *matCellDef="let row" class="text-data-json">{{row.fechaInicio}}</td>
+  </ng-container>
+  <ng-container matColumnDef="fechaFin">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Fecha de Fin del Lote</th>
+    <td mat-cell *matCellDef="let row" class="text-data-json">{{row.fechaFin}}</td>
+  </ng-container>
+  <ng-container matColumnDef="fechacreacion">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Fecha de Creación del Lote</th>
+    <td mat-cell *matCellDef="let row" class="text-data-json text-unico" >{{row.fechacreacion}}</td>
+  </ng-container>
+  <ng-container matColumnDef="acciones">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Aprobación</th>
+    <td mat-cell *matCellDef="let row">
+        <mat-icon  #tooltip="matTooltip" *ngIf="row.estadolote == 'X'"  class="icono-ver" (click)="AprobarLote(row)" [matTooltipClass]="'my-tooltip'"  matTooltipPosition="right" matTooltip="Aprobar Lote" >check</mat-icon>
+      </td>
+  </ng-container>
+   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+   <tr mat-row *matRowDef="let row; columns: displayedColumns;" [ngClass]="fechasValidar(row.fechacreacion)"></tr>
+     <tr class="mat-row" *matNoDataRow>
+       <td class="mat-cell" colspan="5">No se encuentran lotes para aprobar.</td>
+     </tr>
+   </table>
+   <mat-paginator class="sort-header-content" [pageSizeOptions]="[5,10,50, 100]"
+   showFirstLastButtons>
+ </mat-paginator>
+ </div>
+</div>
+</div>
+</mat-card>
+</div>
+</div>
+<!--------------------------------------------------------------------------APROBAR LOTE------------------------------------------------------------------------------------------------>

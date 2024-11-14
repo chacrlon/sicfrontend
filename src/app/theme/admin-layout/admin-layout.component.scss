@@ -1,0 +1,181 @@
+@use '@angular/material' as mat;
+@use '../style/variables';
+@use '../style/transitions';
+@use '../style/breakpoints';
+
+.matero-container-wrap,
+.matero-container {
+  height: 100%;
+}
+
+.matero-content {
+  position: relative;
+  padding: variables.$gutter;
+}
+
+.matero-sidenav {
+  position: absolute;
+  overflow-x: hidden;
+  transition: transitions.swift-ease-out(width); // Only set width property
+
+  @include mat.elevation(2);
+
+  &.mat-drawer-side {
+    border-width: 0;
+
+    [dir='rtl'] & {
+      border-width: 0;
+    }
+  }
+}
+
+// Layout control
+.matero-header-above {
+  .matero-container {
+    height: calc(100% - #{variables.$toolbar-height-desktop}) !important;
+  }
+
+  .matero-sidebar-main {
+    height: 100% !important;
+    background: #0067b1;
+    color: white;
+  }
+}
+
+// Layout control
+.matero-sidenav-collapsed,
+.matero-sidenav-collapsed-fix {
+  .matero-sidenav {
+    width: variables.$sidenav-collapsed-width;
+
+    .menu-name,
+    .menu-label,
+    .menu-badge,
+    .menu-caret,
+    .matero-user-panel-name,
+    .matero-user-panel-email,
+    .matero-user-panel-icons {
+      opacity: 0;
+    }
+
+    .matero-user-panel-avatar {
+      transform: scale(.5);
+    }
+
+    &:hover {
+      width: variables.$sidenav-width;
+
+      .menu-name,
+      .menu-label,
+      .menu-badge,
+      .menu-caret,
+      .matero-user-panel-name,
+      .matero-user-panel-email,
+      .matero-user-panel-icons {
+        opacity: 1;
+      }
+
+      .matero-user-panel-avatar {
+        transform: scale(1);
+      }
+    }
+  }
+}
+
+// Layout control
+.matero-sidenav-collapsed {
+  .matero-content-wrap {
+    margin-left: variables.$sidenav-collapsed-width !important;
+
+    [dir='rtl'] & {
+      margin-right: variables.$sidenav-collapsed-width !important;
+      margin-left: auto !important;
+    }
+  }
+
+  &[dir='rtl'] .matero-content-wrap {
+    margin-right: variables.$sidenav-collapsed-width !important;
+    margin-left: auto !important;
+  }
+}
+
+// Layout control
+.matero-navbar-top {
+  .matero-topmenu {
+    top: 0;
+  }
+
+  .matero-branding {
+    margin-left: 16px;
+
+    [dir='rtl'] & {
+      margin-right: 16px;
+      margin-left: auto;
+    }
+  }
+}
+
+.btn-exit{
+  color: white;
+}
+.btn-exit:hover{
+  color: rgb(184, 184, 184);
+}
+
+
+// Layout control
+.matero-header-fixed {
+  .matero-header {
+    position: sticky;
+    top: 0;
+  }
+
+  .matero-topmenu {
+    top: variables.$topmenu-sticky-position-desktop;
+
+    @include breakpoints.bp-lt(small) {
+      & {
+        top: variables.$topmenu-sticky-position-mobile;
+      }
+    }
+  }
+
+  &.matero-navbar-side {
+    .matero-toolbar {
+      border-bottom: unset;
+
+      @include mat.elevation(2);
+    }
+  }
+}
+
+// Fix the init content width
+.matero-content-width-fix {
+  .matero-content-wrap {
+    margin-left: variables.$sidenav-width !important;
+
+    [dir='rtl'] & {
+      margin-right: variables.$sidenav-width !important;
+      margin-left: auto !important;
+    }
+  }
+}
+
+// Colorful
+.matero-header-white {
+  .matero-toolbar,
+  .matero-topmenu {
+    background: rgb(255,255,255);
+    background: linear-gradient(135deg, rgba(255,255,255,1) 69%, rgba(254,200,0,1) 69%, rgba(254,200,0,1) 74%, rgba(251,251,251,1) 74%, rgba(255,255,255,1) 76%, rgba(219,0,50,1) 76%, rgba(219,0,50,1) 81%, rgba(0,103,177,1) 81%)
+  }
+}
+
+
+
+
+.matero-auth-container {
+
+  font-family:Nunito;
+  margin: 0 !important;
+  padding: 20px !important;
+}

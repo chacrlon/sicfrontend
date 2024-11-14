@@ -1,0 +1,123 @@
+.custom-align-left.mat-header-cell {
+  text-align: left !important; /* Usa !important para asegurar que la alineación se aplique */
+}
+.custom-cell {
+  padding: 10px; /* Ajusta el valor de padding según la separación deseada */
+}
+.facebook-blue {
+  background-color: #1877F2; /* Azul característico de Facebook */
+  color: white; /* Texto en color blanco para resaltar sobre el fondo azul */
+}
+.header-row {
+  background-color: #007bff; /* Color de fondo azul bonito */
+  color: white; /* Color del texto blanco */
+}
+.sort-header-content {
+  font-size: 12px;
+  font-family: nunito;
+  color: #0067b1;
+  text-align: center;
+}
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;  /* Alinea el contenido hacia la parte superior */
+  height: 100vh;  /* Altura total de la ventana del navegador */
+
+  margin-top: -10vh;  /* Margen superior del 5% de la ventana del navegador */
+}
+.wide-input {
+  width: 200%; /* o el valor deseado para que sea el doble de largo */
+}
+.alert {
+  background-color: #f8d7da;
+  color: #721c24;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 10px;
+  border: 1px solid #f5c6cb; /* Agregar borde rojo */
+  position: relative; /* Para posicionar el botón de cerrar */
+}
+
+.alert-message {
+  margin-right: 30px; /* Ajustar espacio entre mensaje y botón de cerrar */
+}
+
+.close-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  color: #721c24;
+}
+
+.close-btn:hover {
+  color: #c82333; /* Cambiar color del botón al pasar el cursor sobre él */
+}
+
+.modal {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+
+    label {
+      margin-bottom: 5px;
+      color: #555;
+    }
+
+    input, select {
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 100%;
+
+      &:focus {
+        outline: none;
+        border-color: #007bff;
+      }
+    }
+
+    select {
+      width: calc(100% - 0px); // Ajustar el tamaño del select
+    }
+
+    button {
+      padding: 10px 20px;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 10px;
+
+      &.update-btn {
+        background-color: #007bff;
+
+        &:hover {
+          background-color: #0056b3;
+        }
+      }
+
+      &.delete-btn {
+        background-color: #dc3545;
+
+        &:hover {
+          background-color: #c82333;
+        }
+      }
+    }
+  }
+}

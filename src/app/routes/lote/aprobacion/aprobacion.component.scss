@@ -1,0 +1,226 @@
+.btn-rojo {
+  color: white;
+  text-align: center;
+  justify-content: center;
+  margin-left: 5px;
+  margin-right: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  padding-top: 2px;
+  padding-bottom: 2px;
+  font-size: 10px;
+  font-family: nunito;
+}
+.title-form{
+  font-family: nunito;
+  text-align: center;
+}
+.textgeneral{
+  text-transform: uppercase!important;
+  font-size: 14px;
+  font-family: nunito!important;
+}
+mat-datepicker-toggle {
+  color: #0067b1!important;
+}
+::ng-deep .mat-calendar-body-selected {
+  background-color: #0067b1;
+  color: white;
+}
+.flexbox2{
+  display: flex!important;
+  align-items: center!important;
+  justify-content: center!important;
+  text-align: center!important;
+}
+::ng-deep .mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {
+border-color: #4a96d2;
+}
+::ng-deep  .mat-calendar-body {
+font-family: nunito; }
+
+.bg-rojobdv{
+  background-color:#0067b1 ;
+}
+.mat-cell, .mat-footer-cell {
+  color: #2e2e2e!important;
+  font-family: nunito;
+}
+::ng-deep .mat-tooltip.my-tooltip{
+  background-color: #0067b1 !important;
+  font-size: 12px !important;
+  font-family: nunito;
+}
+::ng-deep .mat-tooltip.my-tooltipinfo{
+  background-color: #0067b1 !important;
+  font-size: 14px !important;
+  font-family: nunito;
+  padding: 16px;
+}
+
+:host ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  color: #d1d1d1;
+}
+//------------------------------------------------
+.new-row-utilidad1{
+  background-color:  #f8fff7;
+}
+.new-row-utilidad2{
+  background-color:  #fdf9f9;
+}
+.new-row-utilidad3{
+  background-color:  #f6fcff;
+}
+.icono-ver{
+  color:#0067b1!important;
+}
+.new-row-historial > .text-unico{
+  color: #ef0024!important;
+}
+.new-row-historial2 > .text-unico{
+  color: #0067b1!important;
+}
+.center-section{
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+}
+:host ::ng-deep .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-bar {
+  background-color: #84b3d4 ;
+}
+:host ::ng-deep  .mat-slide-toggle.mat-checked:not(.mat-disabled) .mat-slide-toggle-thumb {
+  background-color: #0067b1 ;
+}
+
+.width50{
+  margin-top: 5px;
+  width: 50% !important;
+  margin-bottom: 10px;
+  font-family: nunito!important;
+}
+
+::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
+  color: #0067b1!important;
+  font-size: 14px!important;
+  font-family: nunito!important;
+}
+::ng-deep .mat-select-panel .mat-option.mat-selected:not(.mat-option-multiple) {
+  background: #0067b1!important;
+  color: white;
+  font-family: nunito!important;
+
+}
+::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: #0067b1!important;
+  opacity: 1!important;
+}
+:host ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  color: #d1d1d1;
+}
+
+.right-section{
+  display: flex;
+  justify-content: end;
+  text-align: right;
+}
+
+.btn-rojo2{
+  background-color: #DB0032;
+  color: white;
+  text-align: center;
+  justify-content: center;
+  margin-left: 5px;
+  margin-right: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 18px;
+  font-family: nunito
+}
+.sort-header-content {
+  font-size: 12px;
+  font-family: nunito;
+  color: #0067b1;
+  text-align: center;
+}
+.text-data-json {
+  color: #333;
+  font-size: 12px;
+  font-family: nunito;
+  text-transform: uppercase;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.margen-item{
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+.btn-azulbdv{
+  background-color: #0067b1;
+  color: white;
+  text-align: center;
+  justify-content: center;
+  margin-left: 5px;
+  margin-right: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 18px;
+  font-family: nunito!important;
+}
+.material-icons2 {
+  font-family: 'Material Icons';
+  font-size: 24px!important;
+  line-height: 0.7!important;
+  color: #0067b1;
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  margin: 10px;
+}
+.btn-azul{
+  background-color: #0067b1;
+  color: white;
+  font-family: nunito !important;
+  margin: 1px;
+  padding-bottom: 3px;
+  padding-top: 3px;
+  font-size: 16px;
+  font-weight: 500;
+}
+
+
+.icon-editar{
+  color: #0067b1;
+  font-size: 28px;
+  padding-left: 5px;
+  padding-right: 10px;
+}
+::-webkit-input-placeholder {
+  color: #333;
+  font-size: 16px;
+  font-family: nunito;
+  text-transform: none!important;
+}
+::-moz-placeholder {
+  color: #333;
+  font-size: 16px;
+  text-transform: none!important;
+  font-family: nunito;
+}
+:-ms-input-placeholder {
+  color: #333;
+  font-size: 16px;
+  font-family: nunito;
+  text-transform: none!important;
+}
+::placeholder {
+  color: #333;
+  font-size: 16px;
+  font-family: nunito;
+  text-transform: none!important;
+}
+
