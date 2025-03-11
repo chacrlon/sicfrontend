@@ -1,0 +1,8 @@
+Por favor corrija los siguientes errores de ingreso:
+
+    Nombre de la Agencia no puede ser nulo.
+    Código de la Agencia no puede ser nulo.
+    Interfaz LAN Agencia no puede ser nulo.
+    Interfaz Física LAN Agencia no puede ser nulo.
+    Interfaz Física Frame Relay no puede ser nulo.
+    Interfaz Física Metro Ethernet no puede ser nulo.

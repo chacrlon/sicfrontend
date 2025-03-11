@@ -1,0 +1,496 @@
+.bg-rojobdv{
+  background-color: #DB0032;
+}
+.btn-rojo {
+  background-color: #DB0032;
+  color: white;
+  text-align: center;
+  justify-content: center;
+  margin-left: 5px;
+  margin-right: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 18px;
+  font-family: nunito;
+}
+/*------------------------------PAGINA EN GENERAL----------------------------------------------*/
+.mat-action-row {
+  border-top-color: #0067b1 ;
+  display: flex;
+  justify-content: center;
+}
+.width20{
+  width: 50% !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 20px;
+  font-family: nunito;
+  font-size: 13px!important;
+}
+::ng-deep .mat-form-field-flex > .mat-form-field-infix {
+  padding: 0.8em 0.4em !important;
+}
+.new-row-historial > .text-unico{
+  color: #ef0024!important;
+}
+.new-row-historial2 > .text-unico{
+  color: #0067b1!important;
+}
+
+.new-row-utilidad{
+  background-color: #009c2f0f;
+  text-align: center;
+}
+.new-row-utilidad2{
+  background-color:  #ffffff;
+}
+
+.custom-file-upload {
+  border: 1px solid #ccc;
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+}
+.hidden2{
+  visibility: hidden;
+  height: 1px;
+  width: 1px;
+  }
+#uploadFile {
+  text-align: center;
+  border: none;
+  background-color: white;
+  color: black;
+}
+
+.label-2 {
+    font-size: 14px;
+    font-family: nunito;
+    font-weight: 400;
+    border-radius: 10px;
+    padding-top: 10px;
+    padding-left: 10px;
+    padding-bottom: 10px;
+    padding-right: 14px;
+    font-weight: bold;
+    background-color: rgba(187, 187, 187, 0.33);
+    color: #0a0a0a;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    border-radius: 10px;
+    border: dotted 2px #0067b1;
+}
+
+.center-section{
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  align-items: center;
+}
+.icon-editar{
+  padding-bottom: 20px;
+  color: #0067b1;
+  color: #0067b1;
+  font-size: 28px;
+}
+.mat-icon-flex{
+  user-select: none;
+background-repeat: no-repeat;
+display: inline-block;
+fill: currentColor;
+height: 24px;
+width: 36px;
+}
+.mat-card-title{
+  text-align: center;
+  font-weight: 600;
+  color: white;
+  font-family: nunito;
+  font-size: 10px;
+ }
+ .bg-azulbdv{
+   background-color: #0067b1;
+ }
+::ng-deep .mat-tooltip.my-tooltip{
+  background-color: #0067b1!important;
+  font-size: 12px!important;
+  font-family: nunito;
+}
+::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
+  color: #0067b1!important;
+  font-size: 14px!important;
+}
+::ng-deep .mat-form-field-label {
+  font-size: 14px!important;
+}
+::ng-deep .mat-select-panel .mat-option.mat-selected:not(.mat-option-multiple) {
+  background: #0067b1!important;
+}
+::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: #0067b1!important;
+  opacity: 1!important;
+}
+:host ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  color: #d1d1d1;
+}
+::ng-deep .mat-tooltip.my-tooltipinfo2{
+  background-color: #0067b1 !important;
+  font-size: 14px !important;
+  font-family: nunito;
+  padding: 10px;
+  max-width: 600px;
+}
+.right-section{
+  display: flex;
+  justify-content: end;
+  text-align: right;
+}
+.left-section{
+  display: flex;
+  justify-content: left;
+  text-align: left;
+}
+::ng-deep .mat-tooltip.my-tooltipinfo{
+  background-color: #0067b1 !important;
+  font-size: 16px !important;
+  font-family: nunito;
+  padding: 16px;
+  max-width: 600px;
+}
+.material-icons3 {
+  font-family: 'Material Icons';
+  font-size: 24px!important;
+  line-height: 0.7!important;
+  color: #0067b1;
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  margin: 10px;
+}
+
+.margen-item{
+  margin-top: 25px;
+  margin-bottom: 25px;
+}
+ .btn-azulbdv{
+   background-color: #0067b1;
+   color: white;
+   font-family: nunito!important;
+   margin: 2px;
+ }
+ .btn-azulbdv2{
+  background-color: #0067b1;
+  color: white;
+  font-family: nunito !important;
+  margin: 1px;
+  padding-bottom: 5px;
+  padding-top: 3px;
+}
+
+ .btn-rojobdv2{
+  background-color: #DB0032;
+  color: white;
+  text-align: center;
+  justify-content: center;
+  margin-left: 5px;
+  margin-right: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 16px;
+  font-family: nunito;
+}
+
+.btn-rojobdv3{
+  background-color: #DB0032;
+  color: white;
+  text-align: center;
+  justify-content: center;
+  margin-left: 5px;
+  margin-right: 5px;
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  font-size: 16px;
+  font-family: nunito;
+}
+
+.material-icons2 {
+  font-family: "Material Icons";
+  font-size: 22px!important;
+  line-height: 0;
+  font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+  padding-top: 10px;
+}
+
+ .sort-header-content {
+  font-size: 12px;
+  font-family: nunito;
+  color: #0067b1;
+}
+.text-data-json {
+  color: #333;
+  font-size: 12px;
+  font-family: nunito;
+  text-transform: uppercase;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+ .bg-rojobdv{
+  background-color: #DB0032;
+}
+ .material-icons2 {
+  font-family: "Material Icons";
+  font-size: 24px!important;
+  line-height: 0;
+  font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+  padding-top: 10px;
+}
+
+
+ .btn-rojobdv{
+   background-color: #DB0032;
+   color: white;
+   border: 1px solid #DB0032;
+   font-family: nunito!important;
+   margin: 2px;
+ }
+ .btn-rojobdv:hover{
+  background-color: #ffffff;
+  border: 1px solid #DB0032;
+  font-family: nunito!important;
+  color: #DB0032;
+}
+.mat-action-row {
+  border-top-color: #0067b1 ;
+  display: flex;
+  justify-content: center;
+}
+
+.mat-card-subtitle, .mat-card-content {
+  font-size: 16px;
+  font-family: nunito!important;
+  color: rgb(44, 44, 44);
+  font-weight: 500;
+}
+
+.row-data{
+ display: flex;
+ flex-wrap: wrap;
+ margin-right: -8px;
+ margin-left: -8px;
+ width: 70%;
+}
+::ng-deep .mat-select-placeholder {
+  color: #676666!important;
+  font-size: 12px;
+  text-align: left;
+}
+
+.mat-form-field-flex-scbv {
+  display: inline-flex;
+  align-items: baseline;
+  box-sizing: border-box;
+  max-width: 100%;
+  width: 600px;
+}
+::ng-deep .textgeneral{
+  text-transform: initial;
+  font-size: 12px!important;
+  font-family: nunito!important;
+}
+::ng-deep .mat-select-value {
+  color: rgba(0, 0, 0, 0.87);
+  font-size: 12px!important;
+}
+.mat-card-title{
+  text-align: center;
+  font-weight: 600;
+  color: white;
+  font-family: nunito;
+  font-size: 10px;
+ }
+ .bg-azulbdv{
+   background-color: #0067b1;
+ }
+
+ .mat-card-scbv {
+   transition: box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
+   position: relative;
+   padding-top: 20px;
+   padding-bottom: 10px;
+   border-radius: 4px;
+   text-align: center;
+   justify-content: center;
+   display: flex;
+   line-height: 1;
+   background: #6f6f6f;
+   font-weight: 600;
+ }
+ .cdk-text-field-autofill-monitored:not(:autofill) {
+  -webkit-animation: cdk-text-field-autofill-end 0s 1ms;
+  animation: cdk-text-field-autofill-end 0s 1ms;
+  font-family: nunito !important;
+}
+
+.width35{
+ width: 50%!important;
+ font-family: nunito!important;
+}
+p {
+  font-family: nunito;
+}
+.hidden {
+  visibility: hidden;
+  height: 1px;
+}
+::-webkit-input-placeholder {
+  color: #333;
+  font-size: 16px;
+  font-family: nunito;
+  text-transform: none!important;
+}
+::-moz-placeholder {
+  color: #333;
+  font-size: 16px;
+  text-transform: none!important;
+  font-family: nunito;
+}
+:-ms-input-placeholder {
+  color: #333;
+  font-size: 16px;
+  font-family: nunito;
+  text-transform: none!important;
+}
+::placeholder {
+  color: #333!important;
+  font-size: 16px;
+  font-family: nunito;
+  text-transform: none!important;
+}
+
+.mat-cell, .mat-footer-cell {
+  color: #2e2e2e!important;
+  font-family: nunito;
+}
+.material-icons2 {
+  font-family: 'Material Icons';
+  font-size: 24px!important;
+  line-height: 0.7!important;
+  font-feature-settings: 'liga';
+  -webkit-font-smoothing: antialiased;
+  margin: 0;
+}
+.btn-azulbdv{
+  background-color: #0067b1;
+  padding-bottom: 3px;
+  font-family: nunito;
+  color: white;
+  border: 1px solid 0067b1;
+  margin: 2px;
+  font-family: nunito;
+}
+.btn-rojobdv{
+  background-color: #DB0032;
+  color: white;
+  border: 1px solid #DB0032;
+  margin: 2px;
+  font-family: nunito;
+}
+mat-datepicker-toggle {
+  color: #0067b1!important;
+}
+::ng-deep .mat-calendar-body-selected {
+  background-color: #0067b1;
+  color: white;
+}
+::ng-deep .mat-calendar-body-today:not(.mat-calendar-body-selected):not(.mat-calendar-body-comparison-identical) {
+border-color: #4a96d2;
+}
+::ng-deep  .mat-calendar-body {
+font-family: nunito; }
+
+.mat-cell, .mat-footer-cell {
+color: #2e2e2e!important;
+font-family: nunito;
+}
+.mat-date-range-input-inner {
+  font: inherit;
+  font-size: inherit;
+  font-family: inherit;
+  background: transparent;
+  color: currentColor;
+  border: none;
+  outline: none;
+  padding: 0;
+  margin: 0;
+  vertical-align: bottom;
+  text-align: inherit;
+  //-webkit-appearance: none;
+  width: 100%;
+  font-family: nunito;
+  font-size: 14px;
+}
+::ng-deep .mat-calendar-body-today {
+  background-color: #0067b1!important;
+  color: white;
+}
+::ng-deep .mat-form-field.mat-focused .mat-form-field-label {
+  color: #0067b1!important;
+  font-size: 14px!important;
+  font-family: nunito!important;
+}
+::ng-deep .mat-form-field-label {
+  font-size: 14px!important;
+  font-family: nunito!important;
+}
+::ng-deep .mat-select-panel .mat-option.mat-selected:not(.mat-option-multiple) {
+  background: #0067b1!important;
+  color: white;
+  font-family: nunito!important;
+}
+::ng-deep .mat-form-field-appearance-outline.mat-focused .mat-form-field-outline-thick {
+  color: #0067b1!important;
+  opacity: 1!important;
+}
+:host ::ng-deep .mat-form-field-appearance-outline .mat-form-field-outline {
+  color: #d1d1d1;
+}
+::ng-deep .mat-form-field-flex > .mat-form-field-infix {
+  padding: 0.8em 0.4em !important;
+}
+//--------------------------------------------------------
+.title-form{
+  text-align: center;
+  font-size: 20px;
+  font-weight: 500;
+  color: #0067b1!important;
+  font-family: nunito;
+  font-weight: 600;
+ }
+ .width40{
+  width: 100%!important;
+ }
+ .text-center{
+  text-transform:uppercase;
+  font-size: 14px;
+  text-align: center;
+ }
+ .flexbox{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: nunito;
+  margin-bottom: 2px;
+  margin-top: 2px;
+}
+

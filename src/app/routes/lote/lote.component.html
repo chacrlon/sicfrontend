@@ -1,0 +1,191 @@
+
+<page-header class="p-t-32 p-b-48 m-b--24 bg-rojobdv textColor" title="Administración de Lotes" hideBreadcrumb>
+</page-header>
+<div fxLayout="row wrap" class="matero-row">
+<div class="matero-col" fxFlex="100">
+<mat-card>
+  <div class="row flexbox2">
+  <div class="col-md-12 flexbox">
+    <h3 class="title-form">Consulta de Lotes</h3>
+</div>
+</div>
+<!-------------------------------------------------------------------------------------FILTRAR LOTE------------------------------------------------------------------------------------->
+<div class="row flexbox2">
+<div class="col-md-12 flexbox2">
+  <form [formGroup]="busquedaForm" >
+  <mat-form-field appearance="outline" class="margin-bottom: 2px;">
+    <mat-label style="font-family: nunito;">Filtrar por Fechas </mat-label>
+    <mat-date-range-input [rangePicker]="picker">
+      <input matStartDate formControlName="fechai" style="font-family: nunito; font-size: 14px;" placeholder="Inicio">
+      <input matEndDate formControlName="fechaf"   style="font-family: nunito; font-size: 14px;" placeholder="Final">
+    </mat-date-range-input>
+    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-date-range-picker #picker></mat-date-range-picker>
+    <mat-error *ngIf="busquedaForm.get('fechai')?.hasError">
+      Campo <strong>Obligatorio.</strong>
+    </mat-error>
+  </mat-form-field>
+
+      <mat-form-field appearance="outline" class="p-4" >
+        <mat-label style="font-family: nunito;">Número de Lote </mat-label>
+        <input class="textgeneral text-center"  formControlName="numerolote" (keypress)="numberOnly($event)"  matInput   autocomplete="off" >
+      </mat-form-field>
+
+          <mat-form-field appearance="outline" class="p-4"  >
+            <mat-label style="font-family: nunito!important;"> Estado del Lote </mat-label>
+            <mat-select class="textgeneral"   formControlName="estadolote" #singleSelect>
+              <mat-option class="textgeneral"  value="I">INICIADO</mat-option>
+              <mat-option class="textgeneral"  value="X">PROCESANDO</mat-option>
+              <mat-option class="textgeneral" value="L">ENVIADO</mat-option>
+              <mat-option class="textgeneral" value="P">PROCESADO</mat-option>
+              <mat-option class="textgeneral"  value="D">DETENIDO</mat-option>
+              <mat-option class="textgeneral"  value="A">ACTIVO</mat-option>
+              <mat-option class="textgeneral"  value="C">CANCELADO</mat-option>
+              <mat-option class="textgeneral"  value="W">REPROCESADO</mat-option>
+              <mat-option class="textgeneral"  value="Y">CANCELADO POR FECHA</mat-option>
+            </mat-select>
+            <mat-icon matSuffix></mat-icon>
+          </mat-form-field>
+          <mat-form-field  appearance="outline">
+            <mat-select  style="font-family: nunito!important;"  class="text-center"  formControlName="codigoUnidad" placeholder="Seleccionar Unidad"   #singleSelectII>
+              <mat-option class="textgeneral" style="font-family: nunito!important;">
+                <ngx-mat-select-search [formControl]="unidadFiltroCtrl" class="textgeneral"  [placeholderLabel]="'Buscar...'"
+                [noEntriesFoundLabel]="'Unidad no Encontrada'" >
+              </ngx-mat-select-search>
+              </mat-option>
+              <mat-option class="textgeneral"  *ngFor="let uni of filtroUnidad | async" [value]="uni.codigounidad" >
+                {{uni.codigounidad  + ' ' + uni.unidad}}
+              </mat-option>
+            </mat-select>
+            <mat-icon matSuffix></mat-icon>
+            <mat-error *ngIf="busquedaForm.get('unidad')?.hasError">
+                Campo <strong>Obligatorio.</strong>
+              </mat-error>
+          </mat-form-field>
+        </form>
+  </div>
+<div class="center-section" style="margin-top: 30px;">
+  <button class="btn-azul btn-small" mat-flat-button #tooltip="matTooltip"  [matTooltipClass]="'my-tooltip'"  matTooltipPosition="left" matTooltip="Buscar" (click)="busquedaLotesAvanzado()" ><mat-icon>search</mat-icon></button>
+  <button class="btn-rojo btn-small" mat-flat-button #tooltip="matTooltip"  [matTooltipClass]="'my-tooltip'"  matTooltipPosition="right" matTooltip="Borrar"  (click)="clear()" ><mat-icon>delete sweep icon</mat-icon></button>
+</div>
+</div>
+<!------------------------------------------------------------------------------------------------BOTONES DE CREAR Y REFRESCAR-------------------------------------------------------------------------------------->
+<div class="row">
+<div class="col-md-12">
+ <div class="right-section margen-item">
+   <button mat-flat-button class="btn-rojo" #tooltip="matTooltip"  [matTooltipClass]="'my-tooltip'"  matTooltipPosition="left" matTooltip="Refrescar Página" (click)="busquedaLote()" ><mat-icon>refresh</mat-icon></button>
+    <button mat-flat-button class="btn-azul"  (click)="RegistrarLotes()" ><mat-icon style="font-size: 20px;">ballot</mat-icon> Registrar Lote</button>
+<!-----------------------------------------------------------------------------------------------HORARIO LOTE----------------------------------------------------------------------------------------------------------------------->
+    <button mat-flat-button class="btn-azul" (click)="HorarioLote()" ><mat-icon style="font-size: 20px;">access_time</mat-icon> Activación de Horarios</button>
+ </div>
+</div>
+</div>
+<!-----------------------------------------------------------------------------------------CONSULTA LOTE----------------------------------------------------------------------------------->
+<div class="row">
+<div class="col-md-6">
+<mat-form-field appearance="outline" class="width50">
+<input matInput class="text-uppercase" (keyup)="applyFilter($event)" placeholder="Buscar Lote" #tooltip="matTooltip" [matTooltipClass]="'my-tooltip'"  matTooltipPosition="right"   matTooltip="Para solo consultar información" #input>
+</mat-form-field>
+</div>
+<div class="col-md-12">
+ <div class="mat-elevation-z8">
+   <table mat-table [dataSource]="dataSource" matSort style="width: 100%;" matSortActive="idlote" matSortDirection="desc" >
+    <ng-container matColumnDef="idlote">
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Número de Lote</th>
+      <td mat-cell *matCellDef="let row" class="text-data-json">{{row.idlote}}</td>
+    </ng-container>
+    <ng-container matColumnDef="estadolote">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Estado del Lote</th>
+    <td mat-cell *matCellDef="let row" class="text-data-json">
+      <p  *ngIf="row.estadolote == 'I'" > INICIADO</p>
+      <p  *ngIf="row.estadolote == 'X'" >POR APROBAR</p>
+      <p  *ngIf="row.estadolote == 'A'" >APROBADO</p>
+      <p  *ngIf="row.estadolote == 'D'" >DETENIDO</p>
+      <p  *ngIf="row.estadolote == 'C'" >CANCELADO</p>
+      <p *ngIf="row.estadolote == 'L'">ENVIADO</p>
+      <p *ngIf="row.estadolote == 'P'">PROCESADO</p>
+      <p  *ngIf="row.estadolote == 'Y'" >CANCELADO POR FECHA</p>
+      <p  *ngIf="row.estadolote == 'W'" >REPROCESADO</p>
+    </td> <!--{{row.estadolote}}-->
+  </ng-container>
+  <ng-container matColumnDef="unidad">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Unidad Asignada</th>
+    <td mat-cell *matCellDef="let row" class="text-data-json">{{row.unidad}}</td>
+  </ng-container>
+  <ng-container matColumnDef="nombrearchivo">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Nombre del Archivo</th>
+    <td mat-cell *matCellDef="let row" class="text-data-json">{{row.nombrearchivo || row.nombrearchivo == " " ? row.nombrearchivo : 'SIN ARCHIVO'}}</td>
+  </ng-container>
+  <ng-container matColumnDef="fechaInicio">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Fecha Inicial de Lote</th>
+    <td mat-cell *matCellDef="let row" class="text-data-json">{{row.fechaInicio}}</td>
+  </ng-container>
+  <ng-container matColumnDef="fechaFin">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Fecha Final de Lote</th>
+    <td mat-cell *matCellDef="let row" class="text-data-json">{{row.fechaFin}}</td>
+  </ng-container>
+  <ng-container matColumnDef="fechacreacion">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Fecha de Creación de Lote</th>
+    <td mat-cell *matCellDef="let row" class="text-data-json">{{row.fechacreacion}}</td>
+  </ng-container>
+  <ng-container matColumnDef="accion">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Movimiento del Lote</th>
+    <td mat-cell *matCellDef="let row" class="text-data-json">Para Recuperación</td>
+  </ng-container>
+
+  <ng-container matColumnDef="acciones">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Ver Lote</th>
+    <td mat-cell *matCellDef="let row">
+      <mat-icon  #tooltip="matTooltip" *ngIf=" row.estadolote == 'A' || row.estadolote == 'L'"  (click)="EstadoLote(row.idlote)" class="icono-ver"   [matTooltipClass]="'my-tooltip'"  matTooltipPosition="left" matTooltip="Más Información" >remove_red_eye</mat-icon>
+      <mat-icon
+  #tooltip="matTooltip"
+  *ngIf="row.estadolote == 'W' || row.estadolote == 'L'"
+  (click)="EstadoLoteReprocesado(row)"
+  class="icono-ver"
+  [matTooltipClass]="'my-tooltip'"
+  matTooltipPosition="left"
+  matTooltip="Más Información" >
+  remove_red_eye
+</mat-icon>
+        <mat-icon  #tooltip="matTooltip" *ngIf="row.estadolote == 'I'"  class="icono-ver" (click)="CargarLote(row.idlote)"   [matTooltipClass]="'my-tooltip'"  matTooltipPosition="left" matTooltip="Cargar Archivo" >attach_file</mat-icon>
+       <mat-icon  class="icon-ver"  *ngIf="row.estadolote == 'I'"   class="icono-ver"  #tooltip="matTooltip"[matTooltipClass]="'my-tooltip'" matTooltip="Editar Lote" (click)="editarLote(row.idlote)"
+        matTooltipPosition="right">edit</mat-icon>
+        <mat-icon  class="icon-ver"  *ngIf="row.estadolote == 'Y'"   class="icono-ver"  #tooltip="matTooltip"[matTooltipClass]="'my-tooltip'" matTooltip="Editar Lote" (click)="editarLote(row.idlote)"
+        matTooltipPosition="right">edit</mat-icon>
+        <mat-icon  class="icon-ver"  *ngIf="row.estadolote == 'I'"   class="icono-ver2"  #tooltip="matTooltip"[matTooltipClass]="'my-tooltip'" matTooltip="Eliminar Lote" (click)="eliminarLote(row.idlote)"
+        matTooltipPosition="right">delete</mat-icon>
+        <mat-icon  class="icon-ver"  *ngIf="row.estadolote == 'P'"   class="icono-ver2"  #tooltip="matTooltip"[matTooltipClass]="'my-tooltip'" matTooltip="Lote Procesado"
+        matTooltipPosition="right">check_circle_outline</mat-icon>
+        <mat-icon  class="icon-ver"  *ngIf="row.estadolote == 'X'"   class="icono-ver"  #tooltip="matTooltip"[matTooltipClass]="'my-tooltip'" matTooltip="Lote por Aprobar"
+        matTooltipPosition="right">insert_drive_file</mat-icon>
+        <mat-icon  class="icon-ver"  *ngIf="row.estadolote == 'C'"   class="icono-ver2"  #tooltip="matTooltip"[matTooltipClass]="'my-tooltip'" matTooltip="Cancelado"
+        matTooltipPosition="right">close</mat-icon>
+        <mat-icon  class="icon-ver"  *ngIf="row.estadolote == 'D'"   class="icono-ver2"  #tooltip="matTooltip"[matTooltipClass]="'my-tooltip'" matTooltip="Detenido" (click)="EstadoLote(row.idlote)" matTooltip="Ver Seguimiento"
+        matTooltipPosition="right">close</mat-icon>
+        <mat-icon   style="margin-left: 8px;"  *ngIf=" row.estadolote == 'A' || row.estadolote == 'L'" (click)="SeguiLote(row.idlote)"  class="icono-ver3"  #tooltip="matTooltip"[matTooltipClass]="'my-tooltip'" matTooltip="Ver Seguimiento"
+        matTooltipPosition="above">dvr</mat-icon>
+      </td>
+  </ng-container>
+   <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+   <tr mat-row *matRowDef="let row; columns: displayedColumns;"  [ngClass]="{'new-row-utilidad1': row.estadolote == 'P' , 'new-row-utilidad2': row.estadolote == 'C', 'new-row-utilidad4': row.estadolote == 'Y', 'new-row-utilidad3': row.estadolote == 'D' }"></tr>
+     <tr class="mat-row" *matNoDataRow>
+       <td class="mat-cell" colspan="5">Sin Resultados.</td>
+     </tr>
+   </table>
+   <mat-paginator class="sort-header-content" [pageSizeOptions]="[5,10,50, 100]"
+   showFirstLastButtons>
+ </mat-paginator>
+ </div>
+</div>
+</div>
+</mat-card>
+<div class="row">
+  <div class="col-md-12">
+   <div class="right-section margen-item">
+     <mat-icon #tooltip="matTooltip" class="material-icons3"  [matTooltipClass]="'my-tooltipinfo'"  matTooltipPosition="left" matTooltip="Procesamiento de lotes a envio de cargos o abonos. De ocurrir algun problema, dar click al botón de refrescar e intente maás tarde.">info</mat-icon>
+   </div>
+  </div>
+  </div>
+</div>
+</div>
+<!-------------------------------------------------------------------------MODULO LOTE--------------------------------------------------------------------------------------------->

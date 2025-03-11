@@ -1,0 +1,49 @@
+<div class="container">
+  <form #searchForm="ngForm" (ngSubmit)="searchMoroso(searchForm.value.consulta)">
+    <mat-form-field>
+      <input matInput placeholder="Consultar número de cuenta, préstamo o cédula/RIF" name="consulta" ngModel required>
+    </mat-form-field>
+    <button mat-raised-button type="submit">Buscar</button>
+    <!-- <button mat-raised-button (click)="getCredits()">Mostrar todos</button> -->
+  </form>
+
+  <div class="table-container"> <!-- Contenedor para permitir desplazamiento -->
+    <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+
+      <ng-container matColumnDef="account_number">
+        <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Número de Cuenta</th>
+        <td mat-cell *matCellDef="let moroso">{{ moroso.account_number }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="credit_number">
+        <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Préstamo</th>
+        <td mat-cell *matCellDef="let moroso">{{ moroso.credit_number }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="id_customer">
+        <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Cédula</th>
+        <td mat-cell *matCellDef="let moroso">{{ moroso.id_customer }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="collector_name">
+        <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Cobrador</th>
+        <td mat-cell *matCellDef="let moroso">{{ moroso.collector_name }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="estado_cliente">
+        <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Estado</th>
+        <td mat-cell *matCellDef="let moroso">{{ moroso.estado_cliente }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="ultima_fecha">
+        <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Última Fecha</th>
+        <td mat-cell *matCellDef="let moroso">{{ moroso.ultima_fecha | date: 'yyyy-MM-dd' }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="['account_number', 'credit_number', 'id_customer', 'collector_name', 'estado_cliente', 'ultima_fecha']"></tr>
+      <tr mat-row *matRowDef="let moroso; columns: ['account_number', 'credit_number', 'id_customer', 'collector_name', 'estado_cliente', 'ultima_fecha']"></tr>
+    </table>
+  </div>
+
+  <mat-paginator [pageSizeOptions]="[5, 10, 15]" aria-label="Select page of morosos"></mat-paginator>
+</div>

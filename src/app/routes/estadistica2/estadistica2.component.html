@@ -1,0 +1,58 @@
+<div class="container">
+  <!-- Formulario unificado para buscar estadísticas por fecha -->
+  <form #searchForm="ngForm" (ngSubmit)="searchEstadisticas(searchForm.value.consulta)">
+    <mat-form-field>
+      <input matInput placeholder="Consultar estadísticas (dd-MM-yyyy)" name="consulta" ngModel required>
+    </mat-form-field>
+    <button mat-raised-button type="submit">Buscar</button>
+  </form>
+
+  <div class="table-container">
+    <h3>Estadísticas PIC</h3>
+    <table mat-table [dataSource]="dataSourcePIC" class="mat-elevation-z8">
+      <ng-container matColumnDef="collectorName">
+        <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Nombre Cobrador</th>
+        <td mat-cell *matCellDef="let item" class="custom-cell">{{ item.collectorName }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="totalOperations">
+        <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Total Operaciones</th>
+        <td mat-cell *matCellDef="let item" class="custom-cell">{{ item.totalOperations }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="operationMessage">
+        <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Mensaje de Operación</th>
+        <td mat-cell *matCellDef="let item" class="custom-cell">{{ item.operationMessage }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsPIC"></tr>
+      <tr mat-row *matRowDef="let item; columns: displayedColumnsPIC;"></tr>
+    </table>
+    <h3 class="sort-header-content custom-align-left">Total Transacciones PIC: {{ totalTransactionsPIC }}</h3> <!-- Muestra el total de transacciones -->
+
+    <h3>Estadísticas PCP</h3>
+    <table mat-table [dataSource]="dataSourcePCP" class="mat-elevation-z8">
+      <ng-container matColumnDef="collectorName">
+        <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Nombre Cobrador</th>
+        <td mat-cell *matCellDef="let item" class="custom-cell">{{ item.collectorName }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="totalOperations">
+        <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Total Operaciones</th>
+        <td mat-cell *matCellDef="let item" class="custom-cell">{{ item.totalOperations }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="operationMessage">
+        <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Mensaje de Operación</th>
+        <td mat-cell *matCellDef="let item" class="custom-cell">{{ item.operationMessage }}</td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumnsPCP"></tr>
+      <tr mat-row *matRowDef="let item; columns: displayedColumnsPCP;"></tr>
+    </table>
+    <h3 class="sort-header-content custom-align-left">Total Transacciones PCP: {{ totalTransactionsPCP }}</h3> <!-- Muestra el total de transacciones -->
+  </div>
+
+  <!-- Paginador único para ambas tablas -->
+  <mat-paginator #paginator [pageSizeOptions]="[5, 10, 15]" aria-label="Select page of statistics"></mat-paginator>
+</div>

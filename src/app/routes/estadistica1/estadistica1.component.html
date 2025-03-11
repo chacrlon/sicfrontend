@@ -1,0 +1,113 @@
+<div class="container">
+  <div *ngIf="isLoading" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <p>Cargando datos, por favor espere...</p>
+  </div>
+
+  <div *ngIf="errorMessage" class="error-message">
+    {{ errorMessage }}
+  </div>
+
+  <form [formGroup]="searchForm" (ngSubmit)="searchEstadisticas()">
+    <mat-form-field appearance="fill">
+      <mat-label>Fecha</mat-label>
+      <input matInput [matDatepicker]="picker" formControlName="fecha">
+      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+      <mat-error *ngIf="searchForm.get('fecha')?.invalid">La fecha es requerida</mat-error>
+    </mat-form-field>
+    <button mat-raised-button color="primary" type="submit" [disabled]="isLoading || searchForm.invalid">Buscar</button>
+  </form>
+
+  <div class="table-container">
+    <div class="table-left">
+      <h3 class="sort-header-content custom-align-left">Estadísticas Morosos</h3>
+      <table mat-table [dataSource]="dataSourceMorosos" class="mat-elevation-z8">
+
+        <ng-container matColumnDef="recordDate">
+          <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Fecha</th>
+          <td mat-cell *matCellDef="let estadistica" class="custom-cell">{{ estadistica.recordDate }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="collectorName">
+          <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Nombre Cobrador</th>
+          <td mat-cell *matCellDef="let estadistica" class="custom-cell">{{ estadistica.collectorName }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="countCredit">
+          <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Total Créditos</th>
+          <td mat-cell *matCellDef="let estadistica" class="custom-cell">{{ estadistica.countCredit }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="countAccount">
+          <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Total Cuentas</th>
+          <td mat-cell *matCellDef="let estadistica" class="custom-cell">{{ estadistica.countAccount }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cuentasNotificadas">
+          <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Cuentas Notificadas</th>
+          <td mat-cell *matCellDef="let estadistica" class="custom-cell">{{ estadistica.cuentasNotificadas }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="conCobro">
+          <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Cuentas Cobradas</th>
+          <td mat-cell *matCellDef="let estadistica" class="custom-cell">{{ estadistica.conCobro }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="cuentasNoNotificadas">
+          <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Cuentas No Notificadas</th>
+          <td mat-cell *matCellDef="let estadistica" class="custom-cell">{{ estadistica.cuentasNoNotificadas }}</td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsMorosos"></tr>
+        <tr mat-row *matRowDef="let estadistica; columns: displayedColumnsMorosos;"></tr>
+      </table>
+      <mat-paginator #paginatorMorosos [pageSizeOptions]="[5, 10, 15]" aria-label="Select page of morosos"></mat-paginator>
+    </div>
+
+    <!-- Table for PIC Statistics -->
+    <div class="table-right">
+      <h3 class="sort-header-content custom-align-left">Estadísticas PIC</h3>
+      <table mat-table [dataSource]="dataSourcePIC" class="mat-elevation-z8">
+        <ng-container matColumnDef="collectorName">
+          <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Nombre Cobrador</th>
+          <td mat-cell *matCellDef="let item" class="custom-cell">{{ item.collectorName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="totalOperations">
+          <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Total Operaciones</th>
+          <td mat-cell *matCellDef="let item" class="custom-cell">{{ item.totalOperations }}</td>
+        </ng-container>
+        <ng-container matColumnDef="operationMessage">
+          <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Mensaje de Operación</th>
+          <td mat-cell *matCellDef="let item" class="custom-cell">{{ item.operationMessage }}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsPIC"></tr>
+        <tr mat-row *matRowDef="let item; columns: displayedColumnsPIC;"></tr>
+      </table>
+      <h3 class="sort-header-content custom-align-left">Total Transacciones PIC: {{ totalTransactionsPIC }}</h3>
+    </div>
+
+    <!-- Table for PCP Statistics -->
+    <div class="table-right">
+      <h3 class="sort-header-content custom-align-left">Estadísticas PCP</h3>
+      <table mat-table [dataSource]="dataSourcePCP" class="mat-elevation-z8">
+        <ng-container matColumnDef="collectorName">
+          <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Nombre Cobrador</th>
+          <td mat-cell *matCellDef="let item" class="custom-cell">{{ item.collectorName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="totalOperations">
+          <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Total Operaciones</th>
+          <td mat-cell *matCellDef="let item" class="custom-cell">{{ item.totalOperations }}</td>
+        </ng-container>
+        <ng-container matColumnDef="operationMessage">
+          <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Mensaje de Operación</th>
+          <td mat-cell *matCellDef="let item" class="custom-cell">{{ item.operationMessage }}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsPCP"></tr>
+        <tr mat-row *matRowDef="let item; columns: displayedColumnsPCP;"></tr>
+      </table>
+      <h3 class="sort-header-content custom-align-left">Total Transacciones PCP: {{ totalTransactionsPCP }}</h3>
+    </div>
+
+    <!-- Shared paginator for PIC and PCP -->
+  </div>

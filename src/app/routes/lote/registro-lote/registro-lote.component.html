@@ -1,0 +1,45 @@
+  <div class="row">
+  <div class="matero-col" fxFlex="100">
+    <div class="col-md-12">
+        <h3 class="title-form"> Registro de Lote</h3>
+    </div>
+    <div class="col-md-12 flexbox">
+<!---------------------------------------------------------------------------FORMULARIO LOTE-----------------------------------------------<mat-icon #tooltip="matTooltip"  [matTooltipClass]="'my-tooltip'"  matTooltipPosition="left" matTooltip="Paso 1 para registro de lote. Completar ambos campos del formulario.">looks_one</mat-icon>------------------------------------------------->
+<form [formGroup]="loteFormulario" >
+      <mat-form-field  appearance="outline" class="width40" style="margin-right: 5px;">
+        <mat-select  class="textgeneral"   formControlName="unidad" placeholder="Seleccionar Unidad"   #singleSelectII>
+          <mat-option  class="textgeneral">
+            <ngx-mat-select-search [formControl]="unidadFiltroCtrl" class="textgeneral"   [placeholderLabel]="'Buscar...'"
+            [noEntriesFoundLabel]="'Unidad no Encontrada'" >
+          </ngx-mat-select-search>
+          </mat-option>
+          <mat-option  class="textgeneral"  *ngFor="let uni of filtroUnidad | async" [value]="uni.codigounidad" >
+            {{uni.codigounidad  + ' ' + uni.unidad}}
+          </mat-option>
+        </mat-select>
+        <mat-icon matSuffix></mat-icon>
+        <mat-error *ngIf="loteFormulario.get('unidad')?.hasError">
+            Campo <strong>Obligatorio.</strong>
+          </mat-error>
+      </mat-form-field>
+        <mat-form-field appearance="outline" class="width40">
+          <mat-label>Fecha para Proceso de Lote </mat-label>
+          <mat-date-range-input [rangePicker]="picker" [min]="minDate" >
+            <input matStartDate  class="textgeneral" formControlName="fechaInicio"  placeholder="Inicio">
+            <input matEndDate  class="textgeneral" formControlName="fechaFin" placeholder="Final">
+          </mat-date-range-input>
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-date-range-picker #picker></mat-date-range-picker>
+        </mat-form-field>
+
+      </form>
+    </div>
+ <!---------------------------------------------------------------------------FORMULARIO LOTE------------------------------------------------------------------------------------------------>
+<div class="col-md-12">
+  <div style="display: flex; justify-content: center; align-items: center; margin-top: 20px;">
+    <button class="btn-rojobdv btn-large-2"   (click)="regresar()" mat-flat-button >Volver</button>
+    <button class="btn-azulbdv btn-large-2"   (click)="submitLote()" mat-flat-button >Guardar</button>
+</div>
+</div>
+</div>
+</div>

@@ -1,0 +1,43 @@
+/* You can add global styles to this file, and also import other style files */
+@use 'app/theme/style';
+@use 'styles/themes';
+@use 'styles/custom';
+@use 'styles/grid';
+@use 'styles/helpers';
+@use 'styles/plugins';
+
+
+.toast-container.toast-top-full-width .ngx-toastr,
+.toast-container.toast-bottom-full-width2 .ngx-toastr{
+	width: 50% !important;
+	margin-left: 0% !important;
+	margin-right: auto !important;
+}
+
+
+.azul-snackbar {
+    background: #0067b1 !important;
+    color: white;
+}
+
+
+@font-face{
+	font-family:Nunito;
+	src:url("./assets/fonts/Nunito/Nunito-Regular.ttf");
+}
+
+body{
+	font-family:Nunito !important;
+}
+
+
+.btn-azul{
+	background: #0067b1 !important;
+	color: #fff;
+}
+
+.btn-rojo{
+	background:#db0032 !important;
+	color: #fff;
+}
+

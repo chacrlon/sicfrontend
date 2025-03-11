@@ -1,0 +1,22 @@
+{
+  "/diremWS/*": {
+    "target": "http://180.183.174.37:7008/",
+    "secure": false,
+    "logLevel": "debug"
+  },
+
+  "/PeopleSoftWS/*":{
+    "target": "http://180.183.112.90:7012",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+
+  "/int-servicios/*":{
+    "target": "http://180.183.66.201:8080",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+
+ }
