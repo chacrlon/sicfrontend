@@ -45,7 +45,7 @@ export const MY_DATE_FORMATS = {
     dateInput: 'DD/MM/YYYY',
   },
 };
-
+type EstadoKey = 'I' | 'X' | 'A' | 'D' | 'C' | 'L' | 'P' | 'Y' | 'W';
 
 
 @Component({
@@ -226,6 +226,21 @@ async busquedaTransaccionesAvanzado() {
   }
 }*/
 
+getEstadoLabel(estado: EstadoKey): string {
+  const estados: Record<EstadoKey, string> = {
+    'I': 'INICIADO',
+    'X': 'POR APROBAR',
+    'A': 'APROBADO',
+    'D': 'DETENIDO',
+    'C': 'CANCELADO',
+    'L': 'ENVIADO',
+    'P': 'PROCESADO',
+    'Y': 'CANCELADO POR FECHA',
+    'W': 'EN PROCESO'
+  };
+  return estados[estado] || 'DESCONOCIDO';
+}
+
 
 async  exportToExcel() {
   const title = 'Reporte de Transacciones';
@@ -247,7 +262,7 @@ async  exportToExcel() {
        data2.id_lotefk,
        data2.id_lote,
        data2.fechacarga,
-       data2.estado,
+       data2.estado = this.getEstadoLabel(data2.estado), // Agrega esta línea
        )
        data.push(newArray);
 
