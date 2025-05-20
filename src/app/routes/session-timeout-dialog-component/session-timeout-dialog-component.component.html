@@ -1,0 +1,8 @@
+<h2 mat-dialog-title>¿Desea mantener la sesión activa?</h2>
+    <mat-dialog-content>
+      La sesión se cerrará automáticamente en {{ countdown }} segundos.
+    </mat-dialog-content>
+    <mat-dialog-actions>
+      <button mat-button (click)="logout()">Cerrar sesión</button>
+      <button mat-button color="primary" (click)="extendSession()">Mantener sesión</button>
+    </mat-dialog-actions>

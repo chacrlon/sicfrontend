@@ -1,4 +1,11 @@
-<div fxLayout="row wrap" class="matero-row">
+<div fxLayout="row wrap" class="matero-row" style="position: relative; height: 100%;">
+    <!-- Botón de cierre -->
+  <button mat-icon-button
+          (click)="dialogRef.close()"
+          class="close-button">
+    <mat-icon>close</mat-icon>
+  </button>
+
 <div class="matero-col" fxFlex="100">
   <span><i>Seguimiento del Lote N° {{idLoteGiom}} </i></span><br>
 <mat-card>

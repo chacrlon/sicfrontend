@@ -1,14 +1,18 @@
-.bg-rojobdv{
+// Estilos generales
+.bg-rojobdv {
   background-color: #DB0032;
-    color: white;
+  color: white;
   font-family: nunito;
 }
-.textgeneral{
+
+.textgeneral {
   text-transform: uppercase!important;
   font-size: 14px;
   font-family: nunito!important;
 }
-.btn-rojobdv{
+
+// Botones
+.btn-rojobdv {
   background-color: #DB0032;
   color: white;
   text-align: center;
@@ -21,7 +25,8 @@
   padding-bottom: 3px;
   font-family: nunito;
 }
-.btn-verdibdv{
+
+.btn-verdibdv {
   background-color: #209041;
   color: white;
   text-align: center;
@@ -33,6 +38,30 @@
   padding-top: 5px;
   padding-bottom: 3px;
   font-family: nunito;
+}
+
+// Ajustes específicos para campos de formulario
+:host ::ng-deep {
+  .mat-form-field {
+    .mat-form-field-infix {
+      input {
+        text-align: left !important;
+        padding-left: 8px !important;
+      }
+    }
+
+    .mat-form-field-label {
+      text-align: left !important;
+    }
+  }
+
+  .mat-form-field-appearance-outline .mat-form-field-infix {
+    padding: 0.5em 0 !important;
+  }
+
+  .mat-input-element {
+    text-align: left !important;
+  }
 }
 .btn-textox{
   background-color: #82CACB;

@@ -17,7 +17,7 @@
     <mat-label style="font-family: nunito;">Filtrar por Fechas </mat-label>
     <mat-date-range-input [rangePicker]="picker">
       <input matStartDate formControlName="fechai" style="font-family: nunito; font-size: 14px;" placeholder="Inicio">
-      <input matEndDate formControlName="fechaf"   style="font-family: nunito; font-size: 14px;" placeholder="Final">
+      <input matEndDate formControlName="fechaf"   style="font-family: nunito; font-size: 14px;" placeholder="Final" style="vertical-align: text-top;font-family: nunito; font-size: 14px;">
     </mat-date-range-input>
     <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
     <mat-date-range-picker #picker></mat-date-range-picker>
@@ -149,7 +149,7 @@
 
         <mat-icon
       #tooltip="matTooltip"
-      *ngIf="row.estadolote == 'W' || row.estadolote == 'L'"
+      *ngIf="row.estadolote == 'W'"
       (click)="EstadoLoteReprocesado(row)"
       [class]="row.estadolote === 'L' ? 'icono-ver3' : 'icono-ver'"
       [matTooltipClass]="'my-tooltip'"
@@ -157,17 +157,25 @@
       matTooltip="Más Información">
       remove_red_eye
     </mat-icon>
+
         <mat-icon  #tooltip="matTooltip" *ngIf="row.estadolote == 'I'"  class="icono-ver" (click)="CargarLote(row.idlote)"   [matTooltipClass]="'my-tooltip'"  matTooltipPosition="left" matTooltip="Cargar Archivo" >attach_file</mat-icon>
        <mat-icon  class="icon-ver"  *ngIf="row.estadolote == 'I'"   class="icono-ver"  #tooltip="matTooltip"[matTooltipClass]="'my-tooltip'" matTooltip="Editar Lote" (click)="editarLote(row.idlote)"
         matTooltipPosition="right">edit</mat-icon>
-        <mat-icon  class="icon-ver"  *ngIf="row.estadolote == 'Y'"   class="icono-ver"  #tooltip="matTooltip"[matTooltipClass]="'my-tooltip'" matTooltip="Editar Lote" (click)="editarLote(row.idlote)"
-        matTooltipPosition="right">edit</mat-icon>
+        <mat-icon class="icono-ver2" *ngIf="row.estadolote == 'Y'" #tooltip="matTooltip"
+  [matTooltipClass]="'my-tooltip'" matTooltip="Cancelado por Fecha"
+  matTooltipPosition="right">close</mat-icon>
         <mat-icon  class="icon-ver"  *ngIf="row.estadolote == 'I'"   class="icono-ver2"  #tooltip="matTooltip"[matTooltipClass]="'my-tooltip'" matTooltip="Eliminar Lote" (click)="eliminarLote(row.idlote)"
         matTooltipPosition="right">delete</mat-icon>
         <mat-icon  class="icon-ver"  *ngIf="row.estadolote == 'P'"   class="icono-ver2"  #tooltip="matTooltip"[matTooltipClass]="'my-tooltip'" matTooltip="Lote Procesado"
         matTooltipPosition="right">check_circle_outline</mat-icon>
-        <mat-icon  class="icon-ver"  *ngIf="row.estadolote == 'L'"   class="icono-ver3"  #tooltip="matTooltip"[matTooltipClass]="'my-tooltip'" matTooltip="Lote Procesado"
-        matTooltipPosition="right">check_circle_outline</mat-icon>
+
+        <mat-icon class="icono-ver3" *ngIf="row.estadolote == 'L'"
+  [matTooltipClass]="'my-tooltip'"
+  matTooltip="Lote Procesado"
+  matTooltipPosition="right">
+  check_circle_outline
+        </mat-icon>
+
         <mat-icon  class="icon-ver"  *ngIf="row.estadolote == 'X'"   class="icono-ver"  #tooltip="matTooltip"[matTooltipClass]="'my-tooltip'" matTooltip="Lote por Aprobar"
         matTooltipPosition="right">insert_drive_file</mat-icon>
         <mat-icon  class="icon-ver"  *ngIf="row.estadolote == 'C'"   class="icono-ver2"  #tooltip="matTooltip"[matTooltipClass]="'my-tooltip'" matTooltip="Cancelado"

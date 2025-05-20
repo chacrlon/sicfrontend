@@ -13,7 +13,7 @@ import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';  // Asegúrate de tener esta importación
 import { SessionService } from '../../servicios/session.service'; // Asegúrate de ajustar la ruta
-
+import { InactivityTimerService } from '../../servicios/inactivity-timer.service';
 
 @Component({
   selector: 'app-login',
@@ -53,7 +53,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
               private renderer: Renderer2,
               private componentFactoryResolver: ComponentFactoryResolver,
               private sessionService: SessionService, // Inyectar el servicio
-              private cdRef : ChangeDetectorRef ) {
+              private cdRef : ChangeDetectorRef,
+              private auth: AuthService,
+              private inactivityTimer: InactivityTimerService ) {
 //#region css body
 
               renderer.setStyle(
@@ -96,10 +98,21 @@ export class LoginComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit() {
-
+    sessionStorage.clear();
+    this.router.navigateByUrl('/auth/login', { replaceUrl: true });
   }
 
-  login() {
+  // En LoginComponent
+private loginSub!: PushSubscription;
+
+ngOnDestroy() {
+  if (this.loginSub) {
+    this.loginSub.unsubscribe();
+  }
+}
+
+
+login() {
     if (this.loginForm.valid) {
         const username = this.loginForm.get('codUsuario')?.value; // Obtener codUsuario del formulario
         this.spinner.show("sp1");
@@ -126,6 +139,7 @@ export class LoginComponent implements OnInit, AfterViewInit {
     } else {
         this.toast.error("Disculpe, debe llenar los campos usuario y contraseña", "", this.override);
     }
+
 }
 
 
@@ -166,7 +180,8 @@ export class LoginComponent implements OnInit, AfterViewInit {
                     }
                 );
 
-                this.router.navigate(["dashboard"]);
+                this.inactivityTimer.startTimer();
+                this.router.navigate(['/dashboard']);
             } else {
                 this.limpiarFormulario();
                 this.toast.error(data.mensaje, "", this.override);
@@ -178,23 +193,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
         }
     );
 }
-/*
-sendCodUsuarioToSpring(codUsuario: string): Observable<any> {
-    const url = 'http://localhost:8080/api/processUser';
-    const body = { codUsuario }; // Encapsula codUsuario en un objeto
-    console.log('EL USUARIO PARA SPRINGBOOT ES:', codUsuario);
-    return this.http.post(url, body, { responseType: 'text' })
-        .pipe(
-            map(response => {
-                console.log('Respuesta de Spring:', response);
-                return response;
-            })
-        );
-}
-        */
 
 sendCodUsuarioToSpring(codUsuario: string): Observable<any> {
-  const url = 'http://180.183.174.156:7004/sic/api/processUser';
+  const url = 'http://180.183.171.164:7004/sic/api/processUser';
   const body = { codUsuario }; // Encapsula codUsuario en un objeto
   console.log('EL USUARIO PARA SPRINGBOOT ES:', codUsuario);
   return this.http.post(url, body, { responseType: 'text' })
@@ -233,8 +234,37 @@ sendCodUsuarioToSpring(codUsuario: string): Observable<any> {
 
   }
 
+  // login.component.ts
+cerrarSesion() {
+    this.auth.logout().subscribe({
+      next: () => {
+        this.handleLogoutActions();
+      },
+      error: (err: any) => { // <-- Añade tipo explícito
+        console.error('Error al cerrar sesión:', err);
+        this.handleLogoutActions();
+      }
+    });
+}
+
+
+  // Reemplaza el método logout actual con este:
   logout() {
-    this.sessionService.clearCodUsuario(); // Limpia el usuario actual
-    // Redirige o realiza otras acciones de cierre de sesión
+    this.auth.logout().subscribe({
+      next: () => {
+        this.handleLogoutActions();
+      },
+      error: (err: any) => { // <-- Añade tipo explícito
+        console.error('Error al cerrar sesión:', err);
+        this.handleLogoutActions();
+      }
+    });
+  }
+
+  // Método auxiliar para evitar repetir código
+  private handleLogoutActions() {
+    this.inactivityTimer.forceStop();
+    sessionStorage.clear();
+    this.router.navigateByUrl('/auth/login');
   }
 }

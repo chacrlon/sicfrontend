@@ -80,7 +80,7 @@ export class SeguimientoloteComponent implements OnInit {
     private loginService: LoginService,
     private toast: ToastrService,
     @Inject(MAT_DIALOG_DATA) private data: any,
-    private dialogRef: MatDialogRef<SeguimientoloteComponent>,
+    public dialogRef: MatDialogRef<SeguimientoloteComponent>,
     private overlay: Overlay,
     private activateRoute:ActivatedRoute )
  {

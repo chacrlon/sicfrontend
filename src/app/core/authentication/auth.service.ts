@@ -14,6 +14,7 @@ import { Router } from '@angular/router';
 })
 export class AuthService {
   private user$ = new BehaviorSubject<User>({});
+  private authStatus$ = new BehaviorSubject<boolean>(false);
   private change$ = merge(
     this.tokenService.change(),
     this.tokenService.refresh().pipe(switchMap(() => this.refresh()))
@@ -37,9 +38,9 @@ export class AuthService {
     var verifi : any = sessionStorage.getItem('hasTokenV');
     var resp : boolean;
     if(verifi != undefined){
-      ​var decrypted = CryptoJS.TripleDES.decrypt(verifi, "tkSecret");  
+      ​var decrypted = CryptoJS.TripleDES.decrypt(verifi, "tkSecret");
       if(decrypted.toString(CryptoJS.enc.Utf8) == "success"){
-        
+
         resp = true;
       }else{
         resp = false;
@@ -48,12 +49,17 @@ export class AuthService {
       resp = false;
     }
 
-       return resp;
+    this.authStatus$.next(resp); // <- Notificar cambio
+    return resp;
+  }
+
+  getAuthStatus() { // <- Nuevo método
+    return this.authStatus$.asObservable();
   }
 
   login(usuario : loginUsuario) {
     return this.loginService.login(usuario).pipe(
-     
+
       map(() => this.check())
     );
   }
@@ -68,15 +74,19 @@ export class AuthService {
       );
   }
 
-  logout() {
-    return this.loginService.logout().pipe(
-      tap(() => this.tokenService.clear()),
-      map(() => !this.check())
-    );
-  }
+// Asegúrate de que el método logout emita el cambio de estado
+logout() {
+  return this.loginService.logout().pipe(
+    tap(() => {
+      this.tokenService.clear();
+      this.check(); // Forzar la actualización de authStatus$
+    }),
+    map(() => !this.check())
+  );
+}
 
   user() {
-    
+
     return this.user$.pipe(share());
   }
 

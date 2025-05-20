@@ -32,9 +32,10 @@ import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { RolMenuService } from './servicios/util/rolMenu.service';
-
-
-
+import { RouteReuseStrategy } from '@angular/router';
+import { LOCALE_ID } from '@angular/core';
+import { registerLocaleData } from '@angular/common';
+import localeEs from '@angular/common/locales/es';
 
 export const MY_FORMATS = {
   parse: {
@@ -51,6 +52,16 @@ export const MY_FORMATS = {
 export function TranslateHttpLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http, './assets/i18n/', '.json');
 }
+
+export class NoRouteReuseStrategy implements RouteReuseStrategy {
+  shouldDetach = () => false;
+  store = () => {};
+  shouldAttach = () => false;
+  retrieve = () => null;
+  shouldReuseRoute = () => false;
+}
+
+registerLocaleData(localeEs);
 
 @NgModule({
   declarations: [AppComponent],
@@ -90,13 +101,15 @@ export function TranslateHttpLoaderFactory(http: HttpClient) {
       },
     }),
 
-    UserIdleModule.forRoot({ idle: 3000, timeout: 0, ping: 0 })
+    //UserIdleModule.forRoot({idle: 120, timeout: 10, ping: 0})
   ],
   exports: [NgxSpinnerModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
  //  providers: [{provide: LocationStrategy, useClass: RoutesModule}],
  providers: [
+  { provide: RouteReuseStrategy, useClass: NoRouteReuseStrategy },
   { provide: BASE_URL, useValue: environment.baseUrl },
+  { provide: LOCALE_ID, useValue: 'es' },
   //{ provide: APP_BASE_HREF, useValue: environment.baseUrl },
   {
     provide: DateAdapter,

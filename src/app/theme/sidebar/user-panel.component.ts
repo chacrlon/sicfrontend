@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { IusuarioLdap } from 'app/models/usuarioLdap';
+import { InactivityTimerService } from 'app/routes/servicios/inactivity-timer.service';
 import { LoginService } from 'app/servicios/util/login.service';
 import * as CryptoJS from 'crypto-js';
 
@@ -33,7 +34,7 @@ font-size: 41px;"> insert_drive_file</mat-icon>
 export class UserPanelComponent implements OnInit {
   user: IusuarioLdap  = {} as IusuarioLdap;
 
-  constructor(private router: Router, private loginService : LoginService) {}
+  constructor(private router: Router, private loginService : LoginService, private inactivityTimerService: InactivityTimerService) {}
 
   ngOnInit(): void {
     var has : any =  sessionStorage.getItem("hasToken");
@@ -51,6 +52,7 @@ export class UserPanelComponent implements OnInit {
     sessionStorage.clear();
     localStorage.clear();
     this.router.navigateByUrl('/auth/login');
+    this.inactivityTimerService.forceStop();
 
   }
 }

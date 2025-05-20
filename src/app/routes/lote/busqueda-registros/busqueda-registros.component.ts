@@ -32,7 +32,7 @@ import { Console } from 'console';
 import * as moment from 'moment';
 import { DepartamentosService } from 'app/servicios/util/Departamentos.service.';
 import 'moment/locale/pt-br';
-
+import '@angular/common/locales/global/es';
 
 
 const ELEMENT_DATA: TransaccionesConsulta[] = [];
@@ -45,7 +45,17 @@ export const MY_DATE_FORMATS = {
     dateInput: 'DD/MM/YYYY',
   },
 };
-type EstadoKey = 'I' | 'X' | 'A' | 'D' | 'C' | 'L' | 'P' | 'Y' | 'W';
+
+
+interface Transaccion {
+  estadoNombre: string;
+  numeroCuenta: string;
+  vef: string;
+  montoTransaccion: string;
+  tipoMovimiento: string;
+  serialOperacion: string;
+
+}
 
 
 @Component({
@@ -61,7 +71,7 @@ export class BusquedaRegistrosComponent implements OnInit { //
 
   totales: any;
 
-  displayedColumns: string[] = ['numeroCuenta', 'vef','montoTransaccion','tipoMovimiento','serialOperacion','referencia','codigoOperacion','referencia2','tipoDocumento','numeroCedula','id_lote','id_lotefk','fechacarga','estado'];
+  displayedColumns: string[] = ['numeroCuenta', 'vef','montoTransaccion','tipoMovimiento','serialOperacion','referencia','codigoOperacion','referencia2','tipoDocumento','numeroCedula','id_lote','id_lotefk','fechacarga','estado_nombre'];
   positionOptions: TooltipPosition[] = ['above'];
   position = new FormControl(this.positionOptions[0]);
   dataSource: MatTableDataSource<any>;
@@ -81,13 +91,13 @@ export class BusquedaRegistrosComponent implements OnInit { //
   @ViewChild('container', {read: ViewContainerRef}) container2: any;
   private overlayRef!: OverlayRef;
 
-  busquedaTForm = new FormGroup({
+  busquedaTForm: FormGroup = this.fb.group({
     fechai: new FormControl(null),  // Eliminar Validators.required
     fechaf: new FormControl(null),
-    cedula: new FormControl(''),
-    monto: new FormControl(''),
-    numerocuenta: new FormControl(''),
-    numerolote: new FormControl(''),
+    cedula: ['', [Validators.pattern(/^\S.*$/)]],  // Validación correcta
+    monto: ['', [Validators.pattern(/^\S.*$/)]],
+    numerocuenta: ['', [Validators.pattern(/^\S.*$/)]],
+    numerolote: ['', [Validators.pattern(/^\S.*$/)]],
     estadolote: new FormControl(''),
   });
 
@@ -95,6 +105,7 @@ export class BusquedaRegistrosComponent implements OnInit { //
 
   constructor(public dialog: MatDialog,
     private router: Router,
+    private fb: FormBuilder,
     private spinner: NgxSpinnerService,
     private dateAdapter: DateAdapter<Date>,
     private AdministradorService : AdministradorService,
@@ -121,17 +132,22 @@ export class BusquedaRegistrosComponent implements OnInit { //
 
   }
 
-  async busquedaTransacciones(){
-
+  async busquedaTransacciones() {
     this.spinner.show("sp1");
-      await this.AdministradorService.consultarTransacciones().subscribe(
-      (data) =>{
-        console.log(data,"____________")
+    await this.AdministradorService.consultarTransacciones().subscribe(
+      (data) => {
+        console.log(data, "____________");
         if (data.code != 9999) {
-          this.totales = data.data.montoTotal;
-        this.dataSource = new MatTableDataSource(data.data);
-        this.ngAfterViewInit();
-        this.spinner.hide("sp1");
+          // Asegúrate de que data.data tiene montoTotal
+          this.totales = data.data.montoTotal || 0; // <-- Valor por defecto
+          this.dataSource = new MatTableDataSource(
+            data.data.map((item: Transaccion) => ({
+              ...item,
+              estado_nombre: item.estadoNombre
+            })) || []
+          );
+          this.ngAfterViewInit();
+          this.spinner.hide("sp1");
         }
       },
       (error) =>{
@@ -148,6 +164,37 @@ numberOnly(event: { which: any; keyCode: any; }): boolean {
   }
   return true;
 
+}
+
+
+decimalNumberOnly(event: KeyboardEvent): boolean {
+  const charCode = event.which || event.keyCode;
+  // Permite números, comas (44) y puntos (46)
+  if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 44 && charCode !== 46) {
+    return false;
+  }
+  // Verifica si ya existe un separador decimal
+  const currentValue = (event.target as HTMLInputElement).value;
+  const hasDecimal = currentValue.includes(',') || currentValue.includes('.');
+  if ((charCode === 44 || charCode === 46) && hasDecimal) {
+    return false;
+  }
+  return true;
+}
+
+// Manejar pegado de datos
+handlePaste(event: ClipboardEvent, controlName: string) {
+  event.preventDefault();
+  const pastedData = (event.clipboardData?.getData('text/plain') || '').trim();
+  this.busquedaTForm.get(controlName)?.setValue(pastedData);
+}
+
+// Recortar espacios al salir del campo
+trimInput(controlName: string) {
+  const control = this.busquedaTForm.get(controlName);
+  if (control?.value) {
+    control.setValue(control.value.trim());
+  }
 }
 
 // Método de validación en el componente
@@ -187,64 +234,52 @@ async busquedaTransaccionesAvanzadotxt(){
 
 async busquedaTransaccionesAvanzado() {
   this.spinner.show("sp1");
-
   const formValue = this.busquedaTForm.value;
 
-  // Construir parámetros asegurando valores nulos para campos vacíos
+  let monto = null;
+  if (formValue.monto) {
+    const cleaned = formValue.monto.replace(/\./g, ''); // Elimina puntos de miles
+    const numericValue = parseFloat(cleaned.replace(',', '.')); // Convierte coma a punto
+    if (!isNaN(numericValue)) {
+      monto = Math.round(numericValue * 100); // Convierte a entero (centavos)
+    }
+  }
+
   const params = {
     fechai: formValue.fechai ? moment(formValue.fechai).format("DD/MM/YYYY") : null,
     fechaf: formValue.fechaf ? moment(formValue.fechaf).format("DD/MM/YYYY") : null,
     cedula: formValue.cedula || null,
-    monto: formValue.monto || null,
+    monto: monto, // Enviar en centavos
     numerolote: formValue.numerolote || null,
     numerocuenta: formValue.numerocuenta || null,
     estadolote: formValue.estadolote || null,
+    timestamp: new Date().getTime() // Evitar caché
   };
 
   await this.AdministradorService.consultarFechaTransacciones(params).subscribe(
     (data) => {
-      if (data && data.code !== 9999 && data.data) {
+      if (data?.code !== 9999 && data.data) {
         this.totales = data.data.montoTotal || '0';
-        this.dataSource = new MatTableDataSource(data.data?.data || []); // <--- Aquí
-        this.ngAfterViewInit();
+        // Actualizar datos sin recrear el dataSource
+        this.dataSource.data = data.data.data.map((item: Transaccion) => ({
+          ...item,
+          estado_nombre: item.estadoNombre
+        })) || [];
+        // Actualizar paginación y ordenamiento
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
       }
       this.spinner.hide("sp1");
     },
     (error) => {
-      // Manejar error
       this.spinner.hide("sp1");
     }
   );
 }
 
-/*montox(){
-  if (this.totales === undefined) {
-      'NO HAY'
-
-  } else{
-    this.totales
-  }
-}*/
-
-getEstadoLabel(estado: EstadoKey): string {
-  const estados: Record<EstadoKey, string> = {
-    'I': 'INICIADO',
-    'X': 'POR APROBAR',
-    'A': 'APROBADO',
-    'D': 'DETENIDO',
-    'C': 'CANCELADO',
-    'L': 'ENVIADO',
-    'P': 'PROCESADO',
-    'Y': 'CANCELADO POR FECHA',
-    'W': 'EN PROCESO'
-  };
-  return estados[estado] || 'DESCONOCIDO';
-}
-
-
 async  exportToExcel() {
   const title = 'Reporte de Transacciones';
-  const header = ['numero de cuenta', 'vef','monto de transaccion','tipo de movimiento','serial de operacion','referencia','codigo operacion','referencia2','tipo de documento','numero de identidad','id de lote','id de registro','fecha de carga','estado'];
+  const header = ['numero de cuenta', 'vef','monto de transaccion','tipo de movimiento','serial de operacion','referencia','codigo operacion','referencia2','tipo de documento','numero de identidad','id de lote','id de registro','fecha de carga','estado_nombre'];
   const data:any[] []= [];
   this.dataSource.data.forEach((data2)=>{
 
@@ -262,7 +297,7 @@ async  exportToExcel() {
        data2.id_lotefk,
        data2.id_lote,
        data2.fechacarga,
-       data2.estado = this.getEstadoLabel(data2.estado), // Agrega esta línea
+       data2.estado_nombre // <-- Usar el nuevo campo
        )
        data.push(newArray);
 

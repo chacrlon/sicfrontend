@@ -11,9 +11,33 @@
   font-size: 10px;
   font-family: nunito;
 }
+.close-button {
+  position: absolute;
+  top: 8px;     // Ajusta según espacio deseado
+  right: 12px;   // Ajusta según espacio deseado
+  z-index: 9999; // Garantiza que esté por encima de todo
+  background-color: rgba(255, 255, 255, 0.9); // Fondo semi-transparente (opcional)
+  border-radius: 50%; // Forma circular
+
+  .mat-icon {
+    color: black; // Color del icono
+  }
+}
 .title-form{
   font-family: nunito;
   text-align: center;
+}
+.close-button {
+  position: absolute;
+  top: 10px; /* Ajusta según necesites */
+  right: 10px; /* Ajusta según necesites */
+  z-index: 1000; /* Asegura que esté por encima del contenido */
+  background-color: rgba(255, 255, 255, 0.7); /* Fondo semi-transparente (opcional) */
+
+  /* Cambia el color del icono a negro */
+  .mat-icon {
+    color: black;
+  }
 }
 .textgeneral{
   text-transform: uppercase!important;

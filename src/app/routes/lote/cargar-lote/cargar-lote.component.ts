@@ -107,24 +107,24 @@ this.cargaFormulario = formBuilder.group({
             nombrearchivo:this.nombrearchivo
           }
           console.log("Contenido del archivo en Base64:", this.archivos);
-             await  this.AdministradorService.cargarLote(this.archivos,this.nombrearchivo,this.id_lote).subscribe(
-              (data) =>{
-                if(data.data != undefined){
-                }else{
-                  if (data.code === 1000) {
-                    this.toast.success("El documento ha sido cargado con éxito.","", this.override);
-                    setTimeout(()=>{
-                      this.redirigir()
-                  },1000)
-                  } else {
-                    this.toast.error("El documento no fue cargado con éxito. Por favor, intente de nuevo.","", this.override);
-                  }
-                  this.spinner.hide("sp1");
-                }
-              },
-              (error) =>{
-              }
-             );
+await this.AdministradorService.cargarLote(this.archivos, this.nombrearchivo, this.id_lote).subscribe(
+  (data) => {
+    if (data.code === 1000) {
+      this.toast.success(data.message, "", this.override);
+      setTimeout(() => {
+        this.redirigir();
+      }, 1000);
+    } else {
+      // Muestra el mensaje específico del backend
+      this.toast.error(data.message || "Error al cargar el archivo", "", this.override);
+    }
+    this.spinner.hide("sp1");
+  },
+  (error) => {
+    this.toast.error("Error de conexión con el servidor", "", this.override);
+    this.spinner.hide("sp1");
+  }
+);
 
         }else{
           this.toast.error("Ingrese una Información Válida.", "", this.override);
