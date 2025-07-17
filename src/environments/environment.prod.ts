@@ -6,11 +6,11 @@ export const environment = {
   ldapUrl : 'http://180.183.174.37:7011/ldapWS',
   peopleUrl: 'http://180.183.112.90:7012/PeopleSoftWS/rest/PeopleSoft',
   app : 'GIOM',
-  ApiServicios : 'http://180.183.174.156:7004/gamWS2/apiGiom',
+  ApiServicios : 'http://180.183.171.164:7004/gamWS2/apiGiom',
   //intServiciosUrl = MSI
   intServiciosUrl :'http://180.183.174.37:7010/int-servicios',
   diremURl : 'http://180.183.174.37:7007/diremWS',
-  sic : 'http://180.183.174.156:7004/sic'
+  sic : 'http://180.183.171.164:7004/sic'
 };
 
 

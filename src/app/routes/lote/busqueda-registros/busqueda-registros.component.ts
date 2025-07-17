@@ -277,30 +277,40 @@ async busquedaTransaccionesAvanzado() {
   );
 }
 
-async  exportToExcel() {
+
+async exportToExcel() {
   const title = 'Reporte de Transacciones';
   const header = ['numero de cuenta', 'vef','monto de transaccion','tipo de movimiento','serial de operacion','referencia','codigo operacion','referencia2','tipo de documento','numero de identidad','id de lote','id de registro','fecha de carga','estado_nombre'];
-  const data:any[] []= [];
-  this.dataSource.data.forEach((data2)=>{
 
-    let newArray: any[]=[];
-    newArray.push(data2.numeroCuenta,
-       data2.vef,
-       data2.montoTransaccion,
-       data2.tipoMovimiento,
-       data2.serialOperacion,
-       data2.referencia,
-       data2.codigoOperacion,
-       data2.referencia2,
-       data2.tipoDocumento,
-       data2.numeroCedula,
-       data2.id_lotefk,
-       data2.id_lote,
-       data2.fechacarga,
-       data2.estado_nombre // <-- Usar el nuevo campo
-       )
-       data.push(newArray);
+  // Inicializar el array de datos (FALTABA ESTA LÍNEA)
+  const data: any[][] = [];
 
+  // Procesar cada registro
+  this.dataSource.data.forEach((data2) => {
+    const montoFormateado = (Number(data2.montoTransaccion) / 100)
+      .toLocaleString('es', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+
+    const newArray = [
+      data2.numeroCuenta,
+      data2.vef,
+      montoFormateado, // Valor formateado
+      data2.tipoMovimiento,
+      data2.serialOperacion,
+      data2.referencia,
+      data2.codigoOperacion,
+      data2.referencia2,
+      data2.tipoDocumento,
+      data2.numeroCedula,
+      data2.id_lotefk,
+      data2.id_lote,
+      data2.fechacarga,
+      data2.estado_nombre
+    ];
+
+    data.push(newArray);
   });
 
 
@@ -406,21 +416,109 @@ saveAs.saveAs(blob, 'ReporteTransacciones_'+ moment(new Date()).format("DD/MM/YY
     }
   }
 
- async exportTotxt(){
+async exportTotxt() {
+  this.spinner.show("sp1");
 
-  console.log("antes de ejecutar")
-    this.spinner.show("sp1");
+  try {
+    // Construir parámetros de búsqueda
+    const formValue = this.busquedaTForm.value;
 
-    await this.AdministradorService.descargarTxt(
-      moment(this.busquedaTForm.value.fechai).format("DD/MM/YYYY"),
-      moment(this.busquedaTForm.value.fechaf).format("DD/MM/YYYY")
+    let monto = null;
+    if (formValue.monto) {
+      const cleaned = formValue.monto.replace(/\./g, '');
+      const numericValue = parseFloat(cleaned.replace(',', '.'));
+      if (!isNaN(numericValue)) {
+        monto = Math.round(numericValue * 100);
+      }
+    }
 
-    );
+    const params = {
+      fechai: formValue.fechai ? moment(formValue.fechai).format("DD/MM/YYYY") : null,
+      fechaf: formValue.fechaf ? moment(formValue.fechaf).format("DD/MM/YYYY") : null,
+      cedula: formValue.cedula || null,
+      monto: monto,
+      numerolote: formValue.numerolote || null,
+      numerocuenta: formValue.numerocuenta || null,
+      estadolote: formValue.estadolote || null,
+      timestamp: new Date().getTime()
+    };
 
-    console.log("despues de ejecutar")
+    // Obtener datos del servicio
+    const response = await this.AdministradorService.consultarFechaTransacciones(params).toPromise();
 
+    if (response?.code !== 9999 && response?.data?.data) {
+      // Crear contenido del TXT
+      let txtContent = '';
 
+      // Cabecera
+      const headers = [
+        'Número de Cuenta',
+        'Moneda',
+        'Monto de Transacción',
+        'Tipo Movimiento',
+        'Serial',
+        'Referencia',
+        'Código Operación',
+        'Referencia Adicional',
+        'Tipo Documento',
+        'Documento Identidad',
+        'Id Referencial',
+        'Id de Lote',
+        'Fecha de Carga',
+        'Estado'
+      ];
+      txtContent += headers.join(';') + '\n';
+
+      // Datos
+      response.data.data.forEach((item: any) => {
+        const montoFormateado = Number(item.montoTransaccion) / 100;
+        const montoString = montoFormateado.toFixed(2).replace('.', ',');
+
+        const row = [
+          item.numeroCuenta || '',
+          item.vef || '',
+          montoString,
+          item.tipoMovimiento || '',
+          item.serialOperacion || '',
+          item.referencia || '',
+          item.codigoOperacion || '',
+          item.referencia2 || '',
+          item.tipoDocumento || '',
+          item.numeroCedula || '',
+          item.id_lote || '',
+          item.id_lotefk || '',
+          item.fechacarga || '',
+          item.estadoNombre || item.estado_nombre || ''
+        ];
+
+        txtContent += row.join(';') + '\n';
+      });
+
+      // Crear y descargar archivo
+      const blob = new Blob([txtContent], { type: 'text/plain;charset=utf-8' });
+      const url = window.URL.createObjectURL(blob);
+
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `ReporteTransacciones_${moment().format('DD_MM_YYYY')}.txt`;
+      a.style.display = 'none';
+
+      document.body.appendChild(a);
+      a.click();
+
+      // Limpiar
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+    } else {
+      this.toast.warning('No hay datos para exportar', 'Advertencia', this.override);
+    }
+  } catch (error) {
+    console.error('Error generando TXT:', error);
+    this.toast.error('Error al generar el archivo TXT', 'Error', this.override);
+  } finally {
+    this.spinner.hide("sp1");
   }
+}
 
 //------------------------------------------------------------------- Spinner
   public show(message = '') {

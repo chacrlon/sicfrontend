@@ -127,26 +127,28 @@ export class MorosoService {
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '@env/environment'; // Importa environment
 
 @Injectable({
   providedIn: 'root'
 })
 export class MorosoService {
+  private baseUrl = environment.sic; // Usa la URL base de environment
 
   constructor(private http: HttpClient) { }
 
   // Método existente para obtener los datos de morosos
   getMorososData(): Observable<any[]> {
-    return this.http.get<any[]>('http://180.183.174.156:7004/sic/api/deuda/morosos');
+    return this.http.get<any[]>(`${this.baseUrl}/api/deuda/morosos`);
   }
 
   // Método para obtener registros por número de cuenta
   getByIdCustomerOrAccountNumber(accountNumber: string): Observable<any> {
-    return this.http.get<any>(`http://180.183.174.156:7004/sic/api/deuda/consultar_moroso/${accountNumber}`);
+    return this.http.get<any>(`${this.baseUrl}/api/deuda/consultar_moroso/${accountNumber}`);
   }
 
   // Método para obtener otros tipos de registros por el mismo número de cuenta
   getByIdCustomerOrAccountNumber2(accountNumber: string): Observable<any> {
-    return this.http.get<any>(`http://180.183.174.156:7004/sic/api/deuda/consultar_moroso2/${accountNumber}`);
+    return this.http.get<any>(`${this.baseUrl}/api/deuda/consultar_moroso2/${accountNumber}`);
   }
 }

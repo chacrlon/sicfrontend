@@ -12,8 +12,9 @@
                     <mat-form-field appearance="outline" class="margin-evento">
                       <mat-label>Filtrar por Fecha</mat-label>
                       <mat-date-range-input [rangePicker]="picker">
-                        <input  matStartDate formControlName="fechai" placeholder="Inicio">
-                        <input  matEndDate formControlName="fechaf"  placeholder="Final">
+      <input matStartDate formControlName="fechai" style="font-family: nunito; font-size: 14px;" placeholder="Inicio">
+      <input matEndDate formControlName="fechaf"   style="font-family: nunito; font-size: 14px;" placeholder="Final" style="vertical-align: text-top;font-family: nunito; font-size: 14px;">
+
                       </mat-date-range-input>
                       <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
                       <mat-date-range-picker #picker></mat-date-range-picker>

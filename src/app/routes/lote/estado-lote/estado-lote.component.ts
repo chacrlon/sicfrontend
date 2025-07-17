@@ -109,13 +109,10 @@ export class EstadoLoteComponent implements OnInit {
     var has : any =  sessionStorage.getItem("hasToken");
     ​var decrypted = CryptoJS.TripleDES.decrypt(has, "CiSecret");
     this.loginService.usuario(decrypted.toString(CryptoJS.enc.Utf8))
-  .subscribe(data => {
-    console.log(data.usuario.cedula, "trae")
+    this.loginService.usuario(decrypted.toString(CryptoJS.enc.Utf8))
+      .subscribe(data => {
         this.user = data.usuario;
-        this.user.nombres = this.user.nombres.toUpperCase()+ " " +  this.user.apellidos.toUpperCase();
-        this.user.apellidos = this.user.apellidos.toUpperCase();
-        this.cedulas = data.usuario.cedula;
-  });
+      });
     this.busquedaEstado(this.idlote);
     this.busquedaEstado2(this.idlote);
     this.busquedaEstado3(this.idlote);
@@ -169,32 +166,32 @@ export class EstadoLoteComponent implements OnInit {
   }
 
 
-  async submitLote(){
-    this.spinner.show("sp1");
-    if(this.busquedaForm.valid){
-      this.spinner.show("sp1");
-       this.AdministradorService.ModificarELote(this.busquedaForm.value,this.idlote,this.cedulas).subscribe(
-        (data) =>{
-          console.log('Formulario Hora:::',data)
-      if (data.data != undefined){
-        this.busquedaForm.value({
-          numero: data.data.numero,
-        });
-      }  else if(data.code === 1000){
-        this.toast.success( "Se ha cambiado el estado del lote" , "",this.override);
-        this.redirigirSuccess();
-
+async submitLote(){
+  this.spinner.show("sp1");
+  if(this.busquedaForm.valid){
+    // Usar user.codigo en lugar de cedulas
+    this.AdministradorService.ModificarELote(
+      this.busquedaForm.value,
+      this.idlote,
+      this.user.codigo // Cambiado a código de usuario
+    ).subscribe(
+      (data) =>{
+        console.log('Respuesta cambio estado:', data);
+        if(data.code === 1000){
+          this.toast.success("Se ha cambiado el estado del lote", "", this.override);
+          this.redirigirSuccess();
         } else {
-          this.toast.error( "Error de Red. Intente de Nuevo." , "",this.override);
+          this.toast.error("Error al cambiar el estado", "", this.override);
         }
-          this.spinner.hide("sp1");
-        },
+        this.spinner.hide("sp1");
+      },
       (error) =>{
         this.spinner.hide("sp1");
+        this.toast.error("Error de conexión", "", this.override);
       }
-   );
-    }
+    );
   }
+}
 
 
 

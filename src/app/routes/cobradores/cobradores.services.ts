@@ -165,36 +165,36 @@ export class CobradoresServices {
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Auditoria } from './auditoria.model'; // Asegúrate de que la ruta es correcta
+import { Auditoria } from './auditoria.model';
+import { environment } from '@env/environment'; // Importa environment
 
 @Injectable({ providedIn: 'root' })
 export class CobradoresServices {
+  private baseUrl = environment.sic; // Usa la URL base de environment
 
   constructor(private http: HttpClient) { }
 
   getCobradoresData(): Observable<any> {
-    return this.http.get('http://180.183.174.156:7004/sic/api/mostrarcobradores');
+    return this.http.get(`${this.baseUrl}/api/mostrarcobradores`);
   }
 
   insertCobrador(cobradorData: any): Observable<any> {
-    return this.http.post<any>('http://180.183.174.156:7004/sic/api/insertarcobrador', cobradorData);
+    return this.http.post(`${this.baseUrl}/api/insertarcobrador`, cobradorData);
   }
 
   updateCobrador(collector_id: number, cobradorData: any): Observable<any> {
-    return this.http.put<any>(`http://180.183.174.156:7004/sic/api/actualizarcobrador/${collector_id}`, cobradorData);
+    return this.http.put(`${this.baseUrl}/api/actualizarcobrador/${collector_id}`, cobradorData);
   }
 
   deleteCobrador(collector_id: number, datos: any): Observable<any> {
-    return this.http.delete<any>(`http://180.183.174.156:7004/sic/api/eliminarcobrador/${collector_id}`, { body: datos });
+    return this.http.delete(`${this.baseUrl}/api/eliminarcobrador/${collector_id}`, { body: datos });
   }
 
   getCobradoresByName(nombre: string): Observable<any[]> {
-    return this.http.get<any[]>(`http://180.183.174.156:7004/sic/api/cobrador/nombre/${nombre}`);
+    return this.http.get<any[]>(`${this.baseUrl}/api/cobrador/nombre/${nombre}`);
   }
 
-   // Método para registrar auditoría
-   registrarAuditoria(auditoria: Auditoria): Observable<any> {
-    return this.http.post('http://180.183.174.156:7004/sic/api/insertarbitacora', auditoria);
+  registrarAuditoria(auditoria: Auditoria): Observable<any> {
+    return this.http.post(`${this.baseUrl}/api/insertarbitacora`, auditoria);
   }
-
 }

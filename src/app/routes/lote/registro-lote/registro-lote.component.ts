@@ -130,7 +130,7 @@ singleSelect!: MatSelect;
           this.user.nombres = this.user.nombres.toUpperCase()+ " " +  this.user.apellidos.toUpperCase();
           this.user.apellidos = this.user.apellidos.toUpperCase();
           this.loteFormulario.patchValue({
-            usuario: data.usuario.nombres
+            usuario: data.usuario.codigo
             });
     });
 

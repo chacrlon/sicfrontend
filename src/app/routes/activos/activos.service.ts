@@ -107,22 +107,23 @@ export class ActivosService {
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '@env/environment'; // Importa el environment
 
 @Injectable({
   providedIn: 'root'
 })
 export class ActivosService {
-  private urlEndPoint = 'http://180.183.174.156:7004/sic/api/credito/morosos';
+  private baseUrl = environment.sic; // Usa la URL base del environment
 
   constructor(private http: HttpClient) { }
 
   getActivos(): Observable<any> {
-    return this.http.get<any>(this.urlEndPoint);
+    const url = `${this.baseUrl}/api/credito/morosos`;
+    return this.http.get<any>(url);
   }
 
   getCreditByIdCustomerOrAccountNumber(consulta: string): Observable<any[]> {
-    console.log(consulta);
-    return this.http.get<any[]>(`http://180.183.174.156:7004/sic/api/credito/consultar_moroso/${consulta}`);
+    const url = `${this.baseUrl}/api/credito/consultar_moroso/${consulta}`;
+    return this.http.get<any[]>(url);
   }
-
 }

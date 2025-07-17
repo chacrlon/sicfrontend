@@ -12,16 +12,18 @@
   <div class="center-section">
     <div class="col-md-12">
 <!------------------------------------------------------------------CONSULTA-TRANSACCIONES---------------------------------------------------------------------------------->
-      <form [formGroup]="busquedaTForm" >
+
+<form [formGroup]="busquedaTForm" >
       <mat-form-field appearance="outline" class="margin-bottom: 2px;">
-        <mat-label>Filtrar por Fecha </mat-label>
+        <mat-label style="font-family: nunito;">Filtrar por Fecha </mat-label>
         <mat-date-range-input [rangePicker]="picker">
-          <input matStartDate formControlName="fechai" placeholder="Inicio" (dateChange)="validateDate('fechai')">
-          <input matEndDate formControlName="fechaf" placeholder="Final" (dateChange)="validateDate('fechaf')">
+          <input matStartDate formControlName="fechai" style="font-family: nunito; font-size: 14px;" placeholder="Inicio" style="vertical-align: text-top;font-family: nunito; font-size: 14px;" (dateChange)="validateDate('fechai')">
+          <input matEndDate formControlName="fechaf" style="font-family: nunito; font-size: 14px;" placeholder="Final" style="vertical-align: text-top;font-family: nunito; font-size: 14px;" (dateChange)="validateDate('fechaf')">
         </mat-date-range-input>
         <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
         <mat-date-range-picker #picker></mat-date-range-picker>
       </mat-form-field>
+
       <mat-form-field appearance="outline" class="p-4">
         <mat-label> Cédula de identidad </mat-label>
         <input

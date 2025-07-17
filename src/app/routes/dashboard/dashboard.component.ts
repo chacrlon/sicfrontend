@@ -299,16 +299,28 @@ export class DashboardComponent implements OnInit, OnDestroy, AfterViewInit {
     this.notifySubscription = this.settings.notify.subscribe(res => {
     });
 
-    this.AdministradorService.busquedaHoras({descriptor :"H"}).subscribe(data =>{
-      if(data.data[0] != undefined){
-        data.data.forEach((element:any) => {
-          if (element.estado == 1) {
-            this.servicioActivo.push(element);
-          }
-         // console.log(this.servicioActivo, "aqui::::")
+this.AdministradorService.busquedaHoras({descriptor :"H"}).subscribe(data => {
+    if(data.data && data.data.length > 0) {
+      // Filtrar y ordenar los horarios
+      this.servicioActivo = data.data
+        .filter((element: any) => element.estado == 1)
+        .sort((a: any, b: any) => {
+          // Convertir horarios a minutos para ordenar
+          const toMinutes = (time: string) => {
+            if (!time) return 0;
+            const [hours, minutes] = time.split(':').map(Number);
+            return hours * 60 + minutes;
+          };
+
+          return toMinutes(a.valorConfigurado) - toMinutes(b.valorConfigurado);
         });
-      }
-    });
+
+      // Opcional: verificar el resultado
+      console.log('Horarios ordenados:', this.servicioActivo);
+    } else {
+      this.servicioActivo = [];
+    }
+  });
     this.spinner.hide("sp1");
   }
 

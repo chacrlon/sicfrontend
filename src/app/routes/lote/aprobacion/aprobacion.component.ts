@@ -132,41 +132,47 @@ async busquedaLote(){
   );
 }
 //------------------------------------------------------------------- APROBACION LOTES
-async AprobarLote(row:any){
-  const dialogRef = this.dialog.open(ConfirmDialogComponent,{
-    data:{
-        message: '¿Estás seguro de aprobar el lote N° ' +  row.idlote + '?' ,
+async AprobarLote(row: any) {
+  const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+    data: {
+      message: '¿Estás seguro de aprobar el lote N° ' + row.idlote + '?',
     }
-    });
-    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
-  if (confirmed) {
-    this.spinner.show("sp1");
-        // Log de información antes de enviar la solicitud
-        console.log("Aprobando lote:", {
-          idlote: row.idlote,
-          cedula: this.cedulas,
-          mensaje: 'Aprobando el lote N° ' + row.idlote
-        });
-      this.AdministradorService.Aprobar(row.idlote,this.cedulas).subscribe(
-        (data) =>{
-         // Log de la respuesta del servidor
-         console.log("Respuesta del servidor al aprobar el lote:", data);
-         if(data.code != 9999 ){
-          this.toast.success( "Lote "  +  row.idlote +  " Aprobado con Éxito." , "",this.override);
-          this.busquedaLote();
-          }else {
-            this.toast.error( "Error de Conexión" , "",this.override);
+  });
+
+  dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+    if (confirmed) {
+      this.spinner.show("sp1");
+
+      // Obtener el nombre completo del usuario
+      const nombreUsuario = this.user.codigo;
+
+      // Log de información antes de enviar la solicitud
+      console.log("Aprobando lote:", {
+        idlote: row.idlote,
+        usuario: nombreUsuario,  // Enviar el nombre de usuario
+        mensaje: 'Aprobando el lote N° ' + row.idlote
+      });
+
+      // Llamar al servicio con el nombre de usuario
+      this.AdministradorService.Aprobar(row.idlote, nombreUsuario).subscribe(
+        (data) => {
+          console.log("Respuesta del servidor al aprobar el lote:", data);
+          if (data.code != 9999) {
+            this.toast.success("Lote " + row.idlote + " Aprobado con Éxito.", "", this.override);
+            this.busquedaLote();
+          } else {
+            this.toast.error("Error de Conexión", "", this.override);
             this.busquedaLote();
           }
+          this.spinner.hide("sp1");
         },
-        (error) =>{
-          // Log de error en caso de fallo en la solicitud
+        (error) => {
           console.error("Error al aprobar el lote:", error);
+          this.spinner.hide("sp1");
         }
-        );
-  }
-  this.spinner.hide("sp1");
-    });
+      );
+    }
+  });
 }
 
 //------------------------------------------------------------------- BUSCADOR GENERAL

@@ -59,6 +59,10 @@ const ELEMENT_DATA: LotesConsulta[] = [];
 })
 export class LoteComponent implements OnInit {
 
+  logs: string[] = [];
+  private logRefreshInterval: any;
+
+
   cedulas: IusuarioLdap  = {} as IusuarioLdap; // Información de MSINT
   user: IusuarioLdap  = {} as IusuarioLdap; // Información de MSINT
 
@@ -155,7 +159,17 @@ singleSelect!: MatSelect;
     this.spinner.show("sp1");
      this.busquedaLote();
     this.spinner.hide("sp1");
+
+    this.loadLogs();
+    this.setupLogPolling();
   }
+
+  setupLogPolling(): void {
+    this.logRefreshInterval = setInterval(() => {
+      this.loadLogs();
+    }, 3000); // Actualiza cada 3 segundos
+  }
+
 // UNIDADES
   protected filtroUnidadx() {
     if (!this.unidad) {
@@ -174,18 +188,29 @@ singleSelect!: MatSelect;
       this.unidad.filter(uni => uni.codigounidad.toLowerCase().indexOf(search) > -1 || uni.unidad.toLowerCase().indexOf(search) > -1)
     );
   }
-  async obtenerUnidades(){
-    await this.AdministradorService.obtenerUnidades().subscribe(
-      (data) =>{
-        for (const iterator of data.data) {
-          this.unidad.push({codigounidad:  iterator.codigounidad, unidad: iterator.unidad});
-        }
-      },
-      (error) =>{
+async obtenerUnidades() {
+  await this.AdministradorService.obtenerUnidades().subscribe(
+    (data) => {
+      // Vaciar el array antes de agregar nuevos elementos
+      this.unidad = [];
 
+      for (const iterator of data.data) {
+        console.log('Elemento completo:', iterator); // Para ver todas las propiedades
+
+        // 👇 Usar la propiedad CORRECTA (codUnidad en lugar de codigounidad)
+        this.unidad.push({
+          codigounidad: iterator.codUnidad, // Propiedad corregida
+          unidad: iterator.unidad
+        });
       }
-    );
-  }
+
+      console.log('Unidades procesadas:', this.unidad);
+    },
+    (error) => {
+      console.error('Error obteniendo unidades:', error);
+    }
+  );
+}
 //
 
   ngAfterViewInit() {
@@ -199,6 +224,9 @@ singleSelect!: MatSelect;
     this._onDestroy.complete();
     this._onDestroyII.next();
     this._onDestroyII.complete();
+        if (this.logRefreshInterval) {
+      clearInterval(this.logRefreshInterval);
+    }
     }
 // VALIDACION NUMERICA
     numberOnly(event: { which: any; keyCode: any; }): boolean {
@@ -218,7 +246,7 @@ eliminarLote(idlote: string){
     dialogRef.afterClosed().subscribe((confirmed: boolean) => {
   if (confirmed) {
     this.spinner.show("sp1");
-      this.AdministradorService.EliminarLote(idlote, this.cedulas).subscribe(
+      this.AdministradorService.EliminarLote(idlote, this.user.codigo).subscribe(
         (data) =>{
          if(data.code != 9999 ){
           this.toast.success( "El lote N° "+ idlote +" fue eliminado con Éxito." , "",this.override);
@@ -236,6 +264,28 @@ eliminarLote(idlote: string){
   this.spinner.hide("sp1");
     });
 }
+
+  loadLogs(): void {
+    this.AdministradorService.getLogs().subscribe({
+      next: (logs) => {
+        this.logs = logs;
+      },
+      error: (err) => {
+        console.error('Error cargando logs', err);
+      }
+    });
+  }
+
+  ejecutarProcesoManual(): void {
+    this.AdministradorService.triggerFtpProcess().subscribe({
+      next: () => {
+        this.toast.success('Proceso iniciado manualmente');
+      },
+      error: (err) => {
+        this.toast.error('Error al iniciar el proceso');
+      }
+    });
+  }
 // EDITAR LOTE
 editarLote(idlote: string){
   localStorage.setItem('idlote', idlote);

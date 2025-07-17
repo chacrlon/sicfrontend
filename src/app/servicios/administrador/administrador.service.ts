@@ -6,6 +6,7 @@ import { json } from 'stream/consumers';
 import { IMenu,  menu, IProveedor, proveedor,  IServicio, servicio, IProveedorObjeto } from 'app/models/administrador';
 import * as moment from 'moment';
 import { Observable, throwError, of } from 'rxjs'; // <-- Agregar 'of' aquí
+import { tap } from 'rxjs/operators';
 
 export interface IMenuServicio{
   idmenus: string,
@@ -22,13 +23,42 @@ export class AdministradorService {
       this.urlGet = environment.ApiServicios;
   }
 
+getLogs(): Observable<any> {
+  const url = `${this.urlGet}/logs`;  // Quitar '/api/mainframe'
+  return this.http.post(url, "");
+}
+
+triggerFtpProcess(): Observable<any> {
+  const url = `${this.urlGet}/ejecutarFtp`;  // Usar 'ejecutarFtp' en lugar de 'ejecutar-ftp'
+  return this.http.post(url, "");
+}
+
 
  /*-----------------------------------------------------------------MODULO HORARIO-------------------------------------------------------------*/
- obtenerHorario(): Observable<any>{
-  var url = this.urlGet + '/consultar-horas-activas';
- // var ids = { idservicio : xvalor };
-  return this.http.post(url,"");
-}
+  obtenerHorario(): Observable<any>{
+    var url = this.urlGet + '/consultar-horas-activas';
+    console.log('Solicitando horarios activos:', url);
+
+    return this.http.post(url, "").pipe(
+      tap(response => {
+        console.log('Respuesta de obtenerHorario:', response);
+      }),
+      catchError(this.error)
+    );
+  }
+
+  busquedaHoras(data : any): Observable<any>{
+    let url = this.urlGet +'/consultar-configuracion';
+    console.log('Solicitando configuración de horas:', url, 'con datos:', data);
+
+    return this.http.post(url, data).pipe(
+      tap(response => {
+        console.log('Respuesta de busquedaHoras:', response);
+      }),
+      catchError(this.error)
+    );
+  }
+
  crearHora(data: any):Observable<any>{
   let url = this.urlGet +'/guardar-hora-configuracion';
   console.log("Crear hora::: ", url, "respuesta server", data)
@@ -92,11 +122,6 @@ modificarHora(data: any, idhora: any):Observable<any>{
   return this.http.post(url, envio).pipe(catchError(this.error));
  }
 
-busquedaHoras(data : any): Observable<any>{
-  let url = this.urlGet +'/consultar-configuracion';
-  return this.http.post(url, data).pipe(catchError(this.error));
- }
-
  AuditoriaEstadoHora(data: any, idhora: any):Observable<any>{
   var envio = {
     "nombreoperador" : data,
@@ -115,16 +140,17 @@ busquedaHoras(data : any): Observable<any>{
   console.log("Crear Lote::: ", data)
   return this.http.post(url, data).pipe(catchError(this.error));
 }
-ModificarELote(data: any, idlote:any,cedulas:any):Observable<any>{
-  let url = this.urlGet +'/modificar-estados-lote';
 
-  var envio = {
-    "idlote" : idlote,
-    "numero" : data.numero,
-    "cedula" : cedulas
-   }
-   console.log("Crear Lote::: ", envio)
-  return this.http.post(url, envio).pipe(catchError(this.error));
+// Modificar ModificarELote para usar codigo de usuario
+ModificarELote(data: any, idlote: any, codigoUsuario: string): Observable<any>{
+  const envio = {
+    idlote: idlote,
+    numero: data.numero,
+    usuario: codigoUsuario // Cambiado a 'usuario' y usando código
+  };
+
+  console.log("Modificar estado lote:", envio);
+  return this.http.post(`${this.urlGet}/modificar-estados-lote`, envio);
 }
 
 ModificarELoteReprocesado(data: any, idlote:any,cedulas:any):Observable<any>{
@@ -139,14 +165,13 @@ ModificarELoteReprocesado(data: any, idlote:any,cedulas:any):Observable<any>{
   return this.http.post(url, envio).pipe(catchError(this.error));
 }
 
-EliminarLote( idlote:any,cedulas:any):Observable<any>{
-  let url = this.urlGet +'/eliminar-lote';
-  var envio = {
-    "idlote" : idlote,
-    "cedula" : cedulas
-   }
-   //console.log("Crear Lote::: ", envio)
-  return this.http.post(url, envio).pipe(catchError(this.error));
+EliminarLote(idlote: string, codigoUsuario: string): Observable<any> {
+  const payload = {
+    idlote: idlote,
+    usuario: codigoUsuario // Usar codigo en lugar de cedula
+  };
+
+  return this.http.post<any>(`${this.urlGet}/eliminar-lote`, payload);
 }
 
 cargarLote(archivos: any, nombrearchivo:any ,data: any):Observable<any>{
@@ -238,16 +263,15 @@ modificarEProveedor(data: any, idProveedor : any):Observable<any>{
     let url = this.urlGet +'/modificar-estatus-cena';
     return this.http.post(url, envio).pipe(catchError(this.error));
   }
-  Aprobar(idlote:any,cedulas:any): Observable<any>{
-    var url = this.urlGet + '/aprobacion-lote' ;
-    console.log(idlote,"data aprobar")
-    var unjson = {
-      idlote:idlote,
-      cedula : cedulas
-    }
-    console.log(unjson, "aqui taa")
-    return this.http.post(url,unjson);
-  }
+
+Aprobar(idlote: string, usuario: string): Observable<any> {
+  const payload = {
+    idlote: idlote,
+    usuario: usuario // Enviar el nombre de usuario
+  };
+
+    return this.http.post<any>(`${this.urlGet}/aprobacion-lote`, payload);
+}
 /*----------------------------------------------------------CERRAR ITEMS DE GESTIONES----------------------------------------------------------------*/
 cerrarServicio(): Observable<any>{
   var url = this.urlGet + '/terminar-servicio' ;
