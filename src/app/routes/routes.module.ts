@@ -47,7 +47,11 @@ import { Estadistica1Component } from './estadistica1/estadistica1.component';
 import { Estadistica2Component } from './estadistica2/estadistica2.component';
 import { FormatDatePipe } from './format-date.pipe';
 import { EstadoLoteReprocesadoComponent } from './lote/estado-lote-reprocesado/estado-lote-reprocesado.component';
-import { SessionTimeoutDialogComponentComponent } from './session-timeout-dialog-component/session-timeout-dialog-component.component'; // Nueva importación
+import { SessionTimeoutDialogComponentComponent } from './session-timeout-dialog-component/session-timeout-dialog-component.component';
+import { ConfiguracionDetailsComponent } from './configuracion-details/configuracion-details.component';
+import { AddConfiguracionComponent } from './add-configuracion/add-configuracion.component';
+import { ConfiguracionListComponent } from './configuracion-list/configuracion-list.component';
+import { BitacoraComponent } from './bitacora/bitacora.component'; // Nueva importación
 
 
 
@@ -65,7 +69,11 @@ const COMPONENTS_DYNAMIC: any[] = [];
   declarations: [...COMPONENTS, ...COMPONENTS_DYNAMIC, SpinnerComponent,ConfirmDialogComponent, DescargarComponent, AuditoriaComponent,
     DialogUploadComponent, DialogShowComponent,EstadoLoteComponent, RegistroLoteComponent, LoteComponent, EstadisticasLotesComponent,
     BusquedaRegistrosComponent, CargarLoteComponent, HorarioLoteComponent, HorarioEditarLoteComponent, HorarioCrearLoteComponent, EditarLoteComponent,
-    AprobacionComponent,  SeguimientoloteComponent, ActivosComponent, MorososComponent, CobradoresComponent, ModalComponentComponent, ModalCobradoresComponentComponent, ModalInsertarCobradorComponent, Estadistica1Component, Estadistica2Component, FormatDatePipe, EstadoLoteReprocesadoComponent, SessionTimeoutDialogComponentComponent],
+    AprobacionComponent,  SeguimientoloteComponent, ActivosComponent, MorososComponent, CobradoresComponent, ModalComponentComponent,
+    ModalCobradoresComponentComponent, ModalInsertarCobradorComponent, Estadistica1Component, Estadistica2Component, FormatDatePipe,
+    EstadoLoteReprocesadoComponent, SessionTimeoutDialogComponentComponent, ConfiguracionDetailsComponent, AddConfiguracionComponent,
+    ConfiguracionListComponent,
+    BitacoraComponent],
   entryComponents:[
     SpinnerComponent,
     ConfirmDialogComponent,

@@ -77,6 +77,7 @@ consultarDetalleEstado(data:any):Observable<any>{
   console.log("Datos de lote estado:::",{idlote:data});
   return this.http.post(url, {idlote:data}).pipe(catchError(this.error));
 }
+
 consultarDetalleEstado2(data:any):Observable<any>{
   var url = this.urlGet + '/lote-monto-recuperado';
   console.log("Datos de lote estado:::",{idlote:data});
@@ -107,7 +108,7 @@ modificarHora(data: any, idhora: any):Observable<any>{
     "unidad":data.unidad
   }
   console.log("Modificada Datos de la Hora:::",envio);
-  let url = this.urlGet +'/modificar-hora-ejecucion';
+  let url = this.urlGet +'/modificar-datos-lote';
   return this.http.post(url, envio).pipe(catchError(this.error));
 }
 
@@ -153,16 +154,23 @@ ModificarELote(data: any, idlote: any, codigoUsuario: string): Observable<any>{
   return this.http.post(`${this.urlGet}/modificar-estados-lote`, envio);
 }
 
-ModificarELoteReprocesado(data: any, idlote:any,cedulas:any):Observable<any>{
-  let url = this.urlGet +'/modificar-estados-lote-reprocesado';
+ModificarELoteReprocesado(data: any, idlote: any, codigoUsuario: string): Observable<any> {
+  const envio = {
+    idlote: idlote,
+    numero: data.numero,
+    usuario: codigoUsuario // Cambiado a 'usuario' y usando código
+  };
 
-  var envio = {
-    "idlote" : idlote,
-    "numero" : data.numero,
-    "cedula" : cedulas
-   }
-   console.log("Crear Lote::: ", envio)
-  return this.http.post(url, envio).pipe(catchError(this.error));
+  console.log("Datos enviados al backend:", envio);
+
+  return this.http.post(`${this.urlGet}/modificar-estados-lote-reprocesado`, envio);
+}
+
+// Método para extraer solo los números de la cédula
+private extraerNumerosCedula(cedula: string): number {
+  // Si la cédula es "CT25174", extraer "25174"
+  const soloNumeros = cedula.replace(/\D/g, '');
+  return Number(soloNumeros);
 }
 
 EliminarLote(idlote: string, codigoUsuario: string): Observable<any> {

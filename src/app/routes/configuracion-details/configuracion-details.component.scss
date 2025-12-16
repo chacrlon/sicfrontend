@@ -1,0 +1,401 @@
+.mat-dialog-container {
+  padding: 24px !important;
+  border-radius: 10px !important;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3) !important;
+}
+
+.edit-form {
+  .form-group {
+    margin-bottom: 1rem;
+
+    label {
+      font-weight: 500;
+    }
+
+    input[readonly] {
+      background-color: #f8f9fa;
+      cursor: not-allowed;
+    }
+  }
+
+  .button-group {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+  }
+}
+
+/* Estilos compartidos para modales */
+.modal {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  min-width: 500px;
+
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+    color: #333;
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+
+    label {
+      margin-bottom: 5px;
+      color: #555;
+      font-weight: 500;
+    }
+
+    input, select {
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      width: 100%;
+
+      &:focus {
+        outline: none;
+        border-color: #007bff;
+      }
+    }
+
+    .button-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+
+      button {
+        padding: 10px 20px;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        flex: 1;
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+
+        &:disabled {
+          opacity: 0.7;
+          cursor: not-allowed;
+        }
+
+        &.update-btn {
+          background-color: #007bff;
+
+          &:hover:not(:disabled) {
+            background-color: #0056b3;
+          }
+        }
+
+        &.delete-btn {
+          background-color: #dc3545;
+
+          &:hover:not(:disabled) {
+            background-color: #c82333;
+          }
+        }
+
+        &.btn-secondary {
+          background-color: #6c757d;
+
+          &:hover:not(:disabled) {
+            background-color: #5a6268;
+          }
+        }
+      }
+    }
+  }
+}
+
+/* Estilos para alertas */
+.alert {
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  position: relative;
+
+  .alert-message {
+    margin-right: 30px;
+  }
+
+  .close-btn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    cursor: pointer;
+    font-size: 16px;
+  }
+
+  &.alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+
+    .close-btn {
+      color: #721c24;
+    }
+  }
+
+  &.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+
+    .close-btn {
+      color: #155724;
+    }
+  }
+}
+
+/* Estilos para la sección de configuraciones */
+.configuraciones-section {
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  padding: 1.5rem;
+  width: 100%;
+
+  h2 {
+    margin-bottom: 1.5rem;
+    color: #333;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 0.5rem;
+  }
+}
+
+/* Estilo para botón de nueva configuración */
+.registrar-btn {
+  width: 100%;
+  margin-bottom: 15px;
+  padding: 12px;
+  font-size: 16px;
+  color: white;
+  background: linear-gradient(90deg, #007bff, #0056b3);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease, transform 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+
+  &:hover {
+    background: linear-gradient(90deg, #0056b3, #004494);
+    transform: scale(1.02);
+  }
+
+  &:active {
+    transform: scale(0.98);
+  }
+
+  &:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.5);
+  }
+}
+
+/* Estilos para la tabla */
+.table-container {
+  max-height: 60vh;
+  overflow-y: auto;
+  width: 100%;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.custom-align-left.mat-header-cell {
+  text-align: left !important;
+}
+
+.custom-cell {
+  padding: 10px;
+}
+
+.sort-header-content {
+  font-size: 14px;
+  font-family: 'Nunito', sans-serif;
+  color: #0067b1;
+  text-align: left;
+}
+
+/* Añade estas mejoras UX al final de tu archivo SCSS */
+
+/* Mejoras de feedback visual */
+button:not([disabled]) {
+  transition: all 0.2s ease;
+  transform: translateY(0);
+
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+
+  &:active {
+    transform: translateY(1px);
+  }
+}
+
+/* Efecto de carga para botones */
+.button-loading {
+  position: relative;
+  color: transparent !important;
+
+  &:after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 20px;
+    height: 20px;
+    margin: -10px 0 0 -10px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: white;
+    border-radius: 50%;
+    animation: button-spinner 0.8s linear infinite;
+  }
+}
+
+@keyframes button-spinner {
+  to { transform: rotate(360deg); }
+}
+
+/* Mejoras en la tabla */
+.mat-table {
+  tr {
+    transition: background-color 0.2s ease;
+
+    &:hover {
+      background-color: #f8fbff;
+    }
+  }
+
+  .mat-row {
+    cursor: pointer;
+
+    &:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+  }
+}
+
+/* Efecto de "vacío" al cargar */
+.blur-content {
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+/* Animaciones para alertas */
+.alert {
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Indicadores visuales para campos requeridos */
+input:required + label:after,
+select:required + label:after {
+  content: " *";
+  color: #e74c3c;
+}
+
+/* Mejoras en el paginador */
+.mat-paginator {
+  display: flex;
+  justify-content: center;
+  padding: 15px 0;
+  background-color: #f8f9fa;
+  border-top: 1px solid #eee;
+
+  .mat-paginator-range-actions {
+    gap: 10px;
+  }
+}
+
+/* Tooltips para iconos */
+[title] {
+  position: relative;
+
+  &:hover:after {
+    content: attr(title);
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #333;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 12px;
+    white-space: nowrap;
+    z-index: 100;
+  }
+}
+
+/* Efecto de transición al cambiar datos */
+.configuracion-item {
+  transition: all 0.3s ease;
+}
+
+.updated-item {
+  animation: highlightUpdate 1.5s ease;
+}
+
+@keyframes highlightUpdate {
+  0% { background-color: transparent; }
+  30% { background-color: #d4edff; }
+  100% { background-color: transparent; }
+}
+
+/* Mejoras en inputs para dispositivos móviles */
+@media (max-width: 768px) {
+  input, select {
+    font-size: 16px !important; /* Previene el zoom en iOS */
+  }
+}
+
+/* Mensaje de "no hay datos" con icono */
+.no-data-message {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+  color: #6c757d;
+
+  i {
+    font-size: 48px;
+    margin-bottom: 15px;
+    color: #ced4da;
+  }
+}
+
+/* Scroll suave para la tabla */
+.table-container {
+  scroll-behavior: smooth;
+}
+
+/* Sombra suave al hacer scroll */
+.mat-table {
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Efecto de carga para filas */
+.skeleton-row {
+  height: 53px;
+  animation: skeleton-loading 1.5s infinite ease-in-out;
+}
+
+@keyframes skeleton-loading {
+  0% { background-color: #f5f5f5; }
+  50% { background-color: #e9ecef; }
+  100% { background-color: #f5f5f5; }
+}

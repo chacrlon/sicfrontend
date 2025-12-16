@@ -27,7 +27,11 @@ import { MorososComponent } from './morosos/morosos.component';
 import { CobradoresComponent } from './cobradores/cobradores.component';
 import { Estadistica1Component } from './estadistica1/estadistica1.component'; // Ruta Estadistica 1
 import { Estadistica2Component } from './estadistica2/estadistica2.component'; // Ruta Estadistica 2
-
+// AÑADE ESTAS IMPORTACIONES PARA CONFIGURACIONES
+import { ConfiguracionListComponent } from './configuracion-list/configuracion-list.component';
+import { AddConfiguracionComponent } from './add-configuracion/add-configuracion.component';
+import { ConfiguracionDetailsComponent } from './configuracion-details/configuracion-details.component';
+import { BitacoraComponent } from './bitacora/bitacora.component';
 
 
 const routes: Routes = [
@@ -42,19 +46,23 @@ const routes: Routes = [
       { path: 'dashboard', component: DashboardComponent },
       { path: 'DESCARGALOG', component: DescargarComponent },
       { path: 'auditoria', component: AuditoriaComponent },
+      { path: 'bitacora', component: BitacoraComponent },
 /*-------------------------------------------------------------------------------------------------------------------*/
       { path: 'lote', component: LoteComponent },
       { path: 'activos', component: ActivosComponent },
       { path: 'morosos', component: MorososComponent },
       { path: 'cobradores', component: CobradoresComponent },
-      { path: 'estadistica1', component: Estadistica1Component }, // Nueva ruta para el componente Estadistica1
-      { path: 'estadistica2', component: Estadistica2Component }, // Nueva ruta para el componente Estadistica2
+      { path: 'estadistica1', component: Estadistica1Component },
+      { path: 'estadistica2', component: Estadistica2Component },
       { path: 'registro-lote', component: RegistroLoteComponent },
       { path: 'estado-lote', component: EstadoLoteComponent },
       { path: 'busqueda-registro', component: BusquedaRegistrosComponent },
       { path: 'cargar-lote', component: CargarLoteComponent },
       { path: 'horario-lote', component: HorarioLoteComponent },
       { path: 'aprobacion-lote', component: AprobacionComponent },
+      { path: '', component: ConfiguracionListComponent },
+      { path: 'add', component: AddConfiguracionComponent },
+      { path: 'editar/:id', component: ConfiguracionDetailsComponent },
 /*-------------------------------------------------------------------------------------------------------------------*/
       { path: '404', component: Error403Component },
       {

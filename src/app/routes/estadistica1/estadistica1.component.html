@@ -1,3 +1,7 @@
+<!-- Barra azul con título -->
+<page-header class="p-t-24 p-b-36 m-b--40 bg-rojobdv textColor" title="Gestión de Estadistica" hideBreadcrumb>
+</page-header>
+
 <div class="container">
   <div *ngIf="isLoading" class="loading-overlay">
     <div class="loading-spinner"></div>
@@ -89,7 +93,7 @@
 
     <!-- Table for PCP Statistics -->
     <div class="table-right">
-      <h3 class="sort-header-content custom-align-left">Estadísticas PCP</h3>
+      <h3 class="sort-header-content custom-align-left">Estadísticas PIC-BATCH</h3>
       <table mat-table [dataSource]="dataSourcePCP" class="mat-elevation-z8">
         <ng-container matColumnDef="collectorName">
           <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Nombre Cobrador</th>
@@ -106,7 +110,7 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumnsPCP"></tr>
         <tr mat-row *matRowDef="let item; columns: displayedColumnsPCP;"></tr>
       </table>
-      <h3 class="sort-header-content custom-align-left">Total Transacciones PCP: {{ totalTransactionsPCP }}</h3>
+      <h3 class="sort-header-content custom-align-left">Total Transacciones PIC-BATCH: {{ totalTransactionsPCP }}</h3>
     </div>
 
     <!-- Shared paginator for PIC and PCP -->

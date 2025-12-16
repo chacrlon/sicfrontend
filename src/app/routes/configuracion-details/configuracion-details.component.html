@@ -1,0 +1,69 @@
+<div class="modal" *ngIf="currentConfiguracion">
+  <h2>Editar Configuración</h2>
+
+  <div *ngIf="message" class="alert"
+       [ngClass]="{'alert-success': message.includes('éxito') || message.includes('exitosamente'), 'alert-danger': !(message.includes('éxito') || message.includes('exitosamente'))}">
+    <div class="alert-message">
+      {{ message }}
+    </div>
+    <span class="close-btn" (click)="message = ''">&times;</span>
+  </div>
+
+  <form>
+    <!--
+    <div class="form-group">
+      <label for="id">ID:</label>
+      <input type="text" name="id" [value]="currentConfiguracion.id" readonly class="readonly-input">
+    </div>
+
+    <div class="form-group">
+      <label for="modulo">Módulo:</label>
+      <input type="text" name="modulo" [value]="currentConfiguracion.modulo" readonly class="readonly-input">
+    </div>
+
+    <div class="form-group">
+      <label for="descValor">Descripción:</label>
+      <input type="text" name="descValor" [value]="currentConfiguracion.descValor" readonly class="readonly-input">
+    </div>
+
+    <div class="form-group">
+      <label for="tipoValor">Tipo de Valor:</label>
+      <input type="text" name="tipoValor" [value]="currentConfiguracion.tipoValor" readonly class="readonly-input">
+    </div>
+
+    <div class="form-group">
+      <label for="longitud">Longitud:</label>
+      <input type="number" name="longitud" [value]="currentConfiguracion.longitud" readonly class="readonly-input">
+    </div> -->
+
+    <!-- Único campo editable -->
+    <div class="form-group">
+      <label for="valor">Código de operación:</label>
+      <input type="text" name="valor" placeholder="Valor"
+             [(ngModel)]="currentConfiguracion.valor" required>
+    </div>
+
+    <div class="button-group">
+      <button type="button" class="update-btn"
+              (click)="updateConfiguracion()"
+              [disabled]="isSaving">
+        <i *ngIf="!isSaving" class="fas fa-save"></i>
+        <i *ngIf="isSaving" class="fas fa-spinner fa-spin"></i>
+        {{ isSaving ? 'Guardando...' : 'Actualizar' }}
+      </button>
+
+      <button type="button" class="delete-btn"
+              (click)="deleteConfiguracion()"
+              [disabled]="isDeleting">
+        <i *ngIf="!isDeleting" class="fas fa-trash"></i>
+        <i *ngIf="isDeleting" class="fas fa-spinner fa-spin"></i>
+        {{ isDeleting ? 'Eliminando...' : 'Eliminar' }}
+      </button>
+
+      <button type="button" class="btn-secondary"
+              (click)="closeDialog()">
+        <i class="fas fa-times"></i> Cerrar
+      </button>
+    </div>
+  </form>
+</div>

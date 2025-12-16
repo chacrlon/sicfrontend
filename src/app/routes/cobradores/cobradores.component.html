@@ -1,9 +1,12 @@
-<div class="container">
+<!-- Barra azul con título -->
+<page-header class="p-t-24 p-b-36 m-b--40 bg-rojobdv textColor" title="Gestión de Configuración" hideBreadcrumb>
+</page-header>
 
+<div class="container">
   <div *ngIf="isLoading" class="loading-spinner">
     <mat-spinner></mat-spinner>
     <p>Cargando datos...</p>
-</div>
+  </div>
 
   <div class="table-container">
     <button type="button" class="registrar-btn" (click)="openInsertModal()">Registrar Cobrador</button>
@@ -34,5 +37,8 @@
       <tr mat-header-row *matHeaderRowDef="['nombre', 'horaInicial', 'horaFinal', 'estatus', 'prioridad']"></tr>
       <tr mat-row *matRowDef="let cobrador; columns: ['nombre', 'horaInicial', 'horaFinal', 'estatus', 'prioridad']" (click)="openModal(cobrador)"></tr>
     </table>
-  </div> <!-- Cierre del div -->
+  </div>
+
+  <!-- Sección de Configuraciones -->
+  <app-configuracion-list></app-configuracion-list>
 </div>

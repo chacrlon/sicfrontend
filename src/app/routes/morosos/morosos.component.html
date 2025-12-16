@@ -1,3 +1,7 @@
+<!-- Barra azul con título - similar al componente de aprobación -->
+<page-header class="p-t-24 p-b-36 m-b--40 bg-rojobdv textColor" title="Gestión de Cuentas" hideBreadcrumb>
+</page-header>
+
 <div class="container">
   <form [formGroup]="searchForm" (ngSubmit)="searchMorosos()">
     <mat-form-field appearance="fill" class="full-width">
@@ -48,7 +52,7 @@
 
         <tr mat-header-row *matHeaderRowDef="displayedColumnsMorosos"></tr>
         <tr mat-row *matRowDef="let estadistica; columns: displayedColumnsMorosos;"></tr>
-      </table>
+ </table>
       <mat-paginator #paginatorMorosos [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons></mat-paginator>
     </div>
 
@@ -57,8 +61,9 @@
 
       <div *ngIf="loadingMorosos" class="loading-message">
         Cargando datos, por favor espere...
-        </div>
-       <table mat-table [dataSource]="dataSourceMorosos2" class="mat-elevation-z8" *ngIf="!loadingMorosos">
+      </div>
+
+      <table mat-table [dataSource]="dataSourceMorosos2" class="mat-elevation-z8" *ngIf="!loadingMorosos">
 
         <ng-container matColumnDef="dateCreated">
           <th mat-header-cell *matHeaderCellDef class="sort-header-content custom-align-left">Fecha de creación</th>
@@ -93,9 +98,10 @@
         <tr mat-header-row *matHeaderRowDef="displayedColumnsMorosos2"></tr>
         <tr mat-row *matRowDef="let item; columns: displayedColumnsMorosos2;"></tr>
          </table>
-         <mat-paginator #paginatorMorosos2 [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons></mat-paginator>
-     </div>
+      <mat-paginator #paginatorMorosos2 [pageSizeOptions]="[5, 10, 15]" showFirstLastButtons></mat-paginator>
+    </div>
 
-      <div *ngIf="dataSourceMorosos.data.length === 0 && dataSourceMorosos2.data.length === 0 && !loadingMorosos" class="no-data-message">
-      </div>
-       </div>
+    <div *ngIf="dataSourceMorosos.data.length === 0 && dataSourceMorosos2.data.length === 0 && !loadingMorosos" class="no-data-message">
+    </div>
+  </div>
+</div>

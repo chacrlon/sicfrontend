@@ -121,7 +121,7 @@ async cambiarEstado(rowData:any){
     estado=0
     }
     this.spinner.show("sp1");
-    await  this.AdministradorService.modificarEstadoHora(estado, rowData.idGiomConfiguracion,this.user.nombres).subscribe(
+    await  this.AdministradorService.modificarEstadoHora(estado, rowData.idGiomConfiguracion,this.user.codigo).subscribe(
       (data) =>{
          if(data.code != 9999){
           this.busquedaHora();

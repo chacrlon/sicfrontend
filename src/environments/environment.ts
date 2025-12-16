@@ -14,6 +14,7 @@ export const environment = {
   //intServiciosUrl = MSI
   intServiciosUrl :'http://180.183.174.37:7010/int-servicios',
   diremURl : 'http://180.183.174.37:7007/diremWS',
+  //sic : 'http://localhost:8080',
   sic : 'http://180.183.171.164:7004/sic'
 };
 

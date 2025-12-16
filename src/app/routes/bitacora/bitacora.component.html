@@ -1,0 +1,97 @@
+<page-header class="p-t-32 p-b-48 m-b--24 bg-rojobdv textColor"
+             title="Auditoria SIC" hideBreadcrumb>
+</page-header>
+      <div fxLayout="row wrap" class="matero-row">
+        <div class="matero-col" fxFlex="100">
+          <mat-card>
+<!------------------------------------------------------------------FILTRADO DE BUSQUEDA FECHA AUDITORIA-------------------------------------------------------------------------------------->
+            <div class="row">
+              <div class="col-md-12">
+                <div class="center-section">
+               <form [formGroup]="form">
+                    <mat-form-field appearance="outline" class="margin-evento">
+                      <mat-label>Filtrar por Fecha</mat-label>
+                      <mat-date-range-input [rangePicker]="picker">
+      <input matStartDate formControlName="fechai" style="font-family: nunito; font-size: 14px;" placeholder="Inicio">
+      <input matEndDate formControlName="fechaf"   style="font-family: nunito; font-size: 14px;" placeholder="Final" style="vertical-align: text-top;font-family: nunito; font-size: 14px;">
+
+                      </mat-date-range-input>
+                      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                      <mat-date-range-picker #picker></mat-date-range-picker>
+                    </mat-form-field>
+                    <div class="center-section">
+                    <button class="btn-azulbdv btn-small" mat-raised-button (click)="busquedaFechas()"[disabled]="form.invalid"><mat-icon class="material-icons">search</mat-icon></button>
+                    <button class="btn-rojobdv btn-small" (click)="handleClear()" mat-raised-button ><mat-icon class="material-icons">delete sweep icon</mat-icon></button>
+                  </div>
+              </form>
+              </div>
+            </div>
+          </div>
+<!------------------------------------------------------------------FILTRADO DE BUSQUEDA GENERAL AUDITORIA-------------------------------------------------------------------------------------->
+      <div class="row">
+        <div class="col-md-6">
+          <mat-form-field appearance="outline" class="width30">
+            <mat-label>Buscar Acción</mat-label>
+            <input matInput (keyup)="applyFilter($event)" class="textoInicial" placeholder="Insertar datos del registro" #input>
+          </mat-form-field>
+      </div>
+      <div class="col-md-4"></div>
+      <div class="col-md-2">
+         <!--<div class="right-section">(click)="busquedaAuditoria()"
+          <button mat-raised-button class="btn-rojobdv" ><mat-icon class="material-icons" #tooltip="matTooltip"  [matTooltipClass]="'my-tooltip'"  matTooltipPosition="above" matTooltip="Refrescar Página">refresh</mat-icon></button>
+        </div>-->
+      </div>
+          <div class="col-md-12">
+            <div class="mat-elevation-z8"  >
+              <table mat-table id="season-tble" [dataSource]="dataSource" matSort style="width: 100%;" matSortActive="fechaaccion" matSortDirection="desc" >
+
+                <ng-container matColumnDef="idregistroauditoria">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header  class="sort-header-content">Id del Item </th>
+                  <td mat-cell *matCellDef="let row" class="text-data-json"> {{row.idregistroauditoria}} </td>
+                </ng-container>
+
+                <ng-container matColumnDef="accion">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header  class="sort-header-content"> Tipo de Acción </th>
+                  <td mat-cell *matCellDef="let row" class="text-data-json"> {{row.accion}} </td>
+                </ng-container>
+
+                 <ng-container matColumnDef="descripcion">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header  class="sort-header-content"> Acción </th>
+                    <td mat-cell *matCellDef="let row" class="text-data-json"> {{row.descripcion}} </td>
+                  </ng-container>
+
+                  <!--<ng-container matColumnDef="accion">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header  class="sort-header-content">Acción en el Sistema</th>
+                    <td mat-cell *matCellDef="let row" class="text-data-json"> {{row.accion}} </td>
+                  </ng-container>-->
+
+                  <ng-container matColumnDef="usuario">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header  class="sort-header-content">Usuario de Ejecución</th>
+                    <td mat-cell *matCellDef="let row" class="text-data-json"> {{row.usuario}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="fecharegistro">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Fecha y Hora de la Acción</th>
+                    <td mat-cell *matCellDef="let row" class="text-data-json"> {{row.fecharegistro}} </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="id">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">  Id de Acción</th>
+                    <td mat-cell *matCellDef="let row" class="text-data-json"> {{row.id}} </td>
+                  </ng-container>
+
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+                    <tr class="mat-row" *matNoDataRow>
+                      <td class="mat-cell" colspan="8">Sin Resultados.</td>
+                    </tr>
+                  </table>
+                <mat-paginator class="sort-header-content"  [pageSizeOptions]="[10, 25, 50, 100]"
+                showFirstLastButtons>
+              </mat-paginator>
+              </div>
+          </div>
+      </div>
+    </mat-card>
+  </div>
+</div>

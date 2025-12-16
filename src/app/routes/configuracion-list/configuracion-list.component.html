@@ -1,0 +1,34 @@
+
+
+  <div *ngIf="isLoading" class="loading-spinner">
+    <mat-spinner diameter="50"></mat-spinner>
+    <p>Cargando datos...</p>
+  </div>
+
+  <div class="table-container">
+    <div class="full-width-container">
+      <button class="registrar-btn" (click)="openAddConfiguracionModal()">
+        Registrar Código de Operación
+      </button>
+    </div>
+
+    <div class="full-width-container">
+      <table mat-table [dataSource]="dataSource" class="mat-elevation-z8">
+        <ng-container matColumnDef="valor">
+          <!-- Eliminamos el th del encabezado -->
+          <td mat-cell *matCellDef="let configuracion" class="custom-cell">
+            {{ configuracion.valor }}
+          </td>
+        </ng-container>
+
+        <!-- Eliminamos la fila de encabezado -->
+        <tr mat-row *matRowDef="let row; columns: columnasAMostrar;"
+            (click)="onRowClicked(row)" class="clickable-row"></tr>
+      </table>
+    </div>
+
+    <div *ngIf="configuraciones?.length === 0" class="alert alert-info">
+      No se encontraron configuraciones.
+    </div>
+  </div>
+

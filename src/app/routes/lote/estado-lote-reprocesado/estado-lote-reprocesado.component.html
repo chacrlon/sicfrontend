@@ -8,12 +8,18 @@
             <span *ngIf="estados == 'C'">Cancelado</span></h2>
           <mat-card-content class="card-info-bdv"><br>
             <mat-card-title  class="f-s-12 f-w-100"> NÚMERO DEL LOTE {{idlote}} </mat-card-title>
-          <h2 class="text-warn-bdv" > Registros En Espera: {{total2}}</h2>
-          <mat-divider></mat-divider><br>
-          <h2 class="text-total-bdv" > Monto Recuperado: {{total}}</h2>
-          </mat-card-content>
-      <form [formGroup]="busquedaForm">
 
+          <!-- Mostrar registros en espera (W) -->
+          <h2 class="text-warn-bdv" > Registros En Espera: {{registrosEnEspera}}</h2>
+
+          <mat-divider></mat-divider><br>
+
+          <!-- Mostrar monto recuperado (suma de registros P) -->
+          <h2 class="text-total-bdv" > Monto Recuperado: {{montoRecuperado / 100 | number:'1.2-2':'es'}} Bs</h2>
+
+          </mat-card-content>
+
+      <form [formGroup]="busquedaForm">
         <mat-form-field appearance="outline" class="p-4">
           <mat-label style="font-family: nunito;"> Estado del Lote </mat-label>
           <mat-select *ngIf="estados != 'C'" class="textgeneral" formControlName="numero" #singleSelect>
@@ -24,15 +30,15 @@
           <mat-icon matSuffix></mat-icon>
         </mat-form-field>
         <button class="btn-rojobdv2 btn-large-2" (click)="submitLote()" mat-flat-button> Cambiar Estado </button>
-    </form>
+      </form>
 
       <span><i>Descripción: {{nombre}} </i></span><br>
       <span><i>Fecha de Inicial del Lote: {{fecha}}</i></span><br>
       <span><i>Fecha de Final del Lote: {{fecha2}}</i></span><br>
     </mat-card-content>
-
   </div>
 </div>
+
 <div class="col-md-12">
   <div style="display: flex; justify-content: center; align-items: center; margin-top: 20px;">
   <button class="btn-rojobdv2 btn-large-2"   (click)="regresar()" mat-flat-button >Volver</button>

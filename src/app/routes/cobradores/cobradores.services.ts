@@ -163,16 +163,83 @@ export class CobradoresServices {
 }
 */
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { Observable, throwError } from 'rxjs';
 import { Auditoria } from './auditoria.model';
 import { environment } from '@env/environment'; // Importa environment
+import { catchError, retry } from 'rxjs/operators';
+import { Configuracion, ResponseModel } from '../../models/configuracion.model';
+
 
 @Injectable({ providedIn: 'root' })
 export class CobradoresServices {
   private baseUrl = environment.sic; // Usa la URL base de environment
 
+    httpOptions = {
+    headers: new HttpHeaders({ 'Content-Type': 'application/json' })
+  };
+
   constructor(private http: HttpClient) { }
+
+  // Listar todas las configuraciones
+  getAll(): Observable<ResponseModel> {
+    return this.http.get<ResponseModel>(`${this.baseUrl}/api/mostrarconfiguraciones`)
+      .pipe(
+        retry(2),
+        catchError(this.handleError)
+      );
+  }
+
+  // Buscar por módulo
+  findByModulo(modulo: string): Observable<ResponseModel> {
+    return this.http.get<ResponseModel>(`${this.baseUrl}/api/buscarconfiguracionbymodulo/${modulo}`)
+      .pipe(
+        retry(2),
+        catchError(this.handleError)
+      );
+  }
+
+  // Crear nueva configuración
+  create(configuracion: Configuracion): Observable<ResponseModel> {
+    return this.http.post<ResponseModel>(`${this.baseUrl}/api/insertarconfiguracion`, configuracion, this.httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  // Actualizar configuración
+  update(id: number, configuracion: Configuracion): Observable<ResponseModel> {
+    return this.http.put<ResponseModel>(`${this.baseUrl}/api/actualizarconfiguracion/${id}`, configuracion, this.httpOptions)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  // Eliminar configuración
+  delete(id: number): Observable<ResponseModel> {
+    return this.http.delete<ResponseModel>(`${this.baseUrl}/api/eliminarconfiguracion/${id}`)
+      .pipe(
+        catchError(this.handleError)
+      );
+  }
+
+  // Manejo de errores
+  private handleError(error: HttpErrorResponse) {
+    let errorMessage = '';
+    if (error.error instanceof ErrorEvent) {
+      // Error del lado del cliente
+      errorMessage = `Error: ${error.error.message}`;
+    } else {
+      // Error del lado del servidor
+      errorMessage = `Código de error: ${error.status}\nMensaje: ${error.message}`;
+    }
+    console.error(errorMessage);
+    return throwError(() => new Error('Algo malo sucedió; por favor, inténtelo de nuevo más tarde.'));
+  }
+
+
+
+
 
   getCobradoresData(): Observable<any> {
     return this.http.get(`${this.baseUrl}/api/mostrarcobradores`);
@@ -197,4 +264,6 @@ export class CobradoresServices {
   registrarAuditoria(auditoria: Auditoria): Observable<any> {
     return this.http.post(`${this.baseUrl}/api/insertarbitacora`, auditoria);
   }
+
 }
+

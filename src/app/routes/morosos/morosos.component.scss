@@ -67,3 +67,36 @@ td.operation-message, th.operation-message {
 .custom-cell {
   padding: 10px; /* Espaciado interno para las celdas */
 }
+
+// Agregar estas clases al archivo SCSS de Morosos
+.bg-rojobdv {
+  background-color: #0067b1;
+}
+
+.textColor {
+  color: white;
+}
+
+.p-t-24 {
+  padding-top: 24px;  /* 75% de 32px */
+}
+
+.p-b-36 {
+  padding-bottom: 36px;  /* 75% de 48px */
+}
+
+.m-b--18 {
+  margin-bottom: -18px;  /* 75% de -24px */
+}
+
+// El resto de tus estilos existentes se mantienen...
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100vh;
+  width: 100%;
+}
+
+// ... (otros estilos existentes)
