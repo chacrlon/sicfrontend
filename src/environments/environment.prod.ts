@@ -1,16 +1,16 @@
 export const environment = {
-  production: true,
-  baseUrl: '/giom/',
-  useHash: true,
-  //localUrls :'180.183.66.201:8080/int-servicios/apiGiom',
+    production: false,
+    baseUrl: '/giom/',
+    useHash: true,
+    //localUrls :'180.183.66.201:8080/int-servicios/apiGiom',
   ldapUrl : 'http://180.183.174.37:7011/ldapWS',
   peopleUrl: 'http://180.183.112.90:7012/PeopleSoftWS/rest/PeopleSoft',
-  app : 'GIOM',
-  ApiServicios : 'http://180.183.171.164:7004/gamWS2/apiGiom',
-  //intServiciosUrl = MSI
-  intServiciosUrl :'http://180.183.174.37:7010/int-servicios',
-  diremURl : 'http://180.183.174.37:7007/diremWS',
-  sic : 'http://180.183.171.164:7004/sic'
+    app : 'GIOM',
+    ApiServicios : 'http://180.183.171.164:7004/gamWS2/apiGiom',
+    intServiciosUrl :'http://180.183.174.37:7010/int-servicios',
+    diremURl : 'http://180.183.174.37:7007/diremWS',
+    sic : 'http://180.183.171.164:7004/sic',
+    sicApiUrl: 'http://180.183.171.164:7004/sic'
 };
 
 
@@ -26,7 +26,8 @@ export const environment = {
     ApiServicios : 'http://plgiom01.banvenez.corp:7003/gamWS2/apiGiom',
     intServiciosUrl :'http://180.183.202.124:7012/int-servicios',
     diremURl : 'http://180.183.174.37:7007/diremWS',
-    sic : 'http://172.27.66.165:7003/sic'
+    sic : 'http://172.27.66.165:7003/sic',
+    sicApiUrl: 'http://172.27.66.165:7003/sic'
 };
  */
 
@@ -36,12 +37,46 @@ export const environment = {
     baseUrl: '/giom/',
     useHash: true,
     //localUrls :'180.183.66.201:8080/int-servicios/apiGiom',
-    ldapUrl : 'http://180.183.174.37:7011/ldapWS',
-    peopleUrl: 'http://180.183.112.90:7012/PeopleSoftWS/rest/PeopleSoft',
+  ldapUrl : 'http://180.183.174.37:7011/ldapWS',
+  peopleUrl: 'http://180.183.112.90:7012/PeopleSoftWS/rest/PeopleSoft',
     app : 'GIOM',
-    ApiServicios : 'http://localhost:8080/int-servicios/apiGiom',
+    ApiServicios : 'http://180.183.171.164:7004/gamWS2/apiGiom',
     intServiciosUrl :'http://180.183.174.37:7010/int-servicios',
     diremURl : 'http://180.183.174.37:7007/diremWS',
     sic : 'http://180.183.171.164:7004/sic'
 };
  */
+
+/* DESARROLLO
+export const environment = {
+    production: false,
+    baseUrl: '/giom/',
+    useHash: true,
+    //localUrls :'180.183.66.201:8080/int-servicios/apiGiom',
+  ldapUrl : 'http://180.183.174.37:7011/ldapWS',
+  peopleUrl: 'http://180.183.112.90:7012/PeopleSoftWS/rest/PeopleSoft',
+    app : 'GIOM',
+    ApiServicios : 'http://180.183.171.164:7004/gamWS2/apiGiom',
+    intServiciosUrl :'http://180.183.174.37:7010/int-servicios',
+    diremURl : 'http://180.183.174.37:7007/diremWS',
+    sic : 'http://180.183.174.156:7004/sic',
+    sicApiUrl: 'http://180.183.174.156:7004/sic'
+};
+*/
+
+/*
+LOCALHOST
+export const environment = {
+    production: false,
+    baseUrl: '/giom/',
+    useHash: true,
+    //localUrls :'180.183.66.201:8080/int-servicios/apiGiom',
+  ldapUrl : 'http://180.183.174.37:7011/ldapWS',
+  peopleUrl: 'http://180.183.112.90:7012/PeopleSoftWS/rest/PeopleSoft',
+    app : 'GIOM',
+    ApiServicios : 'http://180.183.171.164:7004/gamWS2/apiGiom',
+    intServiciosUrl :'http://180.183.174.37:7010/int-servicios',
+    diremURl : 'http://180.183.174.37:7007/diremWS',
+    sic : 'http://localhost:8080/',
+    sicApiUrl: 'http://localhost:8080'
+};*/

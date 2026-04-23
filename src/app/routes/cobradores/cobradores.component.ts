@@ -5,7 +5,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ModalCobradoresComponentComponent } from './modal-cobradores-component/modal-cobradores-component.component';
 import { ModalInsertarCobradorComponent } from './modal-insertar-cobrador/modal-insertar-cobrador.component';
 import { SessionService } from '../servicios/session.service';
-import { Auditoria } from './auditoria.model'; // Importar el modelo de auditoría
+import { Auditoria } from './auditoria.model';
 
 @Component({
   selector: 'app-cobradores',
@@ -15,7 +15,7 @@ import { Auditoria } from './auditoria.model'; // Importar el modelo de auditor�
 export class CobradoresComponent implements OnInit {
   cobradoresData: any[] = [];
   cobradorSeleccionado: any = {};
-  codUsuario: string | null = null; // Almacena el código de usuario
+  codUsuario: string | null = null;
   isLoading: boolean = false;
 
   constructor(private cobradoresServices: CobradoresServices, private dialog: MatDialog, private sessionService: SessionService) { }
@@ -28,17 +28,37 @@ export class CobradoresComponent implements OnInit {
 
   }
 
-  openModal(cobrador: any): void {
-    const dialogRef = this.dialog.open(ModalCobradoresComponentComponent, { width: '500px', data: { ...cobrador } });
+openModal(cobrador: any): void {
+    console.log('=== Abriendo modal para cobrador ===');
+    console.log('Cobrador seleccionado:', cobrador);
 
-    dialogRef.afterClosed().subscribe(result => {
-      if (result && result.delete) {
-        this.deleteCobrador(result.collector_id);
-      } else if(result) {
-        this.updateCobrador(result.collector_id, result);
-      }
+    const dialogRef = this.dialog.open(ModalCobradoresComponentComponent, {
+        width: '500px',
+        data: { ...cobrador }
     });
-  }
+
+    console.log('Modal abierto, esperando resultado...');
+
+    dialogRef.afterClosed().subscribe(
+        result => {
+            console.log('Modal cerrado con resultado:', result);
+
+            if (result && result.delete) {
+                console.log('Eliminar cobrador con ID:', result.collector_id);
+                this.deleteCobrador(result.collector_id);
+            } else if (result) {
+                console.log('Actualizar cobrador:', result);
+                console.log('ID Original de la fila:', cobrador.collector_id);
+                this.updateCobrador(cobrador.collector_id, result);
+            } else {
+                console.log('Modal cerrado sin resultado (cancelado)');
+            }
+        },
+        error => {
+            console.error('Error al cerrar el modal:', error);
+        }
+    );
+}
 
   getCobradores() {
     this.isLoading = true;
@@ -76,32 +96,40 @@ registrarAuditoria(descripcion: string, tipoAccion: string) {
     });
   }
 
-  updateCobrador(collector_id: number, updatedCobradorData: any) {
-    // Lógica para buscar el cobrador original
-    const originalCobrador = this.cobradoresData.find(c => c.collector_id === collector_id);
+updateCobrador(collector_id: number, updatedCobradorData: any) {
+    console.log('=== COMPONENTE: updateCobrador ===');
+
+    const idOriginal = collector_id;
+    console.log('1. ID Original:', idOriginal);
+    console.log('2. Datos del modal:', updatedCobradorData);
+
+    const originalCobrador = this.cobradoresData.find(c => c.collector_id === idOriginal);
+    console.log('3. Cobrador encontrado?:', originalCobrador);
+
     if (!originalCobrador) {
-        console.error('Cobrador original no encontrado para ID:', collector_id);
-        return; // Salir si no se encontró el cobrador
+        console.error('ERROR: Cobrador no encontrado');
+        return;
     }
 
-    let descripcionCambios = '';
+    console.log('4. Llamando al servicio...');
 
-    // Comparar propiedades y construir la descripción
-    for (let key in updatedCobradorData) {
-        if (updatedCobradorData.hasOwnProperty(key) && originalCobrador[key] !== updatedCobradorData[key]) {
-            descripcionCambios += `${key}: ${originalCobrador[key]} -> ${updatedCobradorData[key]}, `;
+    this.cobradoresServices.updateCobrador(idOriginal, updatedCobradorData).subscribe(
+        response => {
+            console.log('5. Respuesta del servidor recibida:', response);
+
+            if (response.code === 1000) {
+                console.log('6. Éxito! Actualizando vista...');
+                this.getCobradores(); // Refrescar
+            } else {
+                console.log('7. Error del servidor:', response);
+                alert(`Error: ${response.message}`);
+            }
+        },
+        error => {
+            console.error('8. Error HTTP:', error);
+            alert('Error de conexión con el servidor');
         }
-    }
-
-    // Quitar la última coma y espacio
-    descripcionCambios = descripcionCambios.slice(0, -2);
-
-    // Ahora registra la auditoría usando el nombre del cobrador original
-    this.cobradoresServices.updateCobrador(collector_id, updatedCobradorData).subscribe(response => {
-        // Asegúrate de usar el nombre del cobrador original aquí
-        this.registrarAuditoria(`Actualizaciones de cobrador: ${descripcionCambios} - al cobrador: ${originalCobrador.collector_name}`, 'UPDATE');
-        this.getCobradores(); // Para refrescar la lista
-    });
+    );
 }
 
 deleteCobrador(collector_id: number): void {

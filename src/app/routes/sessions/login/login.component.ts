@@ -14,6 +14,7 @@ import { map } from 'rxjs/operators';
 import { HttpClient } from '@angular/common/http';  // Asegúrate de tener esta importación
 import { SessionService } from '../../servicios/session.service'; // Asegúrate de ajustar la ruta
 import { InactivityTimerService } from '../../servicios/inactivity-timer.service';
+import { SessionMonitorService } from 'app/servicios/administrador/session-monitor.service';
 
 @Component({
   selector: 'app-login',
@@ -55,7 +56,9 @@ export class LoginComponent implements OnInit, AfterViewInit {
               private sessionService: SessionService, // Inyectar el servicio
               private cdRef : ChangeDetectorRef,
               private auth: AuthService,
-              private inactivityTimer: InactivityTimerService ) {
+              private inactivityTimer: InactivityTimerService,
+            private sessionMonitor: SessionMonitorService
+           ) {
 //#region css body
 
               renderer.setStyle(
@@ -159,52 +162,59 @@ login() {
   }
 
 
-  async crearSesion(menu: any, user: any) {
 
-    this.sessionService.setCodUsuario(user.usuario.codigo);
-    await this.loginService.crearSesion(user.usuario.codigo).subscribe(
-        (data) => {
-            if (data.status == "success") {
-                this.menu.load(menu.lstMenu);
-                this.guardarCredenciales(user.usuario.cedula, user.usuario.codigo);
-                console.log("EL USUARIO ES:", user.usuario.codigo);
+async crearSesion(menu: any, user: any) {
+  this.sessionService.setCodUsuario(user.usuario.codigo);
+  this.loginService.crearSesion(user.usuario.codigo).subscribe(
+    (data: any) => {   // ← tipa data como any (o define una interfaz)
+      if (data.status == "success") {
+        this.menu.load(menu.lstMenu);
+        this.guardarCredenciales(user.usuario.cedula, user.usuario.codigo);
+        console.log("EL USUARIO ES:", user.usuario.codigo);
 
-                // Llama al método sendCodUsuarioToSpring para enviar el código de usuario
-                this.sendCodUsuarioToSpring(user.usuario.codigo).subscribe(
-                    (response) => {
-                        console.log('Respuesta de Spring:', response);
-                        // Aquí podrías manejar la respuesta de Spring si es necesario
-                    },
-                    (error) => {
-                        console.error('Error al enviar el código de usuario a Spring:', error);
-                    }
-                );
+        const codUsuario = user.usuario.codigo;
 
-                this.inactivityTimer.startTimer();
-                this.router.navigate(['/dashboard']);
-            } else {
-                this.limpiarFormulario();
-                this.toast.error(data.mensaje, "", this.override);
-            }
-        },
-        (error) => {
-            this.limpiarFormulario();
-            this.toast.error('Error al crear sesión.', "", this.override);
-        }
-    );
+        // ✅ registerSession devuelve Observable, podemos hacer subscribe
+        this.sessionMonitor.registerSession(codUsuario).subscribe({
+          next: () => {
+            console.log('Sesión registrada correctamente en backend');
+            this.sessionMonitor.startHeartbeat();
+
+            this.sendCodUsuarioToSpring(codUsuario).subscribe(
+              (response: any) => console.log('Respuesta de Spring:', response),
+              (error: any) => console.error('Error al enviar a Spring:', error)
+            );
+
+            this.inactivityTimer.startTimer();
+            this.router.navigate(['/dashboard']);
+          },
+          error: (err: any) => {   // ← tipado explícito
+            console.error('Error al registrar sesión en backend:', err);
+            this.toast.error('Error de seguridad. Intente de nuevo.', "", this.override);
+          }
+        });
+      } else {
+        this.limpiarFormulario();
+        this.toast.error(data.mensaje, "", this.override);
+      }
+    },
+    (error: any) => {
+      this.limpiarFormulario();
+      this.toast.error('Error al crear sesión.', "", this.override);
+    }
+  );
 }
 
 sendCodUsuarioToSpring(codUsuario: string): Observable<any> {
-  const url = 'http://180.183.171.164:7004/sic/api/processUser';
-  const body = { codUsuario }; // Encapsula codUsuario en un objeto
+  const url = `${environment.sicApiUrl}/api/processUser`;  // ← usa variable
+  const body = { codUsuario };
   console.log('EL USUARIO PARA SPRINGBOOT ES:', codUsuario);
-  return this.http.post(url, body, { responseType: 'text' })
-      .pipe(
-          map(response => {
-              console.log('Respuesta de Spring:', response);
-              return response;
-          })
-      );
+  return this.http.post(url, body, { responseType: 'text' }).pipe(
+    map(response => {
+      console.log('Respuesta de Spring:', response);
+      return response;
+    })
+  );
 }
 
 

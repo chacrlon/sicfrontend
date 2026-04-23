@@ -8,6 +8,9 @@ import { User } from './interface';
 import { loginUsuario } from 'app/models/usuarios';
 import * as CryptoJS from 'crypto-js';
 import { Router } from '@angular/router';
+import { SessionMonitorService } from 'app/servicios/administrador/session-monitor.service';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { environment } from '@env/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -23,7 +26,8 @@ export class AuthService {
     share()
   );
 
-  constructor(private loginService: LoginService, private tokenService: TokenService) {}
+  constructor(private loginService: LoginService, private tokenService: TokenService, private sessionMonitor: SessionMonitorService,
+    private http: HttpClient) {}
 
   init() {
     return new Promise<void>(resolve => this.change$.subscribe(() => resolve()));
@@ -57,12 +61,17 @@ export class AuthService {
     return this.authStatus$.asObservable();
   }
 
-  login(usuario : loginUsuario) {
-    return this.loginService.login(usuario).pipe(
-
-      map(() => this.check())
-    );
-  }
+  login(usuario: loginUsuario) {
+  return this.loginService.login(usuario).pipe(
+    tap((response: any) => {
+      // Suponiendo que response contiene access_token
+      if (response && response.access_token) {
+        this.tokenService.set(response);
+      }
+    }),
+    map(() => this.check())
+  );
+}
 
   refresh() {
     return this.loginService
@@ -75,15 +84,27 @@ export class AuthService {
   }
 
 // Asegúrate de que el método logout emita el cambio de estado
-logout() {
-  return this.loginService.logout().pipe(
+
+  logout() {
+  const sessionToken = localStorage.getItem('uniqueSessionToken');
+  if (!sessionToken) {
+    // si no hay token de sesión, solo limpia local
+    this.tokenService.clear();
+    sessionStorage.clear();
+    return of(false);
+  }
+  const url = `${environment.sicApiUrl}/api/logout`;
+  const headers = { Authorization: `Bearer ${sessionToken}` };
+  return this.http.post(url, {}, { headers }).pipe(
     tap(() => {
+      this.sessionMonitor.stopHeartbeat();
       this.tokenService.clear();
-      this.check(); // Forzar la actualización de authStatus$
+      sessionStorage.clear();
     }),
-    map(() => !this.check())
+    map(() => false)
   );
 }
+
 
   user() {
 

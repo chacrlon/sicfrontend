@@ -28,16 +28,18 @@ import { SeguimientoloteComponent } from './seguimientolote/seguimientolote.comp
 import { DataSource } from '@angular/cdk/table';
 import { EstadisticasLotesComponent } from './estadisticas-lotes/estadisticas-lotes.component';
 import { CargarLoteComponent } from './cargar-lote/cargar-lote.component';
-import * as moment from 'moment';
 import { DepartamentosService } from 'app/servicios/util/Departamentos.service.';
 import { environment } from '@env/environment';
-import 'moment/locale/pt-br';
 import { EditarLoteComponent } from './editar-lote/editar-lote.component';
 import { ISelectUnidad } from 'app/models/administrador';
 import { MatSelect } from '@angular/material/select';
 import { HorarioLoteComponent } from './horario-lote/horario-lote.component';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 import { usuario } from '../../models/empleados';
+import { CobranzaLoteComponent } from '../cobranza-lote/cobranza-lote.component';
+import * as moment from 'moment';
+//import moment = require('moment');
+//import moment from 'moment';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -228,6 +230,27 @@ async obtenerUnidades() {
       clearInterval(this.logRefreshInterval);
     }
     }
+
+    // Método para ver cobranzas del lote
+verCobranzasLote(row: any): void {
+  const dialogRef = this.dialog.open(CobranzaLoteComponent, {
+    width: '70%',
+    height: '80%',
+    data: {
+      idlote: row.idlote,  // Cambiado a idlote (minúscula)
+      nombrearchivo: row.nombrearchivo,
+      unidad: row.unidad,
+      estadolote: row.estadolote
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(result => {
+    console.log('Modal de cobranzas cerrado');
+  });
+}
+
+
+
 // VALIDACION NUMERICA
     numberOnly(event: { which: any; keyCode: any; }): boolean {
       const charCode = (event.which) ? event.which : event.keyCode;

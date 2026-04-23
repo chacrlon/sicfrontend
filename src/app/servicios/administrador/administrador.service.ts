@@ -23,8 +23,42 @@ export class AdministradorService {
       this.urlGet = environment.ApiServicios;
   }
 
+  // Métodos para cobranzas
+  obtenerCobranzasPorLote(params: any): Observable<any> {
+    const url = `${this.urlGet}/obtenerCobranzasPorLote`;
+    return this.http.post(url, params).pipe(
+      tap(response => {
+        console.log('Respuesta de obtenerCobranzasPorLote:', response);
+      }),
+      catchError(this.error)
+    );
+  }
+
+obtenerCobranzasPorRangoFecha(params: any): Observable<any> {
+  const url = `${this.urlGet}/obtenerCobranzasPorRangoFecha`;
+  console.log('Llamando a obtenerCobranzasPorRangoFecha:', url, params);
+  return this.http.post(url, params).pipe(
+    tap(response => {
+      console.log('Respuesta de obtenerCobranzasPorRangoFecha:', response);
+    }),
+    catchError(this.error)
+  );
+}
+
+obtenerResumenCobranzas(params: any): Observable<any> {
+  const url = `${this.urlGet}/obtenerResumenCobranzas`;
+  console.log('Llamando a obtenerResumenCobranzas:', url, params);
+  return this.http.post(url, params).pipe(
+    tap(response => {
+      console.log('Respuesta de obtenerResumenCobranzas:', response);
+    }),
+    catchError(this.error)
+  );
+}
+
+
 getLogs(): Observable<any> {
-  const url = `${this.urlGet}/logs`;  // Quitar '/api/mainframe'
+  const url = `${this.urlGet}/logs`;
   return this.http.post(url, "");
 }
 
@@ -153,6 +187,7 @@ ModificarELote(data: any, idlote: any, codigoUsuario: string): Observable<any>{
   console.log("Modificar estado lote:", envio);
   return this.http.post(`${this.urlGet}/modificar-estados-lote`, envio);
 }
+
 
 ModificarELoteReprocesado(data: any, idlote: any, codigoUsuario: string): Observable<any> {
   const envio = {

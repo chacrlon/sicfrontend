@@ -1,0 +1,571 @@
+/* cobranza-lote.component.scss */
+.cobranza-card {
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+/* Encabezado */
+.header-section {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e0e0e0;
+
+  .title-form {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 700;
+    color: #2c3e50;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+
+    .title-icon {
+      color: #2196F3;
+      font-size: 28px;
+      width: 28px;
+      height: 28px;
+    }
+  }
+
+  .subtitle {
+    color: #7f8c8d;
+    font-size: 14px;
+    margin-top: 4px;
+    display: block;
+  }
+
+  .header-actions {
+    .btn-info {
+      color: #546e7a;
+    }
+  }
+}
+
+/* Panel de estadísticas */
+.quick-stats-panel,
+.lote-info-panel {
+  margin: 20px 0;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 10px;
+  color: white;
+
+  .stats-container,
+  .lote-info-container {
+    display: flex;
+    justify-content: space-around;
+  }
+
+  .stat-card,
+  .info-card {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    backdrop-filter: blur(10px);
+
+    .stat-icon,
+    .info-icon {
+      width: 48px;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      font-size: 24px;
+    }
+
+    .stat-content,
+    .info-content {
+      .stat-label,
+      .info-label {
+        font-size: 12px;
+        opacity: 0.9;
+        margin-bottom: 4px;
+      }
+
+      .stat-value,
+      .info-value {
+        font-size: 20px;
+        font-weight: 600;
+      }
+    }
+  }
+
+  .total-card {
+    background: rgba(255, 255, 255, 0.15);
+
+    .info-value.highlight {
+      color: #4caf50;
+      font-size: 24px;
+    }
+  }
+}
+
+/* Filtros */
+.filter-section {
+  margin: 24px 0;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+
+  .filter-field {
+    width: 200px;
+  }
+
+  .btn-azul {
+    background-color: #2196F3 !important;
+    color: white !important;
+  }
+
+  .btn-limpiar {
+    color: #6c757d !important;
+    border-color: #6c757d !important;
+  }
+}
+
+/* Tabs */
+::ng-deep .mat-tab-group {
+  .mat-tab-header {
+    border-bottom: 2px solid #e0e0e0;
+  }
+
+  .mat-tab-label {
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    color: #546e7a;
+    opacity: 1;
+
+    &.mat-tab-label-active {
+      color: #2196F3;
+    }
+  }
+
+  .mat-ink-bar {
+    background-color: #2196F3;
+    height: 3px;
+  }
+}
+
+.tab-content {
+  padding: 20px 0;
+}
+
+/* Secciones */
+.section-title {
+  font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+  color: #2c3e50;
+  margin: 0 0 16px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  .section-icon {
+    color: #2196F3;
+  }
+}
+
+/* Gráfico */
+.chart-section {
+  margin-bottom: 32px;
+
+  .chart-placeholder {
+    height: 200px;
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    .chart-info {
+      text-align: center;
+
+      .chart-icon {
+        font-size: 48px;
+        width: 48px;
+        height: 48px;
+        color: #546e7a;
+        margin-bottom: 12px;
+      }
+
+      .chart-total {
+        font-size: 18px;
+        font-weight: 600;
+        color: #2e7d32;
+        margin-top: 8px;
+      }
+    }
+  }
+}
+
+/* Estadísticas de detalle */
+.detail-stats {
+  margin-bottom: 24px;
+  padding: 16px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+
+  .detail-stat {
+    text-align: center;
+
+    .stat-number {
+      font-size: 24px;
+      font-weight: 700;
+      color: #2196F3;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #6c757d;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+  }
+}
+
+/* Tablas */
+.table-section {
+  margin-bottom: 32px;
+
+  .table-header {
+    margin-bottom: 16px;
+
+    .search-field {
+      width: 250px;
+    }
+  }
+
+  .table-container {
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .custom-table {
+    width: 100%;
+
+    .sort-header {
+      background-color: #f5f7fa;
+      font-weight: 600;
+      color: #2c3e50;
+      padding: 16px;
+
+      .header-icon {
+        margin-right: 8px;
+        font-size: 18px;
+        vertical-align: middle;
+      }
+    }
+
+    .header-row {
+      background-color: #f8f9fa;
+    }
+
+    .data-row {
+      transition: background-color 0.2s;
+      cursor: pointer;
+
+      &:hover {
+        background-color: #f5f7fa;
+      }
+
+      &.selected {
+        background-color: #e3f2fd;
+      }
+    }
+
+    .detail-row:hover {
+      background-color: #f0f7ff;
+    }
+
+    /* Celdas específicas */
+    .cell-date {
+      .date-cell {
+        .day {
+          font-size: 24px;
+          font-weight: 700;
+          color: #2c3e50;
+          line-height: 1;
+        }
+
+        .month-year {
+          font-size: 12px;
+          color: #7f8c8d;
+          text-transform: uppercase;
+        }
+      }
+    }
+
+    .cell-count {
+      .badge-count {
+        display: inline-block;
+        padding: 4px 12px;
+        background-color: #e3f2fd;
+        color: #1565c0;
+        border-radius: 12px;
+        font-weight: 600;
+        min-width: 32px;
+        text-align: center;
+      }
+    }
+
+    .cell-amount-zero,
+    .cell-amount-positive {
+      .amount-cell,
+      .amount-detail {
+        .amount-main {
+          font-size: 16px;
+          font-weight: 600;
+        }
+
+        .amount-trend,
+        .amount-status {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          font-size: 12px;
+          margin-top: 4px;
+
+          .trend-icon,
+          .status-icon {
+            font-size: 14px;
+            width: 14px;
+            height: 14px;
+          }
+        }
+
+        .amount-trend {
+          color: #7f8c8d;
+
+          &.zero {
+            color: #b0bec5;
+          }
+        }
+
+        .amount-status {
+          color: #4caf50;
+        }
+      }
+    }
+
+    .cell-amount-zero {
+      .amount-main {
+        color: #b0bec5;
+      }
+    }
+
+    .cell-amount-positive {
+      .amount-main {
+        color: #2e7d32;
+      }
+    }
+
+    .cell-datetime {
+      .datetime-cell {
+        .date {
+          font-weight: 600;
+          color: #2c3e50;
+        }
+
+        .time {
+          font-size: 12px;
+          color: #7f8c8d;
+        }
+      }
+    }
+
+    .cell-lote {
+      .lote-badge {
+        display: inline-block;
+        padding: 4px 12px;
+        background-color: #e8f5e8;
+        color: #2e7d32;
+        border-radius: 6px;
+        font-weight: 600;
+        font-family: monospace;
+      }
+    }
+
+    .cell-unidad {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      .unidad-icon {
+        color: #546e7a;
+        font-size: 18px;
+      }
+    }
+
+    .cell-estado {
+      .estado-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        padding: 6px 12px;
+        border-radius: 20px;
+        font-size: 12px;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+
+        &.estado-activo {
+          background-color: #e8f5e8;
+          color: #2e7d32;
+        }
+
+        &.estado-historico {
+          background-color: #f5f5f5;
+          color: #757575;
+        }
+
+        .estado-icon {
+          font-size: 14px;
+          width: 14px;
+          height: 14px;
+        }
+      }
+    }
+
+    .cell-actions,
+    .cell-detalles {
+      .btn-detalle,
+      .btn-informe,
+      .btn-mas-info {
+        color: #546e7a;
+
+        &:hover {
+          color: #2196F3;
+        }
+      }
+    }
+
+    .no-data-cell {
+      text-align: center;
+      padding: 48px !important;
+
+      .no-data-content {
+        .no-data-icon {
+          font-size: 48px;
+          width: 48px;
+          height: 48px;
+          color: #b0bec5;
+          margin-bottom: 16px;
+        }
+
+        p {
+          color: #7f8c8d;
+          margin-bottom: 16px;
+        }
+
+        button {
+          color: #2196F3;
+        }
+      }
+    }
+  }
+
+  .custom-paginator {
+    border-top: 1px solid #e0e0e0;
+    background-color: #fafafa;
+  }
+}
+
+/* Pie del modal */
+.footer-section {
+  margin-top: 32px;
+  padding-top: 20px;
+  border-top: 1px solid #e0e0e0;
+
+  .footer-info {
+    .last-update {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: #7f8c8d;
+      font-size: 14px;
+
+      .update-icon {
+        font-size: 16px;
+      }
+    }
+  }
+
+  .footer-actions {
+    display: flex;
+    gap: 12px;
+
+    .btn-secundario {
+      color: #546e7a;
+      border-color: #546e7a;
+
+      &:hover {
+        background-color: #f8f9fa;
+      }
+    }
+
+    .btn-rojobdv {
+      background-color: #d32f2f !important;
+      color: white !important;
+    }
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .quick-stats-panel,
+  .lote-info-panel {
+    .stats-container,
+    .lote-info-container {
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .stat-card,
+    .info-card {
+      width: 100%;
+    }
+  }
+
+  .filter-section {
+    .filter-field {
+      width: 100%;
+      margin-bottom: 12px;
+    }
+  }
+
+  .table-section {
+    .table-header {
+      flex-direction: column;
+      gap: 12px;
+      align-items: flex-start !important;
+
+      .search-field {
+        width: 100%;
+      }
+    }
+  }
+
+  .footer-section {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start !important;
+  }
+}
+/* Agrega al archivo SCSS */
+.date-cell.invalid {
+  .day {
+    color: #f44336;
+  }
+
+  .month-year {
+    color: #f44336;
+    font-size: 10px;
+  }
+}

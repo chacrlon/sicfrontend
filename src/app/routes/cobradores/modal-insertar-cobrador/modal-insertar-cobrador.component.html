@@ -1,4 +1,3 @@
-
 <div class="modal">
   <h2>Registrar Cobrador</h2>
 
@@ -10,6 +9,9 @@
   </div>
 
   <form>
+    <label for="id">ID:</label>
+    <input type="number" placeholder="ID (obligatorio)" name="id" [(ngModel)]="cobradorEditado.collector_id" required>
+
     <label for="nombre">Nombre:</label>
     <input type="text" placeholder="Nombre" name="nombre" [(ngModel)]="cobradorEditado.collector_name" required>
 
@@ -23,6 +25,13 @@
     <select name="estatus" [(ngModel)]="cobradorEditado.status" required>
       <option value="Activo">Activo</option>
       <option value="Inactivo">Inactivo</option>
+    </select>
+
+    <label for="collectionType">Tipo de Cobro:</label>
+    <select name="collectionType" [(ngModel)]="cobradorEditado.collection_type" required>
+      <option *ngFor="let option of collectionTypeOptions" [value]="option.value">
+        {{ option.label }}
+      </option>
     </select>
 
     <label for="prioridad">Prioridad:</label>

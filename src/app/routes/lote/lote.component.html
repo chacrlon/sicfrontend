@@ -75,6 +75,8 @@
  <div class="right-section margen-item">
    <button mat-flat-button class="btn-rojo" #tooltip="matTooltip"  [matTooltipClass]="'my-tooltip'"  matTooltipPosition="left" matTooltip="Refrescar Página" (click)="busquedaLote()" ><mat-icon>refresh</mat-icon></button>
     <button mat-flat-button class="btn-azul"  (click)="RegistrarLotes()" ><mat-icon style="font-size: 20px;">ballot</mat-icon> Registrar Lote</button>
+
+
 <!-----------------------------------------------------------------------------------------------HORARIO LOTE----------------------------------------------------------------------------------------------------------------------->
     <button mat-flat-button class="btn-azul" (click)="HorarioLote()" ><mat-icon style="font-size: 20px;">access_time</mat-icon> Activación de Horarios</button>
  </div>
@@ -145,6 +147,17 @@
       matTooltipPosition="left"
       matTooltip="Más Información">
       remove_red_eye
+    </mat-icon>
+
+    <!-- Ícono para ver cobranzas (solo para lotes procesados o enviados) -->
+    <mat-icon
+      *ngIf="row.estadolote === 'P' || row.estadolote === 'L' || row.estadolote === 'W'"
+      (click)="verCobranzasLote(row)"
+      class="icono-ver"
+      [matTooltipClass]="'my-tooltip'"
+      matTooltipPosition="above"
+      matTooltip="Ver Cobranzas">
+      monetization_on
     </mat-icon>
 
         <mat-icon

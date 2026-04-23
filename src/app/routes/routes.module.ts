@@ -33,7 +33,6 @@ import { HorarioEditarLoteComponent } from './lote/horario-lote/horario-editar-l
 import { HorarioCrearLoteComponent } from './lote/horario-lote/horario-crear-lote/horario-crear-lote.component';
 import { EditarLoteComponent } from './lote/editar-lote/editar-lote.component';
 import { AprobacionComponent } from './lote/aprobacion/aprobacion.component';
-//import { SeguimientoLoteComponent } from './seguimiento-lote/seguimiento-lote.component'; SeguimientoLoteComponent,
 import { SeguimientoloteComponent } from './lote/seguimientolote/seguimientolote.component';
 import { ActivosComponent } from './activos/activos.component';
 import { ActivosService } from './activos/activos.service';
@@ -51,9 +50,8 @@ import { SessionTimeoutDialogComponentComponent } from './session-timeout-dialog
 import { ConfiguracionDetailsComponent } from './configuracion-details/configuracion-details.component';
 import { AddConfiguracionComponent } from './add-configuracion/add-configuracion.component';
 import { ConfiguracionListComponent } from './configuracion-list/configuracion-list.component';
-import { BitacoraComponent } from './bitacora/bitacora.component'; // Nueva importación
-
-
+import { BitacoraComponent } from './bitacora/bitacora.component';
+import { CobranzaLoteComponent } from './cobranza-lote/cobranza-lote.component';
 
 const COMPONENTS: any[] = [
   DashboardComponent,
@@ -64,7 +62,7 @@ const COMPONENTS: any[] = [
 const COMPONENTS_DYNAMIC: any[] = [];
 
 @NgModule({
-  imports: [SharedModule, MatCardModule, RoutesRoutingModule, BrowserAnimationsModule, NgxSpinnerModule, BrowserModule, FormsModule, MatDialogModule ],
+  imports: [SharedModule, MatCardModule, RoutesRoutingModule, BrowserAnimationsModule, NgxSpinnerModule, BrowserModule, FormsModule, MatDialogModule],
   schemas: [CUSTOM_ELEMENTS_SCHEMA],
   declarations: [...COMPONENTS, ...COMPONENTS_DYNAMIC, SpinnerComponent,ConfirmDialogComponent, DescargarComponent, AuditoriaComponent,
     DialogUploadComponent, DialogShowComponent,EstadoLoteComponent, RegistroLoteComponent, LoteComponent, EstadisticasLotesComponent,
@@ -73,7 +71,8 @@ const COMPONENTS_DYNAMIC: any[] = [];
     ModalCobradoresComponentComponent, ModalInsertarCobradorComponent, Estadistica1Component, Estadistica2Component, FormatDatePipe,
     EstadoLoteReprocesadoComponent, SessionTimeoutDialogComponentComponent, ConfiguracionDetailsComponent, AddConfiguracionComponent,
     ConfiguracionListComponent,
-    BitacoraComponent],
+    BitacoraComponent,
+    CobranzaLoteComponent],
   entryComponents:[
     SpinnerComponent,
     ConfirmDialogComponent,

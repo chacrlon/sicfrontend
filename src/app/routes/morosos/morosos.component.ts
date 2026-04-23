@@ -3,6 +3,7 @@ import { MorosoService } from './moroso.service';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { forkJoin } from 'rxjs';
 
 @Component({
   selector: 'app-morosos',
@@ -13,7 +14,7 @@ export class MorososComponent implements OnInit {
   dataSourceMorosos: MatTableDataSource<any> = new MatTableDataSource<any>();
   dataSourceMorosos2: MatTableDataSource<any> = new MatTableDataSource<any>();
   showNotificaciones: boolean = false;
-  isSearchEnabled: boolean = true; // Nueva variable de control
+  isSearchEnabled: boolean = true;
 
   @ViewChild('paginatorMorosos') paginatorMorosos: MatPaginator | undefined;
   @ViewChild('paginatorMorosos2') paginatorMorosos2: MatPaginator | undefined;
@@ -47,65 +48,55 @@ export class MorososComponent implements OnInit {
   ngOnInit(): void {
     this.setupTableMorosos();
     this.setupTableMorosos2();
-   // this.getMorososAll();
+    // this.getMorososAll();  // Descomentar si se necesita cargar todos al inicio
   }
 
   public getMorososAll(): void {
     this.loadingMorosos = true;
     this.showNotificaciones = false;
-    this.isSearchEnabled = false; // Deshabilita la búsqueda al obtener morosos
+    this.isSearchEnabled = false;
 
     this.morosoService.getMorososData().subscribe(
-        (success: any) => {
-            this.dataSourceMorosos.data = success.data;
-            this.setupTableMorosos();
-        },
-        error => {
-            console.error('Error al obtener morosos', error);
-        },
-        () => {
-            this.loadingMorosos = false;
-            this.isSearchEnabled = true; // Habilita la búsqueda después de cargar datos
-        }
+      (success: any) => {
+        this.dataSourceMorosos.data = success.data;
+        this.setupTableMorosos();
+      },
+      error => {
+        console.error('Error al obtener morosos', error);
+      },
+      () => {
+        this.loadingMorosos = false;
+        this.isSearchEnabled = true;
+      }
     );
-}
+  }
 
   searchMorosos() {
-    if (!this.isSearchEnabled) {
-      console.warn('La búsqueda está inhabilitada.');
-      return; // Detiene la función si la búsqueda está deshabilitada
-    }
+    if (!this.isSearchEnabled || this.searchForm.invalid) return;
 
     this.showNotificaciones = true;
-    if (this.searchForm.invalid) {
-      return;
-    }
-
     const accountNumber = this.searchForm.value.accountNumber;
     this.loadingMorosos = true;
 
-    this.morosoService.getByIdCustomerOrAccountNumber(accountNumber).subscribe(data => {
-      if (data.status === 200) {
-        this.dataSourceMorosos.data = data.data || [];
-        this.setupTableMorosos();
-      } else {
-        console.error(data.message);
+    forkJoin({
+      morosos: this.morosoService.getByIdCustomerOrAccountNumber(accountNumber),
+      logs: this.morosoService.getByIdCustomerOrAccountNumber2(accountNumber)
+    }).subscribe({
+      next: ({ morosos, logs }) => {
+        if (morosos.status === 200) {
+          this.dataSourceMorosos.data = morosos.data || [];
+          this.setupTableMorosos();
+        }
+        if (logs.status === 200) {
+          this.dataSourceMorosos2.data = logs.data || [];
+          this.setupTableMorosos2();
+        }
+        this.loadingMorosos = false;
+      },
+      error: (err) => {
+        console.error(err);
+        this.loadingMorosos = false;
       }
-    }, error => {
-      console.error('Error al buscar morosos por número de cuenta', error);
-    });
-
-    this.morosoService.getByIdCustomerOrAccountNumber2(accountNumber).subscribe(data2 => {
-      if (data2.status === 200) {
-        this.dataSourceMorosos2.data = data2.data || [];
-        this.setupTableMorosos2();
-      } else {
-        console.error(data2.message);
-      }
-    }, error => {
-      console.error('Error al buscar morosos2 por número de cuenta', error);
-    }, () => {
-      this.loadingMorosos = false;
     });
   }
 

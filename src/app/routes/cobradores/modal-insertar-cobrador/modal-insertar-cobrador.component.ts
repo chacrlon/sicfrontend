@@ -12,21 +12,35 @@ export class ModalInsertarCobradorComponent {
   showErrorAlert: boolean = false;
   errorAlertMessage: string = "";
 
+  // Opciones para el select
+collectionTypeOptions = [
+  { value: 1, label: 'Bloqueo por Cuenta' },
+  { value: 2, label: 'Bloqueo por Cliente' }
+];
+
   constructor(
     public dialogRef: MatDialogRef<ModalInsertarCobradorComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private cobradoresServices: CobradoresServices  // Agrega esta línea
-) {
-    this.cobradorEditado = { ...data };
-}
+    private cobradoresServices: CobradoresServices
+  ) {
+    this.cobradorEditado = {
+  ...data,
+  collection_type: 1 // Valor por defecto como número
+    };
+  }
 
   onClose(): void {
     this.dialogRef.close();
   }
 
-
-
   updateCobrador() {
+    // Validar que el ID no sea nulo
+    if (!this.cobradorEditado.collector_id || this.cobradorEditado.collector_id <= 0) {
+      this.showErrorAlert = true;
+      this.errorAlertMessage = "El ID es requerido y debe ser mayor a 0";
+      return;
+    }
+
     let startTimeArr = this.cobradorEditado.start_time.split(":");
     let finalTimeArr = this.cobradorEditado.final_time.split(":");
 

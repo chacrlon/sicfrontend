@@ -249,9 +249,12 @@ export class CobradoresServices {
     return this.http.post(`${this.baseUrl}/api/insertarcobrador`, cobradorData);
   }
 
-  updateCobrador(collector_id: number, cobradorData: any): Observable<any> {
-    return this.http.put(`${this.baseUrl}/api/actualizarcobrador/${collector_id}`, cobradorData);
-  }
+  // Método actualizado para recibir ID original y datos
+updateCobrador(idOriginal: number, cobradorData: any): Observable<any> {
+  // ID original en la URL, datos completos en el body
+  return this.http.put(`${this.baseUrl}/api/actualizarcobrador/${idOriginal}`, cobradorData);
+}
+
 
   deleteCobrador(collector_id: number, datos: any): Observable<any> {
     return this.http.delete(`${this.baseUrl}/api/eliminarcobrador/${collector_id}`, { body: datos });

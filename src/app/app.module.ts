@@ -36,6 +36,8 @@ import { RouteReuseStrategy } from '@angular/router';
 import { LOCALE_ID } from '@angular/core';
 import { registerLocaleData } from '@angular/common';
 import localeEs from '@angular/common/locales/es';
+import { AuthInterceptor } from '../app/core/interceptors/auth.interceptor';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 
 export const MY_FORMATS = {
   parse: {
@@ -110,6 +112,7 @@ registerLocaleData(localeEs);
   { provide: RouteReuseStrategy, useClass: NoRouteReuseStrategy },
   { provide: BASE_URL, useValue: environment.baseUrl },
   { provide: LOCALE_ID, useValue: 'es' },
+  { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
   //{ provide: APP_BASE_HREF, useValue: environment.baseUrl },
   {
     provide: DateAdapter,

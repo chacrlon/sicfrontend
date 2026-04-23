@@ -262,3 +262,38 @@ font-family: nunito; }
   font-family: nunito;
   text-transform: none!important;
 }
+/* En el archivo de estilos de LoteComponent */
+.icono-ver {
+  cursor: pointer;
+  color: #2196F3;
+  margin-right: 8px;
+  vertical-align: middle;
+  transition: color 0.3s;
+
+  &:hover {
+    color: #0d47a1;
+    transform: scale(1.1);
+  }
+}
+
+.icono-ver2 {
+  cursor: pointer;
+  color: #f44336;
+  margin-right: 8px;
+  vertical-align: middle;
+
+  &:hover {
+    color: #c62828;
+  }
+}
+
+.icono-ver3 {
+  cursor: pointer;
+  color: #2e7d32;
+  margin-right: 8px;
+  vertical-align: middle;
+
+  &:hover {
+    color: #1b5e20;
+  }
+}
