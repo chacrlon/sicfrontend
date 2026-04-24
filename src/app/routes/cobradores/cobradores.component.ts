@@ -17,6 +17,8 @@ export class CobradoresComponent implements OnInit {
   cobradorSeleccionado: any = {};
   codUsuario: string | null = null;
   isLoading: boolean = false;
+  tipoConfigSeleccionado: string = 'codigo_operacion';
+
 
   constructor(private cobradoresServices: CobradoresServices, private dialog: MatDialog, private sessionService: SessionService) { }
 

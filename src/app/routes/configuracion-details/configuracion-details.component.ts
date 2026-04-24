@@ -44,27 +44,21 @@ export class ConfiguracionDetailsComponent implements OnInit {
   }
 
   getConfiguracion(id: number): void {
-    this.cobradoresServices.getAll().subscribe({
-      next: (res: ResponseModel) => {
-        if (res.code === 1000) {
-          const config = res.data.find((c: Configuracion) => c.id === id);
-          if (config) {
-            this.currentConfiguracion = { ...config };
-            // Guardar una copia del original para comparar después
-            this.originalConfiguracion = { ...config };
-          } else {
-            this.message = 'Configuración no encontrada';
-          }
-        } else {
-          this.message = 'Error al cargar configuración: ' + res.message;
-        }
-      },
-      error: (e: HttpErrorResponse) => {
-        this.message = 'Error al cargar configuración';
-        console.error(e);
+  this.cobradoresServices.getConfiguracionById(id).subscribe({
+    next: (res: ResponseModel) => {
+      if (res.code === 1000 && res.data) {
+        this.currentConfiguracion = res.data;
+        this.originalConfiguracion = { ...res.data };
+      } else {
+        this.message = res.message || 'Configuración no encontrada';
       }
-    });
-  }
+    },
+    error: (e: HttpErrorResponse) => {
+      this.message = 'Error al cargar configuración';
+      console.error(e);
+    }
+  });
+}
 
   updateConfiguracion(): void {
     this.message = '';

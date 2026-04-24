@@ -58,6 +58,17 @@
     </table>
   </div>
 
-  <!-- Sección de Configuraciones -->
-  <app-configuracion-list></app-configuracion-list>
+ <!-- Sección de configuración: selector + tabla dinámica -->
+  <div class="configuracion-section">
+    <mat-form-field appearance="outline" class="selector-config">
+      <mat-label>Tipo de Configuración</mat-label>
+      <mat-select [(ngModel)]="tipoConfigSeleccionado">
+        <mat-option value="codigo_operacion">Código de Operación</mat-option>
+        <mat-option value="rif_piloto">RIF Piloto</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <!-- Una sola instancia que recibe el valor del selector -->
+    <app-configuracion-list [descValor]="tipoConfigSeleccionado"></app-configuracion-list>
+  </div>
 </div>

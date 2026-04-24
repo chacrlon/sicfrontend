@@ -1,167 +1,3 @@
-
-/*
------------- LOCALHOST -------------
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Auditoria } from './auditoria.model'; // Asegúrate de que la ruta es correcta
-
-@Injectable({ providedIn: 'root' })
-export class CobradoresServices {
-
-  constructor(private http: HttpClient) { }
-
-  getCobradoresData(): Observable<any> {
-    return this.http.get('http://localhost:8080/api/mostrarcobradores');
-  }
-
-  insertCobrador(cobradorData: any): Observable<any> {
-    return this.http.post<any>('http://localhost:8080/api/insertarcobrador', cobradorData);
-  }
-
-  updateCobrador(collector_id: number, cobradorData: any): Observable<any> {
-    return this.http.put<any>(`http://localhost:8080/api/actualizarcobrador/${collector_id}`, cobradorData);
-  }
-
-  deleteCobrador(collector_id: number, datos: any): Observable<any> {
-    return this.http.delete<any>(`http://localhost:8080/api/eliminarcobrador/${collector_id}`, { body: datos });
-  }
-
-  getCobradoresByName(nombre: string): Observable<any[]> {
-    return this.http.get<any[]>(`http://localhost:8080/api/cobrador/nombre/${nombre}`);
-  }
-
-   // Método para registrar auditoría
-   registrarAuditoria(auditoria: Auditoria): Observable<any> {
-    return this.http.post('http://localhost:8080/api/insertarbitacora', auditoria);
-  }
-
-}
-*/
-
-/*
------------- DESARROLLO -------------
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Auditoria } from './auditoria.model'; // Asegúrate de que la ruta es correcta
-
-@Injectable({ providedIn: 'root' })
-export class CobradoresServices {
-
-  constructor(private http: HttpClient) { }
-
-  getCobradoresData(): Observable<any> {
-    return this.http.get('http://180.183.174.156:7004/sic/api/mostrarcobradores');
-  }
-
-  insertCobrador(cobradorData: any): Observable<any> {
-    return this.http.post<any>('http://180.183.174.156:7004/sic/api/insertarcobrador', cobradorData);
-  }
-
-  updateCobrador(collector_id: number, cobradorData: any): Observable<any> {
-    return this.http.put<any>(`http://180.183.174.156:7004/sic/api/actualizarcobrador/${collector_id}`, cobradorData);
-  }
-
-  deleteCobrador(collector_id: number, datos: any): Observable<any> {
-    return this.http.delete<any>(`http://180.183.174.156:7004/sic/api/eliminarcobrador/${collector_id}`, { body: datos });
-  }
-
-  getCobradoresByName(nombre: string): Observable<any[]> {
-    return this.http.get<any[]>(`http://180.183.174.156:7004/sic/api/cobrador/nombre/${nombre}`);
-  }
-
-   // Método para registrar auditoría
-   registrarAuditoria(auditoria: Auditoria): Observable<any> {
-    return this.http.post('http://180.183.174.156:7004/sic/api/insertarbitacora', auditoria);
-  }
-
-}
-*/
-
-/*
-
------------- CALIDAD -------------
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Auditoria } from './auditoria.model';
-
-@Injectable({ providedIn: 'root' })
-export class CobradoresServices {
-
-  constructor(private http: HttpClient) { }
-
-  getCobradoresData(): Observable<any> {
-    return this.http.get('http://180.183.171.164:7004/sic/api/mostrarcobradores');
-  }
-
-  insertCobrador(cobradorData: any): Observable<any> {
-    return this.http.post<any>('http://180.183.171.164:7004/sic/api/insertarcobrador', cobradorData);
-  }
-
-  updateCobrador(collector_id: number, cobradorData: any): Observable<any> {
-    return this.http.put<any>(`http://180.183.171.164:7004/sic/api/actualizarcobrador/${collector_id}`, cobradorData);
-  }
-
-  deleteCobrador(collector_id: number, datos: any): Observable<any> {
-    return this.http.delete<any>(`http://180.183.171.164:7004/sic/api/eliminarcobrador/${collector_id}`, { body: datos });
-  }
-
-  getCobradoresByName(nombre: string): Observable<any[]> {
-    return this.http.get<any[]>(`http://180.183.171.164:7004/sic/api/cobrador/nombre/${nombre}`);
-  }
-
-   // Método para registrar auditoría
-   registrarAuditoria(auditoria: Auditoria): Observable<any> {
-    return this.http.post('http://180.183.171.164:7004/sic/api/insertarbitacora', auditoria);
-  }
-
-}
-*/
-
-
-/*
-
------------- PRODUCCION -------------
-
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
-import { Auditoria } from './auditoria.model';
-
-@Injectable({ providedIn: 'root' })
-export class CobradoresServices {
-
-  constructor(private http: HttpClient) { }
-
-  getCobradoresData(): Observable<any> {
-    return this.http.get('http://172.27.66.165:7003/sic/api/mostrarcobradores');
-  }
-
-  insertCobrador(cobradorData: any): Observable<any> {
-    return this.http.post<any>('http://172.27.66.165:7003/sic/api/insertarcobrador', cobradorData);
-  }
-
-  updateCobrador(collector_id: number, cobradorData: any): Observable<any> {
-    return this.http.put<any>(`http://172.27.66.165:7003/sic/api/actualizarcobrador/${collector_id}`, cobradorData);
-  }
-
-  deleteCobrador(collector_id: number, datos: any): Observable<any> {
-    return this.http.delete<any>(`http://172.27.66.165:7003/sic/api/eliminarcobrador/${collector_id}`, { body: datos });
-  }
-
-  getCobradoresByName(nombre: string): Observable<any[]> {
-    return this.http.get<any[]>(`http://172.27.66.165:7003/sic/api/cobrador/nombre/${nombre}`);
-  }
-
-   // Método para registrar auditoría
-   registrarAuditoria(auditoria: Auditoria): Observable<any> {
-    return this.http.post('http://172.27.66.165:7003/sic/api/insertarbitacora', auditoria);
-  }
-
-}
-*/
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
@@ -173,7 +9,7 @@ import { Configuracion, ResponseModel } from '../../models/configuracion.model';
 
 @Injectable({ providedIn: 'root' })
 export class CobradoresServices {
-  private baseUrl = environment.sic; // Usa la URL base de environment
+  private baseUrl = environment.sic;
 
     httpOptions = {
     headers: new HttpHeaders({ 'Content-Type': 'application/json' })
@@ -182,13 +18,28 @@ export class CobradoresServices {
   constructor(private http: HttpClient) { }
 
   // Listar todas las configuraciones
-  getAll(): Observable<ResponseModel> {
-    return this.http.get<ResponseModel>(`${this.baseUrl}/api/mostrarconfiguraciones`)
+getAll(descValor: string): Observable<ResponseModel> {
+    return this.http.get<ResponseModel>(`${this.baseUrl}/api/mostrarconfiguraciones?descValor=${descValor}`)
       .pipe(
         retry(2),
         catchError(this.handleError)
       );
-  }
+}
+
+// Obtener configuración por ID (usando el nuevo endpoint)
+getConfiguracionById(id: number): Observable<ResponseModel> {
+    return this.http.get<ResponseModel>(`${this.baseUrl}/api/configuracion/${id}`)
+        .pipe(catchError(this.handleError));
+}
+
+// Búsqueda paginada (ya la tienes, pero verifica la URL)
+buscarConfiguracionesPaginadas(descValor: string, modulo: string, page: number, pageSize: number): Observable<any> {
+    let url = `${this.baseUrl}/api/buscarconfiguracionespaginado?descValor=${descValor}&page=${page}&pageSize=${pageSize}`;
+    if (modulo && modulo.trim() !== '') {
+        url += `&modulo=${encodeURIComponent(modulo)}`;
+    }
+    return this.http.get<any>(url).pipe(catchError(this.handleError));
+}
 
   // Buscar por módulo
   findByModulo(modulo: string): Observable<ResponseModel> {
