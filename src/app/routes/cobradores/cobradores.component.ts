@@ -18,6 +18,7 @@ export class CobradoresComponent implements OnInit {
   codUsuario: string | null = null;
   isLoading: boolean = false;
   tipoConfigSeleccionado: string = 'codigo_operacion';
+  mostrarRifPiloto = false;  // ← cambia a true cuando se quiera visualizar
 
 
   constructor(private cobradoresServices: CobradoresServices, private dialog: MatDialog, private sessionService: SessionService) { }

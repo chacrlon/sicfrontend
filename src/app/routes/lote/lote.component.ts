@@ -40,6 +40,8 @@ import { CobranzaLoteComponent } from '../cobranza-lote/cobranza-lote.component'
 import * as moment from 'moment';
 //import moment = require('moment');
 //import moment from 'moment';
+import { CobranzaResumenComponent } from '../cobranza-resumen/cobranza-resumen.component';
+import { CobranzaDetalleComponent } from '../cobranza-detalle/cobranza-detalle.component';
 
 export const MY_DATE_FORMATS = {
   parse: {
@@ -68,7 +70,15 @@ export class LoteComponent implements OnInit {
   cedulas: IusuarioLdap  = {} as IusuarioLdap; // Información de MSINT
   user: IusuarioLdap  = {} as IusuarioLdap; // Información de MSINT
 
-  displayedColumns: string[] = ['idlote','unidad','nombrearchivo','fechaInicio','fechaFin','fechacreacion','accion','estadolote','acciones'];
+  displayedColumns: string[] = [
+  'idlote',
+  'unidad',
+  'nombrearchivo',
+  'rangoFechas',
+  'fechacreacion',
+  'estadolote',
+  'acciones'
+];
   positionOptions: TooltipPosition[] = ['above'];
   position = new FormControl(this.positionOptions[0]);
   dataSource: MatTableDataSource<LotesConsulta>;
@@ -231,24 +241,6 @@ async obtenerUnidades() {
     }
     }
 
-    // Método para ver cobranzas del lote
-verCobranzasLote(row: any): void {
-  const dialogRef = this.dialog.open(CobranzaLoteComponent, {
-    width: '70%',
-    height: '80%',
-    data: {
-      idlote: row.idlote,  // Cambiado a idlote (minúscula)
-      nombrearchivo: row.nombrearchivo,
-      unidad: row.unidad,
-      estadolote: row.estadolote
-    }
-  });
-
-  dialogRef.afterClosed().subscribe(result => {
-    console.log('Modal de cobranzas cerrado');
-  });
-}
-
 
 
 // VALIDACION NUMERICA
@@ -259,6 +251,29 @@ verCobranzasLote(row: any): void {
       }
       return true;
     }
+
+    abrirResumenGlobal(): void {
+  const dialogRef = this.dialog.open(CobranzaResumenComponent, {
+    width: '80%',   // Ajusta según tu diseño
+    height: '80%'
+  });
+  dialogRef.afterClosed().subscribe(result => {
+    console.log('Modal de resumen cerrado');
+  });
+}
+
+verCobranzasLote(row: any): void {
+  this.dialog.open(CobranzaDetalleComponent, {
+    width: '70%',
+    height: '80%',
+    data: {
+      idLote: row.idlote,
+      nombreArchivo: row.nombrearchivo,
+      unidad: row.unidad
+    }
+  });
+}
+
 // ELIMINAR LOTE
 eliminarLote(idlote: string){
   localStorage.setItem('idlote', idlote);
@@ -399,8 +414,8 @@ HorarioLote(): void {
   this.busquedaLote();
 });
 }
-// BUSCAR POR FECHA Y OTRAS INDICADORES LOS LOTES
 
+// BUSCAR POR FECHA Y OTRAS INDICADORES LOS LOTES
 async busquedaLotesAvanzado(){
     this.spinner.show("sp1");
     await this.AdministradorService.consultarFechaLoteAvanzado({

@@ -47,11 +47,17 @@ export class AddConfiguracionComponent implements OnInit {
 
   ngOnInit(): void {
     this.sessionService.codUsuario$.subscribe(cod => {
-      this.codUsuario = cod;
+        this.codUsuario = cod;
     });
-    // Forzar el descValor según el tipo de configuración que se está creando
+    // Asigna descValor y longitud dinámica
     this.configuracion.descValor = this.data.descValor;
-  }
+    if (this.data.descValor === 'codigo_operacion') {
+    this.configuracion.longitud = 4;
+} else if (this.data.descValor === 'cuenta_piloto1') {
+    this.configuracion.longitud = 20;
+}
+    // También puedes mantener otros valores por defecto (modulo, tipoValor)
+}
 
   saveConfiguracion(): void {
     this.errorMessage = '';

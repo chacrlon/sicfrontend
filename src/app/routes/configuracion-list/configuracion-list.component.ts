@@ -44,12 +44,16 @@ export class ConfiguracionListComponent implements OnInit, OnChanges {
 
   loadData(): void {
     this.isLoading = true;
-    const pageBackend = this.currentPage + 1; // backend empieza en 1
+    const pageBackend = this.currentPage + 1;
+    // Si hay texto en moduloBusqueda, no enviamos descValor (se hace búsqueda global por módulo)
+    const descValorParam = (this.moduloBusqueda && this.moduloBusqueda.trim() !== '')
+                           ? null
+                           : this.descValor;
     this.cobradoresServices.buscarConfiguracionesPaginadas(
-      this.descValor,
-      this.moduloBusqueda,
-      pageBackend,
-      this.pageSize
+        descValorParam,
+        this.moduloBusqueda,
+        pageBackend,
+        this.pageSize
     ).subscribe({
       next: (response) => {
         this.isLoading = false;
@@ -95,10 +99,11 @@ export class ConfiguracionListComponent implements OnInit, OnChanges {
   }
 
   onRowClicked(configuracion: Configuracion): void {
+      console.log('Abriendo edición para ID:', configuracion.id);
     const dialogRef = this.dialog.open(ConfiguracionDetailsComponent, {
-      width: '600px',
-      data: { id: configuracion.id }
-    });
+    width: '600px',
+    data: { id: configuracion.id }
+  });
     dialogRef.afterClosed().subscribe(result => {
       if (result === 'updated' || result === 'deleted') {
         this.loadData();

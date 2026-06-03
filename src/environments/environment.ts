@@ -9,9 +9,10 @@ export const environment = {
     ApiServicios : 'http://180.183.171.164:7004/gamWS2/apiGiom',
     intServiciosUrl :'http://180.183.174.37:7010/int-servicios',
     diremURl : 'http://180.183.174.37:7007/diremWS',
-    sic : 'http://localhost:8080',
-    sicApiUrl: 'http://localhost:8080'
+    sic : 'http://180.183.171.164:7004/sic',
+    sicApiUrl: 'http://180.183.171.164:7004/sic'
 };
+
 
 /* PRODUCCION
 export const environment = {

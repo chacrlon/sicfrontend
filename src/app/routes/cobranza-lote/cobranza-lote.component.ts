@@ -9,6 +9,8 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import * as moment from 'moment';
+import * as ExcelJS from 'exceljs';
+import { saveAs } from 'file-saver';
 
 export interface CobranzaLote {
   idCobranza: number;
@@ -34,11 +36,11 @@ export interface ResumenCobranza {
 })
 export class CobranzaLoteComponent implements OnInit, AfterViewInit {
   // Tabla de resumen
-  displayedColumnsCobranzas: string[] = ['fechaCobranza', 'totalLotes', 'montoTotalRecuperado', 'acciones'];
+  displayedColumnsCobranzas: string[] = ['fechaCobranza', 'totalLotes', 'montoTotalRecuperado'];
   dataSourceCobranzas: MatTableDataSource<ResumenCobranza>;
 
   // Tabla de detalle
-  displayedColumnsDetalle: string[] = ['fechaHoraCobranza', 'idLoteGiom', 'montoTotalRecuperado', 'unidad', 'estadoCobranza', 'detalles'];
+  displayedColumnsDetalle: string[] = ['fechaHoraCobranza', 'idLoteGiom', 'montoTotalRecuperado', 'unidad', 'estadoCobranza'];
   dataSourceDetalle: MatTableDataSource<CobranzaLote>;
 
   // Variables de estado
@@ -48,7 +50,7 @@ export class CobranzaLoteComponent implements OnInit, AfterViewInit {
   totalLotesPeriodo: number = 0;
   filtrosAplicados: boolean = false;
   filaSeleccionada: ResumenCobranza | null = null;
-
+  modoResumen: boolean = false;
   // Filtros
   fechaInicio: Date = new Date();
   fechaFin: Date = new Date();
@@ -88,15 +90,142 @@ export class CobranzaLoteComponent implements OnInit, AfterViewInit {
     this.fechaFin = new Date();
     this.fechaInicio = new Date();
     this.fechaInicio.setDate(this.fechaInicio.getDate() - 30);
+
+    // 🔹 Determinar modo de visualización
+  this.modoResumen = data?.modoResumen === true;
+
+  // Si es modo resumen, ignoramos cualquier lote seleccionado
+  if (this.modoResumen) {
+    this.loteSeleccionado = null;
+  } else if (data?.idlote) {
+    this.loteSeleccionado = data;
+  }
+
   }
 
   ngOnInit(): void {
-    this.cargarDatosIniciales();
+  if (this.modoResumen) {
+    this.cargarResumen();      // solo cargar resumen
+  } else {
+    this.cargarDatosIniciales(); // comportamiento original (resumen + detalle si hay lote)
   }
+}
+
+// Nuevo método exclusivo para cargar resumen (sin detalle)
+cargarResumen(): void {
+  this.spinner.show();
+  const params = {
+    fechaInicio: moment(this.fechaInicio).format('DD/MM/YYYY'),
+    fechaFin: moment(this.fechaFin).format('DD/MM/YYYY')
+  };
+  this.administradorService.obtenerResumenCobranzas(params).subscribe({
+    next: (response) => {
+      if (response.code === 1000 || response.status === 200) {
+        const datosProcesados = (response.data || []).map((item: any) => ({
+          fechaCobranza: item.fechaCobranza || item.FECHA_COBRANZA || '',
+          totalLotes: item.totalLotes || item.TOTAL_LOTES || 0,
+          montoTotalRecuperado: item.montoTotalRecuperado || item.MONTO_TOTAL_RECUPERADO || 0
+        }));
+        this.dataSourceCobranzas.data = datosProcesados;
+        this.calcularTotalesPeriodo();
+        this.filtrosAplicados = true;
+      }
+      this.spinner.hide();
+    },
+    error: () => this.spinner.hide()
+  });
+}
 
   ngAfterViewInit() {
     this.configurarTablas();
   }
+
+  // Método para exportar resumen
+exportarResumen(): void {
+  if (!this.dataSourceCobranzas.data.length) {
+    this.toast.warning('No hay datos para exportar', '', this.override);
+    return;
+  }
+
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Resumen Cobranzas');
+
+  // Título
+  worksheet.addRow(['RESUMEN DE COBRANZAS']);
+  worksheet.mergeCells('A1:C1');
+  worksheet.getRow(1).font = { bold: true, size: 14 };
+  worksheet.addRow([]);
+
+  // Encabezados
+  const headers = ['Fecha', 'Lotes', 'Monto Recuperado (Bs.)'];
+  const headerRow = worksheet.addRow(headers);
+  headerRow.eachCell((cell) => {
+    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '4A96D2' } };
+    cell.font = { bold: true, color: { argb: 'FFFFFF' } };
+  });
+
+  // Datos
+  this.dataSourceCobranzas.data.forEach(item => {
+    worksheet.addRow([
+      item.fechaCobranza,
+      item.totalLotes,
+      this.formatCurrency(item.montoTotalRecuperado)
+    ]);
+  });
+
+  // Pie
+  worksheet.addRow([]);
+  worksheet.addRow([`Total Lotes: ${this.totalLotesPeriodo}`]);
+  worksheet.addRow([`Monto Total: ${this.formatCurrency(this.totalMontoPeriodo)}`]);
+
+  // Ajustar columnas
+  worksheet.columns.forEach(col => { col.width = 20; });
+
+  // Descargar
+  workbook.xlsx.writeBuffer().then(buffer => {
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(blob, `ResumenCobranzas_${moment().format('YYYYMMDD')}.xlsx`);
+  });
+}
+
+exportarDetalle(): void {
+  if (!this.dataSourceDetalle.data.length) {
+    this.toast.warning('No hay detalle para exportar', '', this.override);
+    return;
+  }
+
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Detalle Cobranzas');
+
+  worksheet.addRow(['DETALLE DE COBRANZAS']);
+  worksheet.mergeCells('A1:F1');
+  worksheet.getRow(1).font = { bold: true, size: 14 };
+  worksheet.addRow([]);
+
+  const headers = ['Fecha/Hora', 'ID Lote', 'Monto (Bs.)', 'Unidad', 'Estado', 'Archivo'];
+  const headerRow = worksheet.addRow(headers);
+  headerRow.eachCell((cell) => {
+    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '4A96D2' } };
+    cell.font = { bold: true, color: { argb: 'FFFFFF' } };
+  });
+
+  this.dataSourceDetalle.data.forEach(item => {
+    worksheet.addRow([
+      this.formatDate(item.fechaHoraCobranza),
+      item.idLoteGiom,
+      this.formatCurrency(item.montoTotalRecuperado),
+      item.unidad,
+      item.estadoCobranza === 'A' ? 'ACTIVO' : 'HISTÓRICO',
+      item.nombreArchivo
+    ]);
+  });
+
+  worksheet.columns.forEach(col => { col.width = 25; });
+  workbook.xlsx.writeBuffer().then(buffer => {
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(blob, `DetalleCobranzas_${moment().format('YYYYMMDD')}.xlsx`);
+  });
+}
 
   // Método para cargar datos iniciales - VERSIÓN SIMPLIFICADA Y CORREGIDA
   cargarDatosIniciales(): void {
@@ -470,16 +599,6 @@ export class CobranzaLoteComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // Ver más información de un registro
-  verMasInformacion(row: CobranzaLote): void {
-    console.log('Más información:', row);
-    // Aquí podrías abrir un modal con más detalles
-    this.toast.info(`ID Cobranza: ${row.idCobranza}<br>Lote: ${row.idLoteGiom}<br>Archivo: ${row.nombreArchivo}`, 'Detalles', {
-      ...this.override,
-      timeOut: 8000
-    });
-  }
-
   // Generar informe diario
   generarInformeDiario(row: ResumenCobranza): void {
     console.log('Generar informe para:', row.fechaCobranza);
@@ -488,21 +607,107 @@ export class CobranzaLoteComponent implements OnInit, AfterViewInit {
 
   // Generar reporte completo
   generarReporteCompleto(): void {
-    console.log('Generando reporte completo...');
-    this.toast.success('Reporte completo generado exitosamente', '', this.override);
+  if (!this.dataSourceCobranzas.data.length && !this.dataSourceDetalle.data.length) {
+    this.toast.warning('No hay datos para generar el reporte', '', this.override);
+    return;
   }
 
-  // Exportar resumen
-  exportarResumen(): void {
-    console.log('Exportando resumen...');
-    this.toast.info('Función de exportación de resumen en desarrollo', '', this.override);
-  }
+  const workbook = new ExcelJS.Workbook();
+  const worksheetResumen = workbook.addWorksheet('Resumen por Día');
+  const worksheetDetalle = workbook.addWorksheet('Detalle de Cobranzas');
 
-  // Exportar detalle
-  exportarDetalle(): void {
-    console.log('Exportando detalle...');
-    this.toast.info('Función de exportación de detalle en desarrollo', '', this.override);
-  }
+  // ========== HOJA RESUMEN ==========
+  // Título
+  worksheetResumen.addRow(['REPORTE DE COBRANZAS']);
+  worksheetResumen.mergeCells('A1:C1');
+  worksheetResumen.getRow(1).font = { bold: true, size: 14 };
+  worksheetResumen.addRow([]);
+  worksheetResumen.addRow([`Período: ${this.getPeriodoTexto()}`]);
+  worksheetResumen.addRow([`Fecha de generación: ${this.getCurrentTime()}`]);
+  worksheetResumen.addRow([]);
+
+  // Encabezados resumen
+  const headerResumen = ['Fecha', 'Lotes', 'Monto Recuperado (Bs.)'];
+  const headerRowResumen = worksheetResumen.addRow(headerResumen);
+  headerRowResumen.eachCell((cell) => {
+    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '4A96D2' } };
+    cell.font = { bold: true, color: { argb: 'FFFFFF' } };
+  });
+
+  // Datos resumen
+  this.dataSourceCobranzas.data.forEach(item => {
+    const row = worksheetResumen.addRow([
+      item.fechaCobranza,
+      item.totalLotes,
+      this.formatCurrency(item.montoTotalRecuperado)
+    ]);
+    row.getCell(3).numFmt = '#,##0.00';
+  });
+
+  // Pie resumen
+  worksheetResumen.addRow([]);
+  worksheetResumen.addRow([`Total Lotes: ${this.totalLotesPeriodo}`]);
+  worksheetResumen.addRow([`Monto Total: ${this.formatCurrency(this.totalMontoPeriodo)}`]);
+
+  // Ajustar columnas resumen
+  worksheetResumen.columns.forEach(col => { col.width = 25; });
+
+  // ========== HOJA DETALLE ==========
+  // Título detalle
+  worksheetDetalle.addRow(['DETALLE DE COBRANZAS']);
+  worksheetDetalle.mergeCells('A1:F1');
+  worksheetDetalle.getRow(1).font = { bold: true, size: 14 };
+  worksheetDetalle.addRow([]);
+  worksheetDetalle.addRow([`Período: ${this.getPeriodoTexto()}`]);
+  worksheetDetalle.addRow([`Fecha de generación: ${this.getCurrentTime()}`]);
+  worksheetDetalle.addRow([]);
+
+  // Encabezados detalle
+  const headerDetalle = ['Fecha/Hora', 'ID Lote', 'Monto (Bs.)', 'Unidad', 'Estado', 'Archivo'];
+  const headerRowDetalle = worksheetDetalle.addRow(headerDetalle);
+  headerRowDetalle.eachCell((cell) => {
+    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '4A96D2' } };
+    cell.font = { bold: true, color: { argb: 'FFFFFF' } };
+  });
+
+  // Datos detalle (usar el dataSource actual, que ya tiene los datos filtrados)
+  this.dataSourceDetalle.data.forEach(item => {
+    worksheetDetalle.addRow([
+      this.formatDate(item.fechaHoraCobranza),
+      item.idLoteGiom,
+      this.formatCurrency(item.montoTotalRecuperado),
+      item.unidad || '',
+      item.estadoCobranza === 'A' ? 'ACTIVO' : 'HISTÓRICO',
+      item.nombreArchivo || ''
+    ]);
+  });
+
+  // Ajustar columnas detalle
+  worksheetDetalle.columns.forEach(col => { col.width = 25; });
+
+  // ========== GENERAR Y DESCARGAR ==========
+  const nombreArchivo = `ReporteCobranzas_${moment().format('YYYYMMDD_HHmmss')}.xlsx`;
+  workbook.xlsx.writeBuffer().then(buffer => {
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(blob, nombreArchivo);
+  });
+
+  this.toast.success('Reporte Excel generado correctamente', '', this.override);
+}
+
+verMasInformacion(row: CobranzaLote): void {
+  const info = `
+    ID Cobranza: ${row.idCobranza}
+    Fecha/Hora: ${this.formatDate(row.fechaHoraCobranza)}
+    Lote: ${row.idLoteGiom}
+    Monto: ${this.formatCurrency(row.montoTotalRecuperado)}
+    Unidad: ${row.unidad || 'No especificada'}
+    Estado: ${row.estadoCobranza === 'A' ? 'Activo' : 'Histórico'}
+    Archivo: ${row.nombreArchivo}
+    Fecha creación lote: ${this.formatDate(row.fechaCreacionLote)}
+  `;
+  alert(info); // O usa MatDialog para mayor elegancia
+}
 
   // Aplicar filtro a tabla
   applyFilter(event: Event, dataSource: MatTableDataSource<any>): void {

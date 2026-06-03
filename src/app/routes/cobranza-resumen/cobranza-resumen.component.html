@@ -1,0 +1,180 @@
+<div fxLayout="row wrap" class="matero-row">
+  <div class="matero-col" fxFlex="100">
+    <mat-card class="cobranza-card">
+      <!-- Encabezado -->
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="header-section">
+        <div>
+          <h3 class="title-form">
+            <mat-icon class="title-icon">assessment</mat-icon>
+            Resumen de Cobranzas
+          </h3>
+          <span class="subtitle">
+            <i>Consolidado diario de montos recuperados y lotes procesados</i>
+          </span>
+        </div>
+      </div>
+
+      <!-- Panel de estadísticas rápidas (igual que el original) -->
+      <div class="quick-stats-panel">
+        <div fxLayout="row" fxLayoutGap="20px" class="stats-container">
+          <div class="stat-card">
+            <div class="stat-icon"><mat-icon>today</mat-icon></div>
+            <div class="stat-content">
+              <div class="stat-label">Período</div>
+              <div class="stat-value">{{ getPeriodoTexto() }}</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background-color:#e3f2fd;">
+              <mat-icon style="color:#1565c0;">receipt</mat-icon>
+            </div>
+            <div class="stat-content">
+              <div class="stat-label">Total de Lotes</div>
+              <div class="stat-value">{{ totalLotesPeriodo || 0 }}</div>
+            </div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-icon" style="background-color:#e8f5e9;">
+              <mat-icon style="color:#2e7d32;">monetization_on</mat-icon>
+            </div>
+            <div class="stat-content">
+              <div class="stat-label">Total Recuperado</div>
+              <div class="stat-value">{{ formatCurrency(totalMontoPeriodo) }}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Filtros de fecha -->
+      <div class="filter-section">
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px">
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Fecha Inicio</mat-label>
+            <input matInput [matDatepicker]="pickerInicio" [(ngModel)]="fechaInicio">
+            <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+            <mat-datepicker #pickerInicio></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Fecha Fin</mat-label>
+            <input matInput [matDatepicker]="pickerFin" [(ngModel)]="fechaFin">
+            <mat-datepicker-toggle matSuffix [for]="pickerFin"></mat-datepicker-toggle>
+            <mat-datepicker #pickerFin></mat-datepicker>
+          </mat-form-field>
+          <button class="btn-azul" mat-flat-button (click)="aplicarFiltros()">
+            <mat-icon>search</mat-icon> Buscar
+          </button>
+          <button class="btn-limpiar" mat-stroked-button (click)="limpiarFiltros()">
+            <mat-icon>clear</mat-icon> Limpiar
+          </button>
+        </div>
+      </div>
+
+      <!-- Tabla de resumen -->
+      <div class="table-section">
+        <div fxLayout="row" fxLayoutAlign="space-between center" class="table-header">
+          <h4 class="section-title">
+            <mat-icon class="section-icon">summarize</mat-icon>
+            Resumen por Día
+          </h4>
+          <div class="table-actions">
+            <mat-form-field appearance="outline" class="search-field">
+              <mat-label>Buscar</mat-label>
+              <input matInput (keyup)="applyFilter($event)" placeholder="Ej: 01/01/2025">
+              <mat-icon matSuffix>search</mat-icon>
+            </mat-form-field>
+            <button mat-icon-button (click)="exportarResumen()" matTooltip="Exportar resumen">
+              <mat-icon>download</mat-icon>
+            </button>
+          </div>
+        </div>
+
+        <div class="mat-elevation-z1 table-container">
+          <table mat-table [dataSource]="dataSource" matSort class="custom-table" matSortActive="fechaCobranza" matSortDirection="desc">
+            <ng-container matColumnDef="fechaCobranza">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header">
+                <mat-icon class="header-icon">event</mat-icon> Fecha
+              </th>
+              <td mat-cell *matCellDef="let row" class="cell-date">
+                <div class="date-cell">
+                  <div class="day">{{ getDay(row.fechaCobranza) }}</div>
+                  <div class="month-year">{{ getMonthYear(row.fechaCobranza) }}</div>
+                  <button mat-icon-button class="btn-detalle-small"
+                          (click)="verDetalleFecha(row)"
+                          matTooltip="Ver detalles del día">
+                    <mat-icon>visibility</mat-icon>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="totalLotes">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header">
+                <mat-icon class="header-icon">list_alt</mat-icon> Lotes
+              </th>
+              <td mat-cell *matCellDef="let row" class="cell-count">
+                <span class="badge-count">{{ row.totalLotes || 0 }}</span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="montoTotalRecuperado">
+              <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header">
+                <mat-icon class="header-icon">payments</mat-icon> Monto Recuperado
+              </th>
+              <td mat-cell *matCellDef="let row"
+                  [ngClass]="{'cell-amount-zero': (row.montoTotalRecuperado || 0) === 0,
+                              'cell-amount-positive': (row.montoTotalRecuperado || 0) > 0}">
+                <div class="amount-cell">
+                  <div class="amount-value">{{ formatCurrency(row.montoTotalRecuperado) }}</div>
+                  <div class="amount-trend" *ngIf="row.montoTotalRecuperado > 0">
+                    <mat-icon class="trend-icon">arrow_upward</mat-icon>
+                    <span>Recuperación exitosa</span>
+                  </div>
+                  <div class="amount-trend zero" *ngIf="row.montoTotalRecuperado === 0">
+                    <mat-icon class="trend-icon">remove</mat-icon>
+                    <span>Sin movimientos</span>
+                  </div>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns" class="header-row"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="data-row"></tr>
+
+            <tr class="no-data-row" *matNoDataRow>
+              <td colspan="3" class="no-data-cell">
+                <div class="no-data-content">
+                  <mat-icon class="no-data-icon">search_off</mat-icon>
+                  <p>{{ filtrosAplicados ? 'No hay datos para el período seleccionado' : 'Aplicar filtros para ver resultados' }}</p>
+                  <button mat-button (click)="limpiarFiltros()" *ngIf="filtrosAplicados">Ver todos los datos</button>
+                </div>
+              </td>
+            </tr>
+          </table>
+          <mat-paginator [pageSizeOptions]="[5,10,25]" showFirstLastButtons class="custom-paginator"></mat-paginator>
+        </div>
+      </div>
+
+      <!-- Pie del modal -->
+      <div class="footer-section">
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+          <div class="footer-info">
+            <span class="last-update">
+              <mat-icon class="update-icon">update</mat-icon>
+              Última actualización: {{ getCurrentTime() }}
+            </span>
+          </div>
+          <div class="footer-actions">
+            <button class="btn-secundario" mat-stroked-button
+                    (click)="generarReporteCompleto()"
+                    [disabled]="!dataSource.data.length">
+              <mat-icon>picture_as_pdf</mat-icon> Generar Reporte
+            </button>
+            <button class="btn-rojobdv" mat-flat-button (click)="cerrar()">
+              <mat-icon>close</mat-icon> Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>

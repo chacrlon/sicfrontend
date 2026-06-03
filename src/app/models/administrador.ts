@@ -195,6 +195,9 @@ export interface  LotesConsultaAprobacion { // CONSULTA
   fechaFin: string,
   unidad: string,
   fechacreacion: string,
+  nombrearchivo: string;      // nuevo
+  totalRegistros: number;     // nuevo
+  montoTotal: number;         // nuevo
 }
 /*---------------------------------------------REGISTROS TRANSACCIONES-------------------------------------------------------*/
 export interface  TransaccionesConsulta { // CONSULTA

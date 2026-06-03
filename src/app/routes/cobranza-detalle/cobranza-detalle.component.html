@@ -1,0 +1,211 @@
+<div fxLayout="row wrap" class="matero-row">
+  <div class="matero-col" fxFlex="100">
+    <mat-card class="cobranza-card">
+      <!-- Encabezado -->
+      <div fxLayout="row" fxLayoutAlign="space-between center" class="header-section">
+        <div>
+          <h3 class="title-form">
+            <mat-icon class="title-icon">monetization_on</mat-icon>
+            {{ idLote ? 'Cobranzas - Lote ' + idLote : 'Detalle de Cobranzas' }}
+          </h3>
+          <span class="subtitle">
+            <i>{{ idLote ? 'Detalle completo de cobranzas realizadas para el lote' : 'Listado general de cobranzas' }}</i>
+          </span>
+        </div>
+      </div>
+
+      <!-- Panel de información del lote (si hay idLote) -->
+<div class="lote-info-panel" *ngIf="idLote">
+  <div fxLayout="row" fxLayoutGap="20px" class="lote-info-container">
+    <div class="info-card">
+      <mat-icon class="info-icon">description</mat-icon>
+      <div>
+        <div class="info-label">Archivo</div>
+        <div class="info-value">{{ nombreArchivoLote || 'Sin archivo' }}</div>
+      </div>
+    </div>
+    <div class="info-card">
+      <mat-icon class="info-icon">business</mat-icon>
+      <div>
+        <div class="info-label">Unidad</div>
+        <div class="info-value">{{ unidadLote || 'No asignada' }}</div>
+      </div>
+    </div>
+    <div class="info-card total-card">
+      <!-- Aquí cambia 'paid' por 'monetization_on' -->
+      <mat-icon class="info-icon">monetization_on</mat-icon>
+      <div>
+        <div class="info-label">Total Recuperado</div>
+        <div class="info-value highlight">{{ formatCurrency(totalRecuperado) }}</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      <!-- Filtros de fecha: solo se muestran en vista general (sin lote) -->
+      <div class="filter-section" *ngIf="!idLote">
+        <div fxLayout="row" fxLayoutAlign="start center" fxLayoutGap="15px">
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Fecha Inicio</mat-label>
+            <input matInput [matDatepicker]="pickerInicio" [(ngModel)]="fechaInicio">
+            <mat-datepicker-toggle matSuffix [for]="pickerInicio"></mat-datepicker-toggle>
+            <mat-datepicker #pickerInicio></mat-datepicker>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="filter-field">
+            <mat-label>Fecha Fin</mat-label>
+            <input matInput [matDatepicker]="pickerFin" [(ngModel)]="fechaFin">
+            <mat-datepicker-toggle matSuffix [for]="pickerFin"></mat-datepicker-toggle>
+            <mat-datepicker #pickerFin></mat-datepicker>
+          </mat-form-field>
+          <button class="btn-azul" mat-flat-button (click)="aplicarFiltros()">
+            <mat-icon>search</mat-icon> Buscar
+          </button>
+          <button class="btn-limpiar" mat-stroked-button (click)="limpiarFiltros()">
+            <mat-icon>clear</mat-icon> Limpiar
+          </button>
+        </div>
+      </div>
+
+      <!-- Contenido principal envuelto en tab-content (igual que el original) -->
+      <div class="tab-content">
+        <!-- Estadísticas rápidas -->
+        <div class="detail-stats" *ngIf="dataSource.data.length > 0">
+          <div fxLayout="row" fxLayoutGap="20px">
+            <div class="detail-stat">
+              <div class="stat-number">{{ dataSource.data.length }}</div>
+              <div class="stat-label">Registros</div>
+            </div>
+            <div class="detail-stat">
+              <div class="stat-number">{{ getLotesUnicos() }}</div>
+              <div class="stat-label">Lotes Diferentes</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tabla de detalle -->
+        <div class="table-section">
+          <div fxLayout="row" fxLayoutAlign="space-between center" class="table-header">
+            <h4 class="section-title">
+              <mat-icon class="section-icon">receipt_long</mat-icon>
+              Detalle de Cobranzas
+            </h4>
+          </div>
+
+          <div class="mat-elevation-z1 table-container">
+            <table mat-table [dataSource]="dataSource" matSort
+                   class="custom-table detail-table" matSortActive="fechaHoraCobranza" matSortDirection="desc">
+
+              <ng-container matColumnDef="fechaHoraCobranza">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header">
+                  <mat-icon class="header-icon">schedule</mat-icon> Fecha/Hora
+                </th>
+                <td mat-cell *matCellDef="let row" class="cell-datetime">
+                  <div class="datetime-cell">
+                    <div class="date">{{ formatDateShort(row.fechaHoraCobranza) }}</div>
+                    <div class="time">{{ getTime(row.fechaHoraCobranza) }}</div>
+                  </div>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="idLoteGiom">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header">
+                  <mat-icon class="header-icon">tag</mat-icon> Lote
+                </th>
+                <td mat-cell *matCellDef="let row" class="cell-lote">
+                  <span class="lote-badge">#{{ row.idLoteGiom }}</span>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="montoTotalRecuperado">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header">
+                  <mat-icon class="header-icon">currency_exchange</mat-icon> Monto
+                </th>
+                <td mat-cell *matCellDef="let row"
+                    [ngClass]="{'cell-amount-zero': (row.montoTotalRecuperado || 0) === 0,
+                                'cell-amount-positive': (row.montoTotalRecuperado || 0) > 0}">
+                  <div class="amount-detail">
+                    <div class="amount-main">{{ formatCurrency(row.montoTotalRecuperado) }}</div>
+                    <div class="amount-status">
+                      <mat-icon class="status-icon"
+                                [class.zero]="(row.montoTotalRecuperado || 0) === 0">
+                        {{ (row.montoTotalRecuperado || 0) > 0 ? 'check_circle' : 'money_off' }}
+                      </mat-icon>
+                      <span>{{ (row.montoTotalRecuperado || 0) > 0 ? 'Recuperado' : 'Sin recuperar' }}</span>
+                    </div>
+                  </div>
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="unidad">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header">
+                  <mat-icon class="header-icon">apartment</mat-icon> Unidad
+                </th>
+                <td mat-cell *matCellDef="let row" class="cell-unidad">
+                  <mat-icon class="unidad-icon" *ngIf="row.unidad">business</mat-icon>
+                  {{ row.unidad || 'Sin unidad' }}
+                </td>
+              </ng-container>
+
+              <ng-container matColumnDef="estadoCobranza">
+                <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header">
+                  <mat-icon class="header-icon">flag</mat-icon> Estado
+                </th>
+                <td mat-cell *matCellDef="let row" class="cell-estado">
+                  <span class="estado-badge"
+                        [class.estado-activo]="row.estadoCobranza === 'A'"
+                        [class.estado-historico]="row.estadoCobranza === 'H'">
+                    <mat-icon class="estado-icon">
+                      {{ row.estadoCobranza === 'A' ? 'check_circle' : 'history' }}
+                    </mat-icon>
+                    {{ row.estadoCobranza === 'A' ? 'ACTIVO' : 'HISTÓRICO' }}
+                  </span>
+                </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="displayedColumnsDetalle" class="header-row"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumnsDetalle;"
+                  class="data-row detail-row">
+              </tr>
+
+              <tr class="no-data-row" *matNoDataRow>
+                <td colspan="5" class="no-data-cell">
+                  <div class="no-data-content">
+                    <mat-icon class="no-data-icon">receipt</mat-icon>
+                    <p>{{ idLote ? 'No hay cobranzas para este lote' : 'No hay datos en el período seleccionado' }}</p>
+                  </div>
+                </td>
+              </tr>
+            </table>
+
+            <!-- Paginador con id 'paginator' para que coincida con el ViewChild del TS -->
+            <mat-paginator #paginator [pageSizeOptions]="[10, 25, 50]"
+                          showFirstLastButtons class="custom-paginator">
+            </mat-paginator>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pie del modal -->
+      <div class="footer-section">
+        <div fxLayout="row" fxLayoutAlign="space-between center">
+          <div class="footer-info">
+            <span class="last-update">
+              <mat-icon class="update-icon">update</mat-icon>
+              Última actualización: {{ getCurrentTime() }}
+            </span>
+          </div>
+          <div class="footer-actions">
+            <button class="btn-secundario" mat-stroked-button
+                    (click)="generarReporteCompleto()"
+                    [disabled]="!dataSource.data.length">
+              <mat-icon>picture_as_pdf</mat-icon> Generar Reporte
+            </button>
+            <button class="btn-rojobdv" mat-flat-button (click)="cerrar()">
+              <mat-icon>close</mat-icon> Cerrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </mat-card>
+  </div>
+</div>

@@ -1,35 +1,26 @@
-
-import {ChangeDetectorRef, Component, ComponentFactoryResolver, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
-import { FormControl, FormGroup, Validators,} from '@angular/forms';
+import { ChangeDetectorRef, Component, ComponentFactoryResolver, OnInit, ViewChild, ViewContainerRef } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { ToastrService } from 'ngx-toastr';
-import { MatPaginator} from '@angular/material/paginator';
-import { MatSort} from '@angular/material/sort';
-import { ActivatedRoute, Router, RouterLink, UrlSegment } from '@angular/router';
-import { TooltipPosition} from '@angular/material/tooltip';
-import { MatDialog} from '@angular/material/dialog';
-import { ReplaySubject, Subject, takeUntil } from 'rxjs';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { ActivatedRoute, Router } from '@angular/router';
+import { TooltipPosition } from '@angular/material/tooltip';
+import { MatDialog } from '@angular/material/dialog';
+import { Subject } from 'rxjs';
 import { Irol, LoginService } from 'app/servicios/util/login.service';
 import { IusuarioLdap } from 'app/models/usuarioLdap';
 import * as CryptoJS from 'crypto-js';
-import { NgxSpinnerService } from "ngx-spinner";
+import { NgxSpinnerService } from 'ngx-spinner';
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
 import { ComponentPortal } from '@angular/cdk/portal';
 import { SpinnerComponent } from '../../sessions/login/spinner.component';
-import { MatTableDataSource} from '@angular/material/table';
-//-------------------------------------------------------------------
+import { MatTableDataSource } from '@angular/material/table';
 import { DateAdapter } from '@angular/material/core';
-import { MAT_DATE_FORMATS } from '@angular/material/core';
 import { AdministradorService } from 'app/servicios/administrador/administrador.service';
-import { LotesConsulta, LotesConsultaAprobacion } from 'app/models/administrador';
-import { RegistroLoteComponent } from '../registro-lote/registro-lote.component';
-import { EstadoLoteComponent } from '../estado-lote/estado-lote.component';
-import { DataSource } from '@angular/cdk/table';
+import { LotesConsultaAprobacion } from 'app/models/administrador';
 import * as moment from 'moment';
-import { DepartamentosService } from 'app/servicios/util/Departamentos.service.';
 import { environment } from '@env/environment';
-import 'moment/locale/pt-br';
 import { ConfirmDialogComponent } from 'app/routes/confirm-dialog/confirm-dialog.component';
-
 
 const ELEMENT_DATA: LotesConsultaAprobacion[] = [];
 
@@ -40,12 +31,16 @@ const ELEMENT_DATA: LotesConsultaAprobacion[] = [];
 })
 export class AprobacionComponent implements OnInit {
 
-  user: IusuarioLdap  = {} as IusuarioLdap; // Información de MS INT
-  cedulas: IusuarioLdap  = {} as IusuarioLdap; // Información de MS INT
-  rol : Irol = {} as Irol;
+  user: IusuarioLdap = {} as IusuarioLdap;
+  cedulas: IusuarioLdap = {} as IusuarioLdap;
+  rol: Irol = {} as Irol;
 
+  // Columnas ajustadas según el nuevo diseño
+  displayedColumns: string[] = [
+    'idlote', 'nombrearchivo', 'montoTotal', 'totalRegistros',
+    'rangoFechas', 'unidad', 'fechacreacion', 'estadolote', 'acciones'
+  ];
 
-  displayedColumns: string[] = ['idlote','unidad','fechaInicio','fechaFin','fechacreacion','estadolote','acciones'];
   positionOptions: TooltipPosition[] = ['above'];
   position = new FormControl(this.positionOptions[0]);
   dataSource: MatTableDataSource<LotesConsultaAprobacion>;
@@ -60,168 +55,189 @@ export class AprobacionComponent implements OnInit {
   };
 
   @ViewChild(MatPaginator) paginator: MatPaginator | any;
-  @ViewChild(MatSort) sort: MatSort = new MatSort;
-  @ViewChild('container', {read: ViewContainerRef}) container2: any;
+  @ViewChild(MatSort) sort: MatSort = new MatSort();
+  @ViewChild('container', { read: ViewContainerRef }) container2: any;
   private overlayRef!: OverlayRef;
 
-
-  constructor(public dialog: MatDialog,
+  constructor(
+    public dialog: MatDialog,
     private router: Router,
-    private RouterLink : Router,
     private spinner: NgxSpinnerService,
-    private AdministradorService : AdministradorService,
+    private administradorService: AdministradorService,
     private dateAdapter: DateAdapter<Date>,
     private componentFactoryResolver: ComponentFactoryResolver,
-    private cdRef : ChangeDetectorRef,
+    private cdRef: ChangeDetectorRef,
     private loginService: LoginService,
     private toast: ToastrService,
     private overlay: Overlay,
-    private activateRoute:ActivatedRoute )
- {
-  this.dateAdapter.setLocale('es-ES');
-  this.dataSource = new MatTableDataSource(ELEMENT_DATA);
- }
+    private activateRoute: ActivatedRoute
+  ) {
+    this.dateAdapter.setLocale('es-ES');
+    this.dataSource = new MatTableDataSource(ELEMENT_DATA);
+  }
 
- protected _onDestroy = new Subject<void>();
- protected _onDestroyII = new Subject<void>();
+  protected _onDestroy = new Subject<void>();
+  protected _onDestroyII = new Subject<void>();
 
   ngOnInit(): void {
-    let laurlActual: String="";
-    this.activateRoute.url.subscribe(url=>(
-      laurlActual=url[0].path
-      ))
+  let laurlActual = '';
+  this.activateRoute.url.subscribe(url => (laurlActual = url[0].path));
 
-      var verifi2 : any = sessionStorage.getItem('hasToken');
-      var decrypted2 = CryptoJS.TripleDES.decrypt(verifi2, "CiSecret")
-      console.log("la cedula es:: ",decrypted2.toString(CryptoJS.enc.Utf8))
-      this.rol.app = environment.app
-      this.rol.cedula = decrypted2.toString(CryptoJS.enc.Utf8)
-      this.loginService.unmetodo(laurlActual,this.rol)
-      var has : any =  sessionStorage.getItem("hasToken");
-      ​var decrypted = CryptoJS.TripleDES.decrypt(has, "CiSecret");
-      this.loginService.usuario(decrypted.toString(CryptoJS.enc.Utf8))
-    .subscribe(data => {
-      console.log(data.usuario.cedula, "trae")
-          this.user = data.usuario;
-          this.user.nombres = this.user.nombres.toUpperCase()+ " " +  this.user.apellidos.toUpperCase();
-          this.user.apellidos = this.user.apellidos.toUpperCase();
-          this.cedulas = data.usuario.cedula;
-    });
-    this.spinner.show("sp1");
-     this.busquedaLote();
-    this.spinner.hide("sp1");
+  const verifi2 = sessionStorage.getItem('hasToken');
+  if (verifi2) {
+    const decrypted2 = CryptoJS.TripleDES.decrypt(verifi2, 'CiSecret');
+    this.rol.app = environment.app;
+    this.rol.cedula = decrypted2.toString(CryptoJS.enc.Utf8);
+    this.loginService.unmetodo(laurlActual, this.rol);
   }
+
+  const has = sessionStorage.getItem('hasToken');
+  if (has) {
+    const decrypted = CryptoJS.TripleDES.decrypt(has, 'CiSecret');
+    this.loginService.usuario(decrypted.toString(CryptoJS.enc.Utf8)).subscribe(data => {
+      this.user = data.usuario;
+      this.user.nombres = this.user.nombres.toUpperCase() + ' ' + this.user.apellidos.toUpperCase();
+      this.user.apellidos = this.user.apellidos.toUpperCase();
+      this.cedulas = data.usuario.cedula;
+    });
+  }
+
+  this.spinner.show('sp1');
+  this.busquedaLote();
+  this.spinner.hide('sp1');
+}
+
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
     this.dataSource.sort = this.sort;
   }
 
-//------------------------------------------------------------------- CONSULTAR LOTES CON ESTADO X
-async busquedaLote(){
-  this.spinner.show("sp1");
-    await this.AdministradorService.consultarLotesAprobacion().subscribe(
-    (data) =>{
-      if (data.code != 9999) {
-      this.dataSource = new MatTableDataSource(data.data);
-      this.ngAfterViewInit();
-      this.spinner.hide("sp1");
+  // Consulta lotes con estado 'X'
+  busquedaLote() {
+  this.spinner.show('sp1');
+  this.administradorService.consultarLotesAprobacion().subscribe(
+    (data) => {
+      if (data.code !== 9999) {
+        this.dataSource = new MatTableDataSource(data.data);
+        this.ngAfterViewInit();
       }
+      this.spinner.hide('sp1');
     },
-    (error) =>{
+    (error) => {
+      this.spinner.hide('sp1');
     }
   );
 }
-//------------------------------------------------------------------- APROBACION LOTES
-async AprobarLote(row: any) {
-  const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-    data: {
-      message: '¿Estás seguro de aprobar el lote N° ' + row.idlote + '?',
-    }
-  });
 
-  dialogRef.afterClosed().subscribe((confirmed: boolean) => {
-    if (confirmed) {
-      this.spinner.show("sp1");
+  // Confirmación de aprobación con datos detallados
+  confirmarAprobacion(row: any) {
+    const mensaje = `¿Está seguro de aprobar el lote N° ${row.idlote}?
+                     ${row.nombrearchivo}
+                     Monto: ${this.formatCurrency(row.montoTotal)}
+                     Registros: ${row.totalRegistros}`;
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: { message: mensaje, buttonText: { ok: 'Aprobar', cancel: 'Cancelar' } }
+    });
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) this.aprobarLote(row);
+    });
+  }
 
-      // Obtener el nombre completo del usuario
-      const nombreUsuario = this.user.codigo;
+  // Confirmación de rechazo
+  confirmarRechazo(row: any) {
+    const mensaje = `¿Está seguro de RECHAZAR el lote N° ${row.idlote}?
+                     Esta acción cancelará permanentemente el lote.`;
+    const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+      data: { message: mensaje, buttonText: { ok: 'Rechazar', cancel: 'Volver' } }
+    });
+    dialogRef.afterClosed().subscribe(confirmed => {
+      if (confirmed) this.rechazarLote(row);
+    });
+  }
 
-      // Log de información antes de enviar la solicitud
-      console.log("Aprobando lote:", {
-        idlote: row.idlote,
-        usuario: nombreUsuario,  // Enviar el nombre de usuario
-        mensaje: 'Aprobando el lote N° ' + row.idlote
-      });
-
-      // Llamar al servicio con el nombre de usuario
-      this.AdministradorService.Aprobar(row.idlote, nombreUsuario).subscribe(
-        (data) => {
-          console.log("Respuesta del servidor al aprobar el lote:", data);
-          if (data.code != 9999) {
-            this.toast.success("Lote " + row.idlote + " Aprobado con Éxito.", "", this.override);
-            this.busquedaLote();
-          } else {
-            this.toast.error("Error de Conexión", "", this.override);
-            this.busquedaLote();
-          }
-          this.spinner.hide("sp1");
-        },
-        (error) => {
-          console.error("Error al aprobar el lote:", error);
-          this.spinner.hide("sp1");
-        }
-      );
+  // Llamada al servicio de aprobación
+  aprobarLote(row: any) {
+  this.spinner.show('sp1');
+  this.administradorService.Aprobar(row.idlote, this.user.codigo).subscribe({
+    next: (data) => {
+      if (data.code === 1000) {
+        this.toast.success(`Lote ${row.idlote} aprobado correctamente`);
+        this.busquedaLote();
+      } else {
+        this.toast.error(data.message);
+      }
+      this.spinner.hide('sp1');
+    },
+    error: () => {
+      this.toast.error('Error al aprobar');
+      this.spinner.hide('sp1');
     }
   });
 }
 
-//------------------------------------------------------------------- BUSCADOR GENERAL
+rechazarLote(row: any) {
+  this.spinner.show('sp1');
+  this.administradorService.rechazarLote(row.idlote, this.user.codigo).subscribe({
+    next: (data) => {
+      if (data.code === 1000) {
+        this.toast.success(`Lote ${row.idlote} rechazado`);
+        this.busquedaLote();
+      } else {
+        this.toast.error(data.message);
+      }
+      this.spinner.hide('sp1');
+    },
+    error: () => {
+      this.toast.error('Error al rechazar');
+      this.spinner.hide('sp1');
+    }
+  });
+}
+
+  // Formateador de moneda
+  formatCurrency(value: number): string {
+    return new Intl.NumberFormat('es-VE', { style: 'currency', currency: 'VES' }).format(value || 0);
+  }
+
+  // Buscador general
   applyFilter(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
-    if (filterValue!="") {
-    }else{
-    }
-
     this.dataSource.filter = filterValue.trim().toLowerCase();
     if (this.dataSource.paginator) {
       this.dataSource.paginator.firstPage();
     }
   }
-//------------------------------------------------------------------- Spinner
+
+  // Spinner overlay (no es necesario pero se conserva)
   public show(message = '') {
     if (!this.overlayRef) {
       this.overlayRef = this.overlay.create();
     }
     const spinnerOverlayPortal = new ComponentPortal(SpinnerComponent);
-    const component = this.overlayRef.attach(spinnerOverlayPortal);
+    this.overlayRef.attach(spinnerOverlayPortal);
   }
+
   public hide() {
     if (!!this.overlayRef) {
       this.overlayRef.detach();
     }
   }
 
-//------------------------------------------------------------------- Validar Fecha
-
-fechaFormat(data: any): string {
-
-  let dia=data.slice(0,2)
-  let mes=data.slice(3,5)
-  let ano=data.slice(6,10)
-  return  mes+"/"+dia+"/"+ano;
-}
-
-fechasValidar(row:any){
-
-  let fecha21=Date.parse(this.fechaFormat(moment(new Date()).format("DD/MM/YYYY")))
-  let fecha22=Date.parse(this.fechaFormat(row.slice(0,10)))
-
-  if (fecha21 <= fecha22) {
-    return "new-row-historial2"
-  }else{
-    return "new-row-historial"
+  // Métodos auxiliares (pueden conservarse o eliminarse si no se usan)
+  fechaFormat(data: any): string {
+    let dia = data.slice(0, 2);
+    let mes = data.slice(3, 5);
+    let ano = data.slice(6, 10);
+    return mes + '/' + dia + '/' + ano;
   }
 
-
-}
+  fechasValidar(row: any) {
+    let fecha21 = Date.parse(this.fechaFormat(moment(new Date()).format('DD/MM/YYYY')));
+    let fecha22 = Date.parse(this.fechaFormat(row.slice(0, 10)));
+    if (fecha21 <= fecha22) {
+      return 'new-row-historial2';
+    } else {
+      return 'new-row-historial';
+    }
+  }
 }

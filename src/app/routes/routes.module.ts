@@ -52,6 +52,8 @@ import { AddConfiguracionComponent } from './add-configuracion/add-configuracion
 import { ConfiguracionListComponent } from './configuracion-list/configuracion-list.component';
 import { BitacoraComponent } from './bitacora/bitacora.component';
 import { CobranzaLoteComponent } from './cobranza-lote/cobranza-lote.component';
+import { CobranzaResumenComponent } from './cobranza-resumen/cobranza-resumen.component';
+import { CobranzaDetalleComponent } from './cobranza-detalle/cobranza-detalle.component';
 
 const COMPONENTS: any[] = [
   DashboardComponent,
@@ -72,7 +74,9 @@ const COMPONENTS_DYNAMIC: any[] = [];
     EstadoLoteReprocesadoComponent, SessionTimeoutDialogComponentComponent, ConfiguracionDetailsComponent, AddConfiguracionComponent,
     ConfiguracionListComponent,
     BitacoraComponent,
-    CobranzaLoteComponent],
+    CobranzaLoteComponent,
+    CobranzaResumenComponent,
+    CobranzaDetalleComponent],
   entryComponents:[
     SpinnerComponent,
     ConfirmDialogComponent,

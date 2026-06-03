@@ -15,6 +15,7 @@ import { Auditoria } from '../cobradores/auditoria.model';
 })
 export class ConfiguracionDetailsComponent implements OnInit {
   codUsuario: string | null = null;
+  loadingData = true;               // Indica si se están cargando los datos
   originalConfiguracion: Configuracion | null = null;
   currentConfiguracion: Configuracion = {
     id: 0,
@@ -44,104 +45,114 @@ export class ConfiguracionDetailsComponent implements OnInit {
   }
 
   getConfiguracion(id: number): void {
-  this.cobradoresServices.getConfiguracionById(id).subscribe({
-    next: (res: ResponseModel) => {
-      if (res.code === 1000 && res.data) {
-        this.currentConfiguracion = res.data;
-        this.originalConfiguracion = { ...res.data };
-      } else {
-        this.message = res.message || 'Configuración no encontrada';
+    console.log('Obteniendo configuración para ID:', id);
+    this.loadingData = true;
+    this.cobradoresServices.getConfiguracionById(id).subscribe({
+      next: (res: ResponseModel) => {
+        console.log('Respuesta completa:', res);
+        this.loadingData = false;
+        if (res.code === 1000 && res.data) {
+          this.currentConfiguracion = { ...res.data };
+          this.originalConfiguracion = { ...res.data };
+          console.log('Datos asignados:', this.currentConfiguracion);
+        } else {
+          this.message = res.message || 'Error al cargar configuración';
+        }
+      },
+      error: (e: HttpErrorResponse) => {
+        this.loadingData = false;
+        this.message = 'Error al cargar configuración';
+        console.error(e);
       }
-    },
-    error: (e: HttpErrorResponse) => {
-      this.message = 'Error al cargar configuración';
-      console.error(e);
-    }
-  });
-}
+    });
+  }
 
   updateConfiguracion(): void {
+    if (!this.originalConfiguracion) {
+      this.message = 'No se han cargado los datos. Intente de nuevo.';
+      return;
+    }
+
     this.message = '';
     this.isSaving = true;
 
-    this.cobradoresServices.update(this.currentConfiguracion.id!, this.currentConfiguracion)
-      .subscribe({
+    const id = this.data.id;
+    const payload: Configuracion = {
+      id: id,
+      modulo: this.originalConfiguracion.modulo,
+      descValor: this.originalConfiguracion.descValor,
+      valor: this.currentConfiguracion.valor,   // único campo editable
+      tipoValor: this.originalConfiguracion.tipoValor,
+      longitud: this.originalConfiguracion.longitud
+    };
+    console.log('Payload a enviar:', payload);
+
+    this.cobradoresServices.update(id, payload).subscribe({
+      next: (res: ResponseModel) => {
+        this.isSaving = false;
+        if (res.code === 1000) {
+          this.message = '¡Configuración actualizada con éxito!';
+          const descripcion = this.generarDescripcionAuditoria();
+          this.registrarAuditoria(descripcion, 'UPDATE');
+          setTimeout(() => {
+            this.dialogRef.close('updated');
+          }, 1500);
+        } else {
+          this.message = `Error: ${res.message}`;
+        }
+      },
+      error: (e: HttpErrorResponse) => {
+        this.isSaving = false;
+        this.message = 'Error al actualizar configuración';
+        console.error(e);
+      }
+    });
+  }
+
+  deleteConfiguracion(): void {
+    if (confirm('¿Está seguro que desea eliminar esta configuración?')) {
+      this.isDeleting = true;
+      this.cobradoresServices.delete(this.currentConfiguracion.id!).subscribe({
         next: (res: ResponseModel) => {
-          this.isSaving = false;
+          this.isDeleting = false;
           if (res.code === 1000) {
-            this.message = '¡Configuración actualizada con éxito!';
-
-            // Registrar auditoría comparando cambios
-            const descripcion = this.generarDescripcionAuditoria();
-            this.registrarAuditoria(descripcion, 'UPDATE');
-
+            this.message = 'Configuración eliminada exitosamente';
+            this.registrarAuditoria(
+              `Eliminación del ${this.currentConfiguracion.descValor} ${this.currentConfiguracion.valor}`,
+              'DELETE'
+            );
+            this.onDelete.emit(this.currentConfiguracion.id!);
             setTimeout(() => {
-              this.dialogRef.close('updated');
+              this.dialogRef.close('deleted');
             }, 1500);
           } else {
-            this.message = `Error: ${res.message}`;
+            this.message = `Error al eliminar: ${res.message}`;
           }
         },
         error: (e: HttpErrorResponse) => {
-          this.isSaving = false;
-          this.message = 'Error al actualizar configuración';
-          console.error(e);
+          this.isDeleting = false;
+          console.error('Error en la solicitud:', e);
+          this.message = 'Error al intentar eliminar la configuración';
         }
       });
-  }
-
-deleteConfiguracion(): void {
-    if (confirm('¿Está seguro que desea eliminar esta configuración?')) {
-        this.isDeleting = true;
-        this.cobradoresServices.delete(this.currentConfiguracion.id!)
-            .subscribe({
-                next: (res: ResponseModel) => {
-                    this.isDeleting = false;
-                    if (res.code === 1000) {
-                        this.message = 'Configuración eliminada exitosamente';
-
-                        // Modificar el mensaje de auditoría para eliminación
-                        this.registrarAuditoria(
-                            `Eliminación del ${this.currentConfiguracion.descValor} ${this.currentConfiguracion.valor}`,
-                            'DELETE'
-                        );
-
-                        this.onDelete.emit(this.currentConfiguracion.id!);
-
-                        setTimeout(() => {
-                            this.dialogRef.close('deleted');
-                        }, 1500);
-                    } else {
-                        this.message = `Error al eliminar: ${res.message}`;
-                    }
-                },
-                error: (e: HttpErrorResponse) => {
-                    this.isDeleting = false;
-                    console.error('Error en la solicitud:', e);
-                    this.message = 'Error al intentar eliminar la configuración';
-                }
-            });
     }
-}
+  }
 
   closeDialog(): void {
     this.dialogRef.close();
   }
 
-private generarDescripcionAuditoria(): string {
+  private generarDescripcionAuditoria(): string {
     if (!this.originalConfiguracion) {
-        return `Actualización del valor del ${this.currentConfiguracion.descValor} a ${this.currentConfiguracion.valor}`;
+      return `Actualización del valor del ${this.currentConfiguracion.descValor} a ${this.currentConfiguracion.valor}`;
     }
-
     const valorOriginal = this.originalConfiguracion.valor;
     const valorActual = this.currentConfiguracion.valor;
-
     if (valorOriginal !== valorActual) {
-        return `Actualización del valor del ${this.currentConfiguracion.descValor} de ${valorOriginal} -> ${valorActual}`;
+      return `Actualización del valor del ${this.currentConfiguracion.descValor} de ${valorOriginal} -> ${valorActual}`;
     }
-
     return `Actualización de configuración: ${this.currentConfiguracion.descValor} (sin cambios en el valor)`;
-}
+  }
 
   registrarAuditoria(descripcion: string, tipoAccion: string) {
     const usuario = this.codUsuario ?? '';

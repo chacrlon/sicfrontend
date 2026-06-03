@@ -34,6 +34,11 @@ export class AdministradorService {
     );
   }
 
+rechazarLote(idlote: string, usuario: string): Observable<any> {
+  const payload = { idlote, usuario };
+  return this.http.post(`${this.urlGet}/rechazar-lote`, payload);
+}
+
 obtenerCobranzasPorRangoFecha(params: any): Observable<any> {
   const url = `${this.urlGet}/obtenerCobranzasPorRangoFecha`;
   console.log('Llamando a obtenerCobranzasPorRangoFecha:', url, params);

@@ -33,8 +33,11 @@ getConfiguracionById(id: number): Observable<ResponseModel> {
 }
 
 // Búsqueda paginada (ya la tienes, pero verifica la URL)
-buscarConfiguracionesPaginadas(descValor: string, modulo: string, page: number, pageSize: number): Observable<any> {
-    let url = `${this.baseUrl}/api/buscarconfiguracionespaginado?descValor=${descValor}&page=${page}&pageSize=${pageSize}`;
+buscarConfiguracionesPaginadas(descValor: string | null, modulo: string, page: number, pageSize: number): Observable<any> {
+    let url = `${this.baseUrl}/api/buscarconfiguracionespaginado?page=${page}&pageSize=${pageSize}`;
+    if (descValor && descValor.trim() !== '') {
+        url += `&descValor=${encodeURIComponent(descValor)}`;
+    }
     if (modulo && modulo.trim() !== '') {
         url += `&modulo=${encodeURIComponent(modulo)}`;
     }

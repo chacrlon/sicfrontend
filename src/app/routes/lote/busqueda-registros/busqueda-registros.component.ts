@@ -68,13 +68,13 @@ interface Transaccion {
 })
 export class BusquedaRegistrosComponent implements OnInit { //
 
-
-  totales: any;
-
   displayedColumns: string[] = ['numeroCuenta', 'vef','montoTransaccion','tipoMovimiento','serialOperacion','referencia','codigoOperacion','referencia2','tipoDocumento','numeroCedula','id_lote','id_lotefk','fechacarga','estado_nombre'];
   positionOptions: TooltipPosition[] = ['above'];
   position = new FormControl(this.positionOptions[0]);
   dataSource: MatTableDataSource<any>;
+  totales: any = 0;
+  totalRegistrosMonto: number = 0;
+  totalPorRecuperar: number = 0;
 
   override = {
     positionClass: 'toast-bottom-full-width',
@@ -125,6 +125,24 @@ export class BusquedaRegistrosComponent implements OnInit { //
     this.spinner.hide("sp1");
   }
 
+  calculateTotals() {
+  const data = this.dataSource.data;
+  if (!data || data.length === 0) {
+    this.totalRegistrosMonto = 0;
+    this.totalPorRecuperar = 0;
+    return;
+  }
+  let sumAll = 0;
+  data.forEach(item => {
+    let monto = parseFloat(item.montoTransaccion);
+    if (isNaN(monto)) monto = 0;
+    sumAll += monto;
+  });
+  this.totalRegistrosMonto = sumAll;
+  const recuperado = parseFloat(this.totales) || 0;
+  this.totalPorRecuperar = sumAll - recuperado;
+}
+
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;
@@ -146,6 +164,7 @@ export class BusquedaRegistrosComponent implements OnInit { //
               estado_nombre: item.estadoNombre
             })) || []
           );
+          this.calculateTotals();
           this.ngAfterViewInit();
           this.spinner.hide("sp1");
         }
@@ -205,31 +224,31 @@ validateDate(field: string) {
   }
 }
 
-async busquedaTransaccionesAvanzadotxt(){
+busquedaTransaccionesAvanzadotxt() {
   this.spinner.show("sp1");
-  await this.AdministradorService.consultarFechaTransacciones({
+  this.AdministradorService.consultarFechaTransacciones({
     fechai: moment(this.busquedaTForm.value.fechai).format("DD/MM/YYYY"),
     fechaf: moment(this.busquedaTForm.value.fechaf).format("DD/MM/YYYY"),
-    cedula: (this.busquedaTForm.value.cedula),
-    monto: (this.busquedaTForm.value.monto),
-    numerolote: (this.busquedaTForm.value.numerolote),
-    numerocuenta: (this.busquedaTForm.value.numerocuenta),
-    estadolote: (this.busquedaTForm.value.estadolote),
-  }).subscribe(
-    (data) =>{
-      console.log(data.data.data,"::::::::")
-      console.log(data.data.montoTotal,"::::MONTOOOO::::")
-      if (data.code != 9999) {
-      this.totales = data.data.montoTotal;
-      this.dataSource = new MatTableDataSource(data.data.data);
-      this.ngAfterViewInit();
-      this.spinner.hide("sp1");
+    cedula: this.busquedaTForm.value.cedula,
+    monto: this.busquedaTForm.value.monto,
+    numerolote: this.busquedaTForm.value.numerolote,
+    numerocuenta: this.busquedaTForm.value.numerocuenta,
+    estadolote: this.busquedaTForm.value.estadolote,
+  }).subscribe({
+    next: (data) => {
+      console.log(data.data.data, "::::::::");
+      console.log(data.data.montoTotal, "::::MONTOOOO::::");
+      if (data.code !== 9999) {
+        this.totales = data.data.montoTotal;
+        this.dataSource = new MatTableDataSource(data.data.data);
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+        this.calculateTotals();
       }
+      this.spinner.hide("sp1");
     },
-    (error) =>{
-
-    }
-  );
+    error: () => this.spinner.hide("sp1")
+  });
 }
 
 async busquedaTransaccionesAvanzado() {
@@ -266,6 +285,7 @@ async busquedaTransaccionesAvanzado() {
           estado_nombre: item.estadoNombre
         })) || [];
         // Actualizar paginación y ordenamiento
+        this.calculateTotals();
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
       }
