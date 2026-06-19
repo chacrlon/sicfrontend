@@ -34,6 +34,14 @@ export class AdministradorService {
     );
   }
 
+  recuperarLotesColgados(): Observable<any> {
+  const url = `${this.urlGet}/recuperar-lotes-colgados`;
+  return this.http.post(url, {}).pipe(
+    tap(response => console.log('Recuperación de lotes colgados:', response)),
+    catchError(this.error)
+  );
+}
+
 rechazarLote(idlote: string, usuario: string): Observable<any> {
   const payload = { idlote, usuario };
   return this.http.post(`${this.urlGet}/rechazar-lote`, payload);

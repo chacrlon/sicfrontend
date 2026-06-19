@@ -77,6 +77,9 @@ export class LoteComponent implements OnInit {
   'rangoFechas',
   'fechacreacion',
   'estadolote',
+  'fechaEnvio',
+  'fechaRecepcion',
+  'semaforoEstado',
   'acciones'
 ];
   positionOptions: TooltipPosition[] = ['above'];
@@ -223,7 +226,32 @@ async obtenerUnidades() {
     }
   );
 }
-//
+
+recuperarLotesColgados(): void {
+  this.spinner.show("sp1");
+  this.AdministradorService.recuperarLotesColgados().subscribe({
+    next: (response) => {
+      this.spinner.hide("sp1");
+      if (response.status === 200) {
+        const data = response.data;
+        this.toast.success(
+          `✅ ${data.lotes} lotes y ${data.transacciones} transacciones movidos de 'L' a 'T'`,
+          "Recuperación exitosa",
+          this.override
+        );
+        // Refrescar la tabla de lotes
+        this.busquedaLote();
+      } else {
+        this.toast.error(response.message || "Error al recuperar lotes", "", this.override);
+      }
+    },
+    error: (err) => {
+      this.spinner.hide("sp1");
+      this.toast.error("Error de conexión al recuperar lotes", "", this.override);
+      console.error(err);
+    }
+  });
+}
 
   ngAfterViewInit() {
     this.dataSource.paginator = this.paginator;

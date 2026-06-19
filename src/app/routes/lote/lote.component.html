@@ -1,4 +1,3 @@
-
 <page-header class="p-t-32 p-b-48 m-b--24 bg-rojobdv textColor" title="Administración de Lotes" hideBreadcrumb>
 </page-header>
 <div fxLayout="row wrap" class="matero-row">
@@ -43,6 +42,8 @@
               <mat-option class="textgeneral"  value="C">CANCELADO</mat-option>
               <mat-option class="textgeneral"  value="W">EN PROCESO</mat-option>
               <mat-option class="textgeneral"  value="Y">CANCELADO POR FECHA</mat-option>
+              <!-- 🆕 NUEVO: Opción para CHEQUEAR -->
+              <mat-option class="textgeneral" value="T">CHEQUEAR</mat-option>
             </mat-select>
             <mat-icon matSuffix></mat-icon>
           </mat-form-field>
@@ -84,7 +85,13 @@
 
 <!-----------------------------------------------------------------------------------------------HORARIO LOTE----------------------------------------------------------------------------------------------------------------------->
     <button mat-flat-button class="btn-azul" (click)="HorarioLote()" ><mat-icon style="font-size: 20px;">access_time</mat-icon> Activación de Horarios</button>
- </div>
+
+    <!-- BOTON PARA CONVERTIR LOS LOTES DE L a T -->
+    <button mat-flat-button class="btn-magico" (click)="recuperarLotesColgados()">
+      <mat-icon>auto_fix_high</mat-icon> Recuperar Lotes Colgados
+    </button>
+
+  </div>
 </div>
 </div>
 <!-----------------------------------------------------------------------------------------CONSULTA LOTE----------------------------------------------------------------------------------->
@@ -145,8 +152,36 @@
         <p *ngIf="row.estadolote == 'P'">PROCESADO</p>
         <p *ngIf="row.estadolote == 'Y'">CANCELADO POR FECHA</p>
         <p *ngIf="row.estadolote == 'W'">EN PROCESO</p>
+        <!-- 🆕 NUEVO: Estado CHEQUEAR -->
+        <p *ngIf="row.estadolote == 'T'">CHEQUEAR</p>
       </td>
     </ng-container>
+
+    <!-- Fecha de Envío -->
+<ng-container matColumnDef="fechaEnvio">
+  <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Fecha Envío</th>
+  <td mat-cell *matCellDef="let row" class="text-data-json">
+    {{ row.fechaEnvio ? (row.fechaEnvio | date: 'dd/MM/yyyy HH:mm') : '—' }}
+  </td>
+</ng-container>
+
+<!-- Fecha de Recepción -->
+<ng-container matColumnDef="fechaRecepcion">
+  <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Fecha Recepción</th>
+  <td mat-cell *matCellDef="let row" class="text-data-json">
+    {{ row.fechaRecepcion ? (row.fechaRecepcion | date: 'dd/MM/yyyy HH:mm') : '—' }}
+  </td>
+</ng-container>
+
+<!-- Semáforo -->
+<ng-container matColumnDef="semaforoEstado">
+  <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Semáforo</th>
+  <td mat-cell *matCellDef="let row" class="text-data-json">
+    <span *ngIf="row.semaforoEstado === 'R'" class="semaforo-rojo">🔴</span>
+    <span *ngIf="row.semaforoEstado === 'V'" class="semaforo-verde">🟢</span>
+    <span *ngIf="!row.semaforoEstado">—</span>
+  </td>
+</ng-container>
 
     <!-- Acciones (Ver Lote, etc.) -->
     <ng-container matColumnDef="acciones">
@@ -278,4 +313,3 @@
     </div>
   </div>
 </div>
-
