@@ -79,7 +79,7 @@ export class LoteComponent implements OnInit {
   'estadolote',
   'fechaEnvio',
   'fechaRecepcion',
-  'semaforoEstado',
+  //'semaforoEstado',
   'acciones'
 ];
   positionOptions: TooltipPosition[] = ['above'];
@@ -228,27 +228,38 @@ async obtenerUnidades() {
 }
 
 recuperarLotesColgados(): void {
-  this.spinner.show("sp1");
-  this.AdministradorService.recuperarLotesColgados().subscribe({
-    next: (response) => {
-      this.spinner.hide("sp1");
-      if (response.status === 200) {
-        const data = response.data;
-        this.toast.success(
-          `✅ ${data.lotes} lotes y ${data.transacciones} transacciones movidos de 'L' a 'T'`,
-          "Recuperación exitosa",
-          this.override
-        );
-        // Refrescar la tabla de lotes
-        this.busquedaLote();
-      } else {
-        this.toast.error(response.message || "Error al recuperar lotes", "", this.override);
-      }
-    },
-    error: (err) => {
-      this.spinner.hide("sp1");
-      this.toast.error("Error de conexión al recuperar lotes", "", this.override);
-      console.error(err);
+  const dialogRef = this.dialog.open(ConfirmDialogComponent, {
+    data: {
+      message: '¿Estás seguro de mover TODOS los lotes en estado ENVIADO (L) a CHEQUEAR (T)? Esta acción no se puede deshacer.',
+      buttonText: { ok: 'Sí, recuperar', cancel: 'Cancelar' }
+    }
+  });
+
+  dialogRef.afterClosed().subscribe(confirmed => {
+    if (confirmed) {
+      this.spinner.show("sp1");
+      this.AdministradorService.recuperarLotesColgados().subscribe({
+        next: (response) => {
+          this.spinner.hide("sp1");
+          if (response.status === 200) {
+            const data = response.data;
+            this.toast.success(
+              `✅ ${data.lotes} lotes y ${data.transacciones} transacciones movidos de 'L' a 'T'`,
+              "Recuperación exitosa",
+              this.override
+            );
+            // Refrescar la tabla de lotes
+            this.busquedaLote();
+          } else {
+            this.toast.error(response.message || "Error al recuperar lotes", "", this.override);
+          }
+        },
+        error: (err) => {
+          this.spinner.hide("sp1");
+          this.toast.error("Error de conexión al recuperar lotes", "", this.override);
+          console.error(err);
+        }
+      });
     }
   });
 }

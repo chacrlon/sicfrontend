@@ -89,7 +89,7 @@
     <!-- BOTON PARA CONVERTIR LOS LOTES DE L a T -->
     <button mat-flat-button class="btn-magico" (click)="recuperarLotesColgados()">
       <mat-icon>auto_fix_high</mat-icon> Recuperar Lotes Colgados
-    </button>
+     </button>
 
   </div>
 </div>
@@ -174,6 +174,7 @@
 </ng-container>
 
 <!-- Semáforo -->
+ <!--
 <ng-container matColumnDef="semaforoEstado">
   <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Semáforo</th>
   <td mat-cell *matCellDef="let row" class="text-data-json">
@@ -182,6 +183,7 @@
     <span *ngIf="!row.semaforoEstado">—</span>
   </td>
 </ng-container>
+-->
 
     <!-- Acciones (Ver Lote, etc.) -->
     <ng-container matColumnDef="acciones">
