@@ -8,22 +8,26 @@
             <span *ngIf="estados == 'C'">Cancelado</span></h2>
           <mat-card-content class="card-info-bdv"><br>
             <mat-card-title  class="f-s-12 f-w-100"> NÚMERO DEL LOTE {{idlote}} </mat-card-title>
-          <h2 class="text-warn-bdv" > Registros En Espera: {{total2}}</h2>
-
+          <h2 class="text-warn-bdv">
+  {{ estados == 'L' ? 'Registros Enviados:' : 'Registros En Espera:' }}
+  {{ (estados == 'L') ? total2 : total2 }}
+</h2>
           </mat-card-content>
-      <form [formGroup]="busquedaForm">
 
-        <mat-form-field appearance="outline" class="p-4">
-          <mat-label style="font-family: nunito;"> Estado del Lote </mat-label>
-          <mat-select *ngIf="estados != 'C'" class="textgeneral" formControlName="numero" #singleSelect>
-            <mat-option *ngIf="estados == 'D'" class="textgeneral" value="1">REANUDAR</mat-option>
-            <mat-option class="textgeneral" *ngIf="estados == 'A'" value="2">DETENER</mat-option>
-            <mat-option class="textgeneral" *ngIf="estados == 'A'" value="3">CANCELAR</mat-option>
-          </mat-select>
-          <mat-icon matSuffix></mat-icon>
-        </mat-form-field>
-        <button class="btn-rojobdv2 btn-large-2" (click)="submitLote()" mat-flat-button> Cambiar Estado </button>
-    </form>
+          <form [formGroup]="busquedaForm" *ngIf="estados != 'C' && estados != 'L'">
+  <mat-form-field appearance="outline" class="p-4">
+    <mat-label style="font-family: nunito;"> Estado del Lote </mat-label>
+    <mat-select class="textgeneral" formControlName="numero" #singleSelect>
+      <mat-option *ngIf="estados == 'D'" class="textgeneral" value="1">REANUDAR</mat-option>
+      <mat-option class="textgeneral" *ngIf="estados == 'A'" value="2">DETENER</mat-option>
+      <mat-option class="textgeneral" *ngIf="estados == 'A'" value="3">CANCELAR</mat-option>
+    </mat-select>
+    <mat-icon matSuffix></mat-icon>
+  </mat-form-field>
+  <button class="btn-rojobdv2 btn-large-2" (click)="submitLote()" mat-flat-button>
+    Cambiar Estado
+  </button>
+</form>
 
       <span><i>Descripción: {{nombre}} </i></span><br>
       <span><i>Fecha de Inicial del Lote: {{fecha}}</i></span><br>

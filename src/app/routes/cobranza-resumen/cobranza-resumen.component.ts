@@ -16,6 +16,7 @@ export interface ResumenCobranza {
   fechaCobranza: string;
   totalLotes: number;
   montoTotalRecuperado: number;
+  registrosCobrados: number;   // <--- NUEVO
 }
 
 @Component({
@@ -28,10 +29,11 @@ export class CobranzaResumenComponent implements OnInit, AfterViewInit {
   fechaInicio: Date = new Date();
   fechaFin: Date = new Date();
 
-  displayedColumns: string[] = ['fechaCobranza', 'totalLotes', 'montoTotalRecuperado'];
+  displayedColumns: string[] = ['fechaCobranza', 'totalLotes', 'montoTotalRecuperado', 'registrosCobrados'];
   dataSource = new MatTableDataSource<ResumenCobranza>([]);
   totalMontoPeriodo: number = 0;
   totalLotesPeriodo: number = 0;
+  totalRegistrosCobrados: number = 0;   // <--- NUEVO
   filtrosAplicados: boolean = false;
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -79,7 +81,8 @@ export class CobranzaResumenComponent implements OnInit, AfterViewInit {
           const datosProcesados = (response.data || []).map((item: any) => ({
             fechaCobranza: item.fechaCobranza || item.FECHA_COBRANZA || '',
             totalLotes: item.totalLotes || item.TOTAL_LOTES || 0,
-            montoTotalRecuperado: item.montoTotalRecuperado || item.MONTO_TOTAL_RECUPERADO || 0
+            montoTotalRecuperado: item.montoTotalRecuperado || item.MONTO_TOTAL_RECUPERADO || 0,
+            registrosCobrados: item.registrosCobrados || item.REGISTROS_COBRADOS || 0   // <--- NUEVO
           }));
           this.dataSource.data = datosProcesados;
           this.calcularTotales();
@@ -99,6 +102,7 @@ export class CobranzaResumenComponent implements OnInit, AfterViewInit {
   calcularTotales(): void {
     this.totalMontoPeriodo = this.dataSource.data.reduce((sum, item) => sum + (item.montoTotalRecuperado || 0), 0);
     this.totalLotesPeriodo = this.dataSource.data.reduce((sum, item) => sum + (item.totalLotes || 0), 0);
+    this.totalRegistrosCobrados = this.dataSource.data.reduce((sum, item) => sum + (item.registrosCobrados || 0), 0); // <--- NUEVO
   }
 
   aplicarFiltros(): void {
@@ -112,7 +116,7 @@ export class CobranzaResumenComponent implements OnInit, AfterViewInit {
     this.cargarResumen();
   }
 
-  // Exportar solo el resumen (igual que el botón de descarga)
+  // Exportar solo el resumen (incluye la nueva columna)
   exportarResumen(): void {
     if (!this.dataSource.data.length) {
       this.toast.warning('No hay datos para exportar', '', this.override);
@@ -122,14 +126,14 @@ export class CobranzaResumenComponent implements OnInit, AfterViewInit {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet('Resumen Cobranzas');
     worksheet.addRow(['RESUMEN DE COBRANZAS']);
-    worksheet.mergeCells('A1:C1');
+    worksheet.mergeCells('A1:D1');   // A1:D1 porque ahora son 4 columnas
     worksheet.getRow(1).font = { bold: true, size: 14 };
     worksheet.addRow([]);
     worksheet.addRow([`Período: ${this.getPeriodoTexto()}`]);
     worksheet.addRow([`Fecha de generación: ${this.getCurrentTime()}`]);
     worksheet.addRow([]);
 
-    const headers = ['Fecha', 'Lotes', 'Monto Recuperado (Bs.)'];
+    const headers = ['Fecha', 'Lotes', 'Monto Recuperado (Bs.)', 'Registros Cobrados'];
     const headerRow = worksheet.addRow(headers);
     headerRow.eachCell((cell) => {
       cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '4A96D2' } };
@@ -137,12 +141,18 @@ export class CobranzaResumenComponent implements OnInit, AfterViewInit {
     });
 
     this.dataSource.data.forEach(item => {
-      worksheet.addRow([item.fechaCobranza, item.totalLotes, this.formatCurrency(item.montoTotalRecuperado)]);
+      worksheet.addRow([
+        item.fechaCobranza,
+        item.totalLotes,
+        this.formatCurrency(item.montoTotalRecuperado),
+        item.registrosCobrados || 0
+      ]);
     });
 
     worksheet.addRow([]);
     worksheet.addRow([`Total Lotes: ${this.totalLotesPeriodo}`]);
     worksheet.addRow([`Monto Total: ${this.formatCurrency(this.totalMontoPeriodo)}`]);
+    worksheet.addRow([`Total Registros Cobrados: ${this.totalRegistrosCobrados}`]); // <--- NUEVO
     worksheet.columns.forEach(col => col.width = 20);
 
     workbook.xlsx.writeBuffer().then(buffer => {
@@ -151,7 +161,7 @@ export class CobranzaResumenComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // Generar reporte completo (resumen + detalle), igual que en el original
+  // Generar reporte completo (resumen + detalle)
   generarReporteCompleto(): void {
     this.spinner.show();
     const params = {
@@ -159,7 +169,6 @@ export class CobranzaResumenComponent implements OnInit, AfterViewInit {
       fechaFin: moment(this.fechaFin).format('DD/MM/YYYY')
     };
 
-    // Cargar detalle para el mismo período
     this.administradorService.obtenerCobranzasPorRangoFecha(params).subscribe({
       next: (responseDetalle) => {
         const detalleData = (responseDetalle.code === 1000 || responseDetalle.status === 200) ? (responseDetalle.data || []) : [];
@@ -169,14 +178,14 @@ export class CobranzaResumenComponent implements OnInit, AfterViewInit {
         // ========== HOJA RESUMEN ==========
         const worksheetResumen = workbook.addWorksheet('Resumen por Día');
         worksheetResumen.addRow(['RESUMEN DE COBRANZAS']);
-        worksheetResumen.mergeCells('A1:C1');
+        worksheetResumen.mergeCells('A1:D1');
         worksheetResumen.getRow(1).font = { bold: true, size: 14 };
         worksheetResumen.addRow([]);
         worksheetResumen.addRow([`Período: ${this.getPeriodoTexto()}`]);
         worksheetResumen.addRow([`Fecha de generación: ${this.getCurrentTime()}`]);
         worksheetResumen.addRow([]);
 
-        const headerResumen = ['Fecha', 'Lotes', 'Monto Recuperado (Bs.)'];
+        const headerResumen = ['Fecha', 'Lotes', 'Monto Recuperado (Bs.)', 'Registros Cobrados'];
         const headerRowResumen = worksheetResumen.addRow(headerResumen);
         headerRowResumen.eachCell((cell) => {
           cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '4A96D2' } };
@@ -184,25 +193,31 @@ export class CobranzaResumenComponent implements OnInit, AfterViewInit {
         });
 
         this.dataSource.data.forEach(item => {
-          worksheetResumen.addRow([item.fechaCobranza, item.totalLotes, this.formatCurrency(item.montoTotalRecuperado)]);
+          worksheetResumen.addRow([
+            item.fechaCobranza,
+            item.totalLotes,
+            this.formatCurrency(item.montoTotalRecuperado),
+            item.registrosCobrados || 0
+          ]);
         });
 
         worksheetResumen.addRow([]);
         worksheetResumen.addRow([`Total Lotes: ${this.totalLotesPeriodo}`]);
         worksheetResumen.addRow([`Monto Total: ${this.formatCurrency(this.totalMontoPeriodo)}`]);
+        worksheetResumen.addRow([`Total Registros Cobrados: ${this.totalRegistrosCobrados}`]);
         worksheetResumen.columns.forEach(col => col.width = 20);
 
         // ========== HOJA DETALLE ==========
         const worksheetDetalle = workbook.addWorksheet('Detalle de Cobranzas');
         worksheetDetalle.addRow(['DETALLE DE COBRANZAS']);
-        worksheetDetalle.mergeCells('A1:F1');
+        worksheetDetalle.mergeCells('A1:G1');   // 7 columnas ahora
         worksheetDetalle.getRow(1).font = { bold: true, size: 14 };
         worksheetDetalle.addRow([]);
         worksheetDetalle.addRow([`Período: ${this.getPeriodoTexto()}`]);
         worksheetDetalle.addRow([`Fecha de generación: ${this.getCurrentTime()}`]);
         worksheetDetalle.addRow([]);
 
-        const headerDetalle = ['Fecha/Hora', 'ID Lote', 'Monto (Bs.)', 'Unidad', 'Estado', 'Archivo'];
+        const headerDetalle = ['Fecha/Hora', 'ID Lote', 'Monto (Bs.)', 'Registros Cobrados', 'Unidad', 'Estado', 'Archivo'];
         const headerRowDetalle = worksheetDetalle.addRow(headerDetalle);
         headerRowDetalle.eachCell((cell) => {
           cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '4A96D2' } };
@@ -214,13 +229,14 @@ export class CobranzaResumenComponent implements OnInit, AfterViewInit {
             this.formatDate(item.fechaHoraCobranza),
             item.idLoteGiom,
             this.formatCurrency(item.montoTotalRecuperado),
+            item.registrosCobrados || 0,
             item.unidad || '',
             item.estadoCobranza === 'A' ? 'ACTIVO' : 'HISTÓRICO',
             item.nombreArchivo || ''
           ]);
         });
 
-        worksheetDetalle.columns.forEach(col => col.width = 25);
+        worksheetDetalle.columns.forEach(col => col.width = 20);
 
         // Descargar
         const nombreArchivo = `ReporteCobranzas_${moment().format('YYYYMMDD_HHmmss')}.xlsx`;
@@ -239,9 +255,8 @@ export class CobranzaResumenComponent implements OnInit, AfterViewInit {
     });
   }
 
-  // Abrir el modal de detalle para una fecha específica (similar a la funcionalidad original)
+  // Abrir el modal de detalle para una fecha específica
   verDetalleFecha(row: ResumenCobranza): void {
-    // Convertir la fecha al formato dd/MM/yyyy
     let fecha = row.fechaCobranza;
     try {
       const m = moment(fecha, ['DD/MM/YYYY', 'YYYY-MM-DD']);
@@ -258,7 +273,6 @@ export class CobranzaResumenComponent implements OnInit, AfterViewInit {
       data: {
         fechaInicio: fecha,
         fechaFin: fecha,
-        // No se pasa idLote, por lo que el detalle mostrará todas las cobranzas de esa fecha
       }
     });
   }

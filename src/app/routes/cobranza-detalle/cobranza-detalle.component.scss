@@ -575,3 +575,12 @@
   font-size: 1.2em;
   margin-right: 4px;
 }
+// Anchos sugeridos para cada columna
+th.mat-header-cell {
+  &:nth-child(1) { width: 15%; }  // Fecha/Hora
+  &:nth-child(2) { width: 10%; }  // Lote
+  &:nth-child(3) { width: 15%; }  // Monto
+  &:nth-child(4) { width: 12%; }  // Registros Cobrados
+  &:nth-child(5) { width: 15%; }  // Unidad
+  &:nth-child(6) { width: 10%; }  // Estado
+}

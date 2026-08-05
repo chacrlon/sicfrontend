@@ -173,6 +173,15 @@
                   </td>
                 </ng-container>
 
+                <ng-container matColumnDef="registrosCobrados">
+  <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header">
+    <mat-icon class="header-icon">assignment</mat-icon> Registros Cobrados
+  </th>
+  <td mat-cell *matCellDef="let row" class="cell-count">
+    {{ row.registrosCobrados || 0 }}
+  </td>
+</ng-container>
+
                 <tr mat-header-row *matHeaderRowDef="displayedColumnsCobranzas" class="header-row"></tr>
                 <tr mat-row *matRowDef="let row; columns: displayedColumnsCobranzas;"
                     class="data-row" [class.selected]="row === filaSeleccionada"
@@ -180,7 +189,7 @@
                 </tr>
 
                 <tr class="no-data-row" *matNoDataRow>
-                  <td colspan="3" class="no-data-cell">
+                  <td colspan="4" class="no-data-cell">
                     <div class="no-data-content">
                       <mat-icon class="no-data-icon">search_off</mat-icon>
                       <p>{{ filtrosAplicados ? 'No hay datos para el período seleccionado' : 'Aplicar filtros para ver resultados' }}</p>
@@ -277,6 +286,15 @@
                     </div>
                   </td>
                 </ng-container>
+
+                <ng-container matColumnDef="registrosCobrados">
+  <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header">
+    <mat-icon class="header-icon">assignment</mat-icon> Registros Cobrados
+  </th>
+  <td mat-cell *matCellDef="let row" class="cell-count">
+    {{ row.registrosCobrados || 0 }}
+  </td>
+</ng-container>
 
                 <ng-container matColumnDef="unidad">
                   <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header">

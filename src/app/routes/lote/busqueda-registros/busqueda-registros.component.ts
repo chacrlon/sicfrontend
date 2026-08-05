@@ -42,7 +42,7 @@ export class BusquedaRegistrosComponent implements OnInit, AfterViewInit, OnDest
   displayedColumns: string[] = [
     'numeroCuenta', 'vef', 'montoTransaccion', 'tipoMovimiento', 'serialOperacion',
     'referencia', 'codigoOperacion', 'referencia2', 'tipoDocumento', 'numeroCedula',
-    'id_lote', 'id_lotefk', 'fechacarga', 'estado_nombre', 'descRespuestaMainframe'
+    'id_lote', 'id_lotefk', 'fechacarga', 'estado_nombre', 'descRespuestaMainframe', 'fechaProcesamiento'
   ];
   positionOptions: TooltipPosition[] = ['above'];
   position = new FormControl(this.positionOptions[0]);
@@ -108,22 +108,31 @@ export class BusquedaRegistrosComponent implements OnInit, AfterViewInit, OnDest
   }
 
   calculateTotals() {
-    const data = this.dataSource.data;
-    if (!data || data.length === 0) {
-      this.totalRegistrosMonto = 0;
-      this.totalPorRecuperar = 0;
-      return;
-    }
-    let sumAll = 0;
-    data.forEach(item => {
-      let monto = parseFloat(item.montoTransaccion);
-      if (isNaN(monto)) monto = 0;
-      sumAll += monto;
-    });
-    this.totalRegistrosMonto = sumAll;
-    const recuperado = parseFloat(this.totales) || 0;
-    this.totalPorRecuperar = sumAll - recuperado;
+  const data = this.dataSource.data;
+  if (!data || data.length === 0) {
+    this.totalRegistrosMonto = 0;
+    this.totalPorRecuperar = 0;
+    return;
   }
+
+  // Suma de todos los montos (total registros)
+  let sumAll = 0;
+  data.forEach(item => {
+    let monto = parseFloat(item.montoTransaccion);
+    if (isNaN(monto)) monto = 0;
+    sumAll += monto;
+  });
+  this.totalRegistrosMonto = sumAll;
+
+  // Suma de montos de registros con estado 'W' (En Proceso)
+  const montoPorRecuperar = data
+    .filter(item => item.estado === 'W')
+    .reduce((sum, item) => sum + (parseFloat(item.montoTransaccion) || 0), 0);
+  this.totalPorRecuperar = montoPorRecuperar;
+
+  // 'totales' ya viene del backend como monto recuperado (estado 'P'), no lo modificamos
+  // this.totales = data.data.montoTotal; (ya se asigna en los métodos de búsqueda)
+}
 
   async busquedaTransacciones() {
     this.spinner.show("sp1");
@@ -135,6 +144,7 @@ export class BusquedaRegistrosComponent implements OnInit, AfterViewInit, OnDest
           this.dataSource.data = (data.data || []).map((item: any) => ({
             ...item,
             estado_nombre: item.estadoNombre,
+            estado: item.estado,
             descRespuestaMainframe: item.descripcionRespuestaMainframe || ''
           }));
           this.calculateTotals();
@@ -272,7 +282,7 @@ export class BusquedaRegistrosComponent implements OnInit, AfterViewInit, OnDest
       'numero de cuenta', 'vef', 'monto de transaccion', 'tipo de movimiento',
       'serial de operacion', 'referencia', 'codigo operacion', 'referencia2',
       'tipo de documento', 'numero de identidad', 'id de lote', 'id de registro',
-      'fecha de carga', 'estado_nombre', 'descripción respuesta mainframe'
+      'fecha de carga', 'estado_nombre', 'descripción respuesta mainframe', 'fecha/hora procesamiento'
     ];
 
     const data: any[][] = [];
@@ -296,7 +306,8 @@ export class BusquedaRegistrosComponent implements OnInit, AfterViewInit, OnDest
         data2.id_lote,
         data2.fechacarga,
         data2.estado_nombre,
-        data2.descRespuestaMainframe || ''
+        data2.descRespuestaMainframe || '',
+        data2.fechaProcesamiento || ''
       ];
       data.push(newArray);
     });
@@ -410,7 +421,7 @@ export class BusquedaRegistrosComponent implements OnInit, AfterViewInit, OnDest
           'Número de Cuenta', 'Moneda', 'Monto de Transacción', 'Tipo Movimiento',
           'Serial', 'Referencia', 'Código Operación', 'Referencia Adicional',
           'Tipo Documento', 'Documento Identidad', 'Id Referencial', 'Id de Lote',
-          'Fecha de Carga', 'Estado', 'Descripción Respuesta'
+          'Fecha de Carga', 'Estado', 'Descripción Respuesta', 'Fecha Hora Procesamiento'
         ];
         txtContent += headers.join(';') + '\n';
 
@@ -432,7 +443,8 @@ export class BusquedaRegistrosComponent implements OnInit, AfterViewInit, OnDest
             item.id_lotefk || '',
             item.fechacarga || '',
             item.estadoNombre || item.estado_nombre || '',
-            item.descRespuestaMainframe || ''
+            item.descRespuestaMainframe || '',
+            item.fechaProcesamiento || ''
           ];
           txtContent += row.join(';') + '\n';
         });

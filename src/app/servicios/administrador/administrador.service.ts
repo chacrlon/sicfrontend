@@ -23,6 +23,20 @@ export class AdministradorService {
       this.urlGet = environment.ApiServicios;
   }
 
+  /**
+ * Descarga un archivo de lote desde el servidor FTP
+ * @param nombreArchivo - Nombre del archivo a descargar (ej: "2005Reg_213.txt")
+ * @returns Observable<Blob> - El contenido del archivo como Blob
+ */
+descargarArchivoLote(nombreArchivo: string): Observable<Blob> {
+  const url = `${this.urlGet}/descargar-archivo-lote?nombreArchivo=${encodeURIComponent(nombreArchivo)}`;
+  return this.http.get(url, {
+    responseType: 'blob'  // ← Importante para manejar archivos
+  }).pipe(
+    catchError(this.error)
+  );
+}
+
   // Métodos para cobranzas
   obtenerCobranzasPorLote(params: any): Observable<any> {
     const url = `${this.urlGet}/obtenerCobranzasPorLote`;

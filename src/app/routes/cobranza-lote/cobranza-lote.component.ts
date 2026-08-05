@@ -21,6 +21,7 @@ export interface CobranzaLote {
   nombreArchivo: string;
   fechaCreacionLote: string;
   unidad: string;
+  registrosCobrados: number;
 }
 
 export interface ResumenCobranza {
@@ -36,11 +37,18 @@ export interface ResumenCobranza {
 })
 export class CobranzaLoteComponent implements OnInit, AfterViewInit {
   // Tabla de resumen
-  displayedColumnsCobranzas: string[] = ['fechaCobranza', 'totalLotes', 'montoTotalRecuperado'];
+  displayedColumnsCobranzas: string[] = ['fechaCobranza', 'totalLotes', 'montoTotalRecuperado', 'registrosCobrados'];
   dataSourceCobranzas: MatTableDataSource<ResumenCobranza>;
 
   // Tabla de detalle
-  displayedColumnsDetalle: string[] = ['fechaHoraCobranza', 'idLoteGiom', 'montoTotalRecuperado', 'unidad', 'estadoCobranza'];
+  displayedColumnsDetalle: string[] = [
+  'fechaHoraCobranza',
+  'idLoteGiom',
+  'montoTotalRecuperado',
+  'registrosCobrados',
+  'unidad',
+  'estadoCobranza'
+];
   dataSourceDetalle: MatTableDataSource<CobranzaLote>;
 
   // Variables de estado

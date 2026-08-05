@@ -82,19 +82,19 @@
         <div class="col-md-6">
           <!-- 🆕 TRES TOTALES -->
           <div class="total-stats">
-            <div class="stat-item">
-              <span class="stat-label">Monto Total Registros:</span>
-              <span class="stat-value">{{ totalRegistrosMonto | number:'1.2-2' }} Bs</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Monto Total Recuperado:</span>
-              <span class="stat-value">{{ (totales || 0) | number:'1.2-2' }} Bs</span>
-            </div>
-            <div class="stat-item">
-              <span class="stat-label">Monto Total por Recuperar:</span>
-              <span class="stat-value">{{ totalPorRecuperar | number:'1.2-2' }} Bs</span>
-            </div>
-          </div>
+  <div class="stat-item">
+    <span class="stat-label">Monto Total Registros:</span>
+    <span class="stat-value">{{ (totalRegistrosMonto / 100) | number:'1.2-2' }} Bs</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-label">Monto Total Recuperado:</span>
+    <span class="stat-value">{{ ((totales || 0) / 100) | number:'1.2-2' }} Bs</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-label">Monto Total por Recuperar:</span>
+    <span class="stat-value">{{ (totalPorRecuperar / 100) | number:'1.2-2' }} Bs</span>
+  </div>
+</div>
         </div>
         <div class="col-md-12">
           <div class="mat-elevation-z8">
@@ -163,10 +163,19 @@
                  {{ row.descripcionRespuestaMainframe || '' }}
                 </td>
               </ng-container>
+              <!-- Dentro de busqueda-registros.component.html -->
+
+<!-- Nueva columna Fecha/Hora Procesamiento -->
+<ng-container matColumnDef="fechaProcesamiento">
+    <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Fecha/Hora Procesamiento</th>
+    <td mat-cell *matCellDef="let row" class="text-data-json">
+        {{ row.fechaProcesamiento || '' }}
+    </td>
+</ng-container>
               <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
               <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
               <tr class="mat-row" *matNoDataRow>
-                <td class="mat-cell" colspan="15">Sin Resultados.</td>
+                <td class="mat-cell" colspan="16">Sin Resultados.</td>
               </tr>
             </table>
             <mat-paginator class="sort-header-content" [pageSizeOptions]="[5,10,50, 100]" showFirstLastButtons></mat-paginator>

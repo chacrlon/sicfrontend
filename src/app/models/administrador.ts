@@ -216,6 +216,7 @@ export interface  TransaccionesConsulta { // CONSULTA
   fechacarga: string
   estado: string
   montorecuperado: string
+  fechaProcesamiento?: string
 }
 export interface  Loteseguimiento { // CONSULTA
   idLoteGiom: string,

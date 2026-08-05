@@ -189,6 +189,18 @@
     <ng-container matColumnDef="acciones">
       <th mat-header-cell *matHeaderCellDef mat-sort-header class="sort-header-content">Acciones</th>
       <td mat-cell *matCellDef="let row">
+
+        <!-- ✅ NUEVO: Botón de descarga (siempre visible) -->
+    <mat-icon
+    *ngIf="row.nombrearchivo"
+      (click)="descargarArchivo(row.nombrearchivo + '_' + row.idlote + '.txt')"
+      class="icono-ver"
+      matTooltip="Descargar archivo original"
+      matTooltipPosition="left"
+      style="cursor: pointer; margin-right: 4px;">
+      cloud_download
+    </mat-icon>
+
         <!-- Íconos según estado -->
         <mat-icon
           *ngIf="row.estadolote == 'A' || row.estadolote == 'L'"

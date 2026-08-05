@@ -5,7 +5,6 @@ import { Router } from '@angular/router';
 import { FormBuilder, Validators } from '@angular/forms';
 import { MatPaginator} from '@angular/material/paginator';
 import { MatSort} from '@angular/material/sort';
-
 import { MatTableDataSource} from '@angular/material/table';
 import { TooltipPosition} from '@angular/material/tooltip';
 import * as XLSX from 'xlsx';
@@ -14,7 +13,6 @@ import { Workbook } from 'exceljs'
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import { NgxSpinnerService } from "ngx-spinner";
 import { Overlay, OverlayRef } from '@angular/cdk/overlay';
-
 import { ComponentPortal } from '@angular/cdk/portal';
 import { registros } from 'app/models/empleados';
 import { EmpleadoService } from 'app/servicios/empleados/empleado.service';
@@ -39,6 +37,9 @@ export class CargarLoteComponent implements OnInit {
    nombrearchivo: any;
    archivos:any;
 
+   // 🆕 Bandera para controlar el estado del botón
+   isSubmitting: boolean = false;
+
    cargaFormulario : FormGroup;
 
    override = {
@@ -57,7 +58,7 @@ export class CargarLoteComponent implements OnInit {
     private formBuilder : FormBuilder,
     private toast: ToastrService,
     private componentFactoryResolver: ComponentFactoryResolver,
-    private cdRef : ChangeDetectorRef,
+    private cdRef : ChangeDetectorRef,  // ✅ Inyectado correctamente
     private loginService: LoginService,
     private EmpleadoService : EmpleadoService,
    @Inject(MAT_DIALOG_DATA) private data: any,
@@ -74,6 +75,8 @@ this.cargaFormulario = formBuilder.group({
 //------------------------------------------------------------------------------------------------- ARCHIVO
   ngOnInit(): void {
     this.id_lote = localStorage.getItem('idlote');
+    // Al iniciar, aseguramos que el botón esté habilitado
+    this.isSubmitting = false;
   }
 
   handleUpload(event:any) {
@@ -98,53 +101,87 @@ this.cargaFormulario = formBuilder.group({
 
     }
   }
-        async submitFile(){
-          if (!this.execute) {
-          this.spinner.show("sp1");
-          var envio:any = {
-            idlote:this.id_lote,
-            file:this.archivos,
-            nombrearchivo:this.nombrearchivo
-          }
-          console.log("Contenido del archivo en Base64:", this.archivos);
-await this.AdministradorService.cargarLote(this.archivos, this.nombrearchivo, this.id_lote).subscribe(
-  (data) => {
-    if (data.code === 1000) {
-      this.toast.success(data.message, "", this.override);
-      setTimeout(() => {
-        this.redirigir();
-      }, 1000);
-    } else {
-      // Muestra el mensaje específico del backend
-      this.toast.error(data.message || "Error al cargar el archivo", "", this.override);
+
+  async submitFile(){
+    // 🚫 Si ya está en proceso, no hacer nada
+    if (this.isSubmitting) {
+      console.warn('⛔ El envío ya está en progreso. Ignorando nuevo clic.');
+      return;
     }
-    this.spinner.hide("sp1");
-  },
-  (error) => {
-    this.toast.error("Error de conexión con el servidor", "", this.override);
-    this.spinner.hide("sp1");
-  }
-);
 
-        }else{
-          this.toast.error("Ingrese una Información Válida.", "", this.override);
+    // Validar que haya un archivo seleccionado
+    if (!this.archivos) {
+      this.toast.error("Debe seleccionar un archivo antes de guardar.", "", this.override);
+      return;
+    }
+
+    // 🔒 Bloquear el botón inmediatamente (atómico)
+    this.isSubmitting = true;
+    // ✅ Forzar la detección de cambios para que la vista se actualice
+    this.cdRef.detectChanges();
+
+    // Mostrar spinner
+    this.spinner.show("sp1");
+
+    console.log("Contenido del archivo en Base64:", this.archivos);
+
+    this.AdministradorService.cargarLote(this.archivos, this.nombrearchivo, this.id_lote).subscribe({
+      next: (data) => {
+        // Ocultar spinner
+        this.spinner.hide("sp1");
+
+        if (data.code === 1000) {
+          this.toast.success(data.message, "", this.override);
+          // 🔓 Desbloquear solo si el usuario cierra el modal manualmente
+          // En este caso, redirigimos y cerramos el modal
+          setTimeout(() => {
+            this.redirigir();
+          }, 1000);
+        } else {
+          // Si hubo error del backend, mostramos mensaje y desbloqueamos
+          this.toast.error(data.message || "Error al cargar el archivo", "", this.override);
+          // 🔓 Desbloquear para permitir reintento
+          this.isSubmitting = false;
+          this.cdRef.detectChanges();
         }
-
-}
-//------------------------------------------------------------------------------------------------- ENLACE EXTERNO
-regresar(): void {
-  this.execute=true;
-   this.dialogRef.close();
+      },
+      error: (error) => {
+        // Ocultar spinner
+        this.spinner.hide("sp1");
+        this.toast.error("Error de conexión con el servidor", "", this.override);
+        // 🔓 Desbloquear para permitir reintento
+        this.isSubmitting = false;
+        this.cdRef.detectChanges();
+        console.error('Error al cargar lote:', error);
+      },
+      complete: () => {
+        // Si la suscripción se completa sin errores, aseguramos que el spinner se oculte
+        this.spinner.hide("sp1");
+      }
+    });
   }
-  redirigir(){
+
+  //------------------------------------------------------------------------------------------------- ENLACE EXTERNO
+  regresar(): void {
+    // Si está en proceso, no permitir regresar (opcional)
+    if (this.isSubmitting) {
+      this.toast.warning("Espere a que termine la carga antes de regresar.", "", this.override);
+      return;
+    }
+    this.execute=true;
     this.dialogRef.close();
-}
-clear(){
-  this.cargaFormulario.patchValue({
-    file : "",
-    nombrearchivo:"",
+  }
 
- });
- }
+  redirigir(){
+    // Al cerrar el diálogo, liberamos el estado para futuras cargas (si se vuelve a abrir el modal)
+    this.isSubmitting = false;
+    this.dialogRef.close();
+  }
 
+  clear(){
+    this.cargaFormulario.patchValue({
+      file : "",
+      nombrearchivo:"",
+    });
+  }
 }

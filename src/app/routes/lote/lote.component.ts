@@ -398,7 +398,29 @@ EstadoLote(idlote: string): void {
   });
 }
 
-// En LoteComponent
+
+descargarArchivo(nombreArchivo: string) {
+  this.AdministradorService.descargarArchivoLote(nombreArchivo).subscribe({
+    next: (blob: Blob) => {
+      // Crear un enlace temporal y hacer clic para descargar
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = nombreArchivo;  // Nombre con el que se guardará
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      window.URL.revokeObjectURL(url);
+      this.toast.success('Archivo descargado correctamente');
+    },
+    error: (error) => {
+      this.toast.error('Error al descargar el archivo');
+      console.error('Error:', error);
+    }
+  });
+}
+
+
 EstadoLoteReprocesado(row: any): void {
   localStorage.setItem('idlote', row.idlote);
 

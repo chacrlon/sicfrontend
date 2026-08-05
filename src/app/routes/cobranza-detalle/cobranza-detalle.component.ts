@@ -19,6 +19,7 @@ export interface CobranzaLote {
   nombreArchivo: string;
   fechaCreacionLote: string;
   unidad: string;
+  registrosCobrados: number;
 }
 
 @Component({
@@ -35,12 +36,13 @@ export class CobranzaDetalleComponent implements OnInit, AfterViewInit {
   fechaFin: Date = new Date();
 
   displayedColumnsDetalle: string[] = [
-    'fechaHoraCobranza',
-    'idLoteGiom',
-    'montoTotalRecuperado',
-    'unidad',
-    'estadoCobranza'
-  ];
+  'fechaHoraCobranza',
+  'idLoteGiom',
+  'montoTotalRecuperado',
+  'registrosCobrados',
+  'unidad',
+  'estadoCobranza'
+];
 
   dataSource = new MatTableDataSource<CobranzaLote>([]);
   totalRecuperado: number = 0;
@@ -173,56 +175,57 @@ export class CobranzaDetalleComponent implements OnInit, AfterViewInit {
   }
 
   exportarDetalle(): void {
-    if (!this.dataSource.data.length) {
-      this.toast.warning('No hay datos para exportar', '', this.override);
-      return;
-    }
-
-    console.log('📎 Exportando detalle a Excel...');
-    const workbook = new ExcelJS.Workbook();
-    const worksheet = workbook.addWorksheet('Detalle Cobranzas');
-
-    // Título
-    worksheet.addRow(['DETALLE DE COBRANZAS']);
-    worksheet.mergeCells('A1:F1');
-    worksheet.getRow(1).font = { bold: true, size: 14 };
-    worksheet.addRow([]);
-    worksheet.addRow([`Período consultado: ${this.getPeriodoTexto()}`]);
-    worksheet.addRow([]);
-
-    // Encabezados
-    const headers = ['Fecha/Hora', 'ID Lote', 'Monto (Bs.)', 'Unidad', 'Estado', 'Archivo'];
-    const headerRow = worksheet.addRow(headers);
-    headerRow.eachCell((cell) => {
-      cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '4A96D2' } };
-      cell.font = { bold: true, color: { argb: 'FFFFFF' } };
-    });
-
-    // Datos
-    this.dataSource.data.forEach(item => {
-      worksheet.addRow([
-        this.formatDate(item.fechaHoraCobranza),
-        item.idLoteGiom,
-        this.formatCurrency(item.montoTotalRecuperado),
-        item.unidad || '',
-        item.estadoCobranza === 'A' ? 'ACTIVO' : 'HISTÓRICO',
-        item.nombreArchivo || ''
-      ]);
-    });
-
-    // Ajustar ancho de columnas
-    worksheet.columns.forEach(col => { col.width = 25; });
-
-    // Generar y descargar archivo
-    workbook.xlsx.writeBuffer().then((buffer) => {
-      const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
-      saveAs(blob, `DetalleCobranzas_${moment().format('YYYYMMDD_HHmmss')}.xlsx`);
-      this.toast.success('Reporte exportado exitosamente', '', this.override);
-    }).catch(error => {
-      console.error('Error al generar el Excel:', error);
-      this.toast.error('Error al generar el reporte', '', this.override);
-    });
+  if (!this.dataSource.data.length) {
+    this.toast.warning('No hay datos para exportar', '', this.override);
+    return;
   }
+
+  console.log('📎 Exportando detalle a Excel...');
+  const workbook = new ExcelJS.Workbook();
+  const worksheet = workbook.addWorksheet('Detalle Cobranzas');
+
+  // Título (ahora 7 columnas)
+  worksheet.addRow(['DETALLE DE COBRANZAS']);
+  worksheet.mergeCells('A1:G1');  // <-- Cambiado de F a G
+  worksheet.getRow(1).font = { bold: true, size: 14 };
+  worksheet.addRow([]);
+  worksheet.addRow([`Período consultado: ${this.getPeriodoTexto()}`]);
+  worksheet.addRow([]);
+
+  // Encabezados (incluye Registros Cobrados)
+  const headers = ['Fecha/Hora', 'ID Lote', 'Monto (Bs.)', 'Registros Cobrados', 'Unidad', 'Estado', 'Archivo'];
+  const headerRow = worksheet.addRow(headers);
+  headerRow.eachCell((cell) => {
+    cell.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: '4A96D2' } };
+    cell.font = { bold: true, color: { argb: 'FFFFFF' } };
+  });
+
+  // Datos
+  this.dataSource.data.forEach(item => {
+    worksheet.addRow([
+      this.formatDate(item.fechaHoraCobranza),
+      item.idLoteGiom,
+      this.formatCurrency(item.montoTotalRecuperado),
+      item.registrosCobrados || 0,        // <-- NUEVA COLUMNA
+      item.unidad || '',
+      item.estadoCobranza === 'A' ? 'ACTIVO' : 'HISTÓRICO',
+      item.nombreArchivo || ''
+    ]);
+  });
+
+  // Ajustar ancho de columnas (opcional, pero recomendado)
+  worksheet.columns.forEach(col => { col.width = 20; });
+
+  // Generar y descargar archivo
+  workbook.xlsx.writeBuffer().then((buffer) => {
+    const blob = new Blob([buffer], { type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' });
+    saveAs(blob, `DetalleCobranzas_${moment().format('YYYYMMDD_HHmmss')}.xlsx`);
+    this.toast.success('Reporte exportado exitosamente', '', this.override);
+  }).catch(error => {
+    console.error('Error al generar el Excel:', error);
+    this.toast.error('Error al generar el reporte', '', this.override);
+  });
+}
 
   generarReporteCompleto(): void {
     console.log('📄 Generando reporte completo...');

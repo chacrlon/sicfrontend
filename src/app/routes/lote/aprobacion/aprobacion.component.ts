@@ -117,13 +117,27 @@ export class AprobacionComponent implements OnInit {
   this.spinner.show('sp1');
   this.administradorService.consultarLotesAprobacion().subscribe(
     (data) => {
-      if (data.code !== 9999) {
-        this.dataSource = new MatTableDataSource(data.data);
-        this.ngAfterViewInit();
+      console.log('📦 Respuesta completa del backend:', data); // 👈 Log del objeto completo
+
+      if (data.code === 1000 && Array.isArray(data.data) && data.data.length > 0) {
+        // Transformar los datos: dividir montoTotal entre 100
+        const datosTransformados = data.data.map((item: any) => ({
+          ...item,
+          montoTotal: Number(item.montoTotal) / 100  // Asegurar que es número
+        }));
+
+        console.log('✅ Datos transformados:', datosTransformados);
+        this.dataSource.data = datosTransformados;  // Mantener la misma instancia
+        this.ngAfterViewInit(); // Reasignar paginator y sort
+      } else {
+        console.warn('⚠️ No hay datos válidos para transformar:', data);
+        // Si no hay datos, limpiar la tabla
+        this.dataSource.data = [];
       }
       this.spinner.hide('sp1');
     },
     (error) => {
+      console.error('❌ Error en la consulta:', error);
       this.spinner.hide('sp1');
     }
   );
