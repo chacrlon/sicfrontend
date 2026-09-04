@@ -477,28 +477,43 @@ HorarioLote(): void {
 }
 
 // BUSCAR POR FECHA Y OTRAS INDICADORES LOS LOTES
-async busquedaLotesAvanzado(){
+busquedaLotesAvanzado() {
+    const fechai = this.busquedaForm.get('fechai')?.value;
+    const fechaf = this.busquedaForm.get('fechaf')?.value;
+
+    if (!fechai || !fechaf || !moment(fechai).isValid() || !moment(fechaf).isValid()) {
+        this.toast.warning("Debe seleccionar ambas fechas correctamente", "", this.override);
+        return;
+    }
+
+    const fechaInicio = moment(fechai).format("DD/MM/YYYY");
+    const fechaFin = moment(fechaf).format("DD/MM/YYYY");
+
     this.spinner.show("sp1");
-    await this.AdministradorService.consultarFechaLoteAvanzado({
-      fechai: moment(this.busquedaForm.value.fechai).format("DD/MM/YYYY"),
-      fechaf: moment(this.busquedaForm.value.fechaf).format("DD/MM/YYYY"),
-      numerolote: (this.busquedaForm.value.numerolote),
-      estadolote: (this.busquedaForm.value.estadolote),
-      codigoUnidad: (this.busquedaForm.value.codigoUnidad),
+    this.AdministradorService.consultarFechaLoteAvanzado({
+        fechai: fechaInicio,
+        fechaf: fechaFin,
+        numerolote: this.busquedaForm.value.numerolote || null,
+        estadolote: this.busquedaForm.value.estadolote || null,
+        codigoUnidad: this.busquedaForm.value.codigoUnidad || null
     }).subscribe(
-      (data) =>{
-        if (data.code != 9999) {
-        this.dataSource = new MatTableDataSource(data.data);
-        this.ngAfterViewInit();
-        } else{
-          this.toast.error( "No se puedo realizar la consulta correctamente. Verificar en la consulta que el campo Fecha no se encuentre vacío." , "",this.override);
+        (data) => {
+            if (data.code != 9999) {
+                this.dataSource = new MatTableDataSource(data.data);
+                this.ngAfterViewInit();
+                this.toast.success("Consulta realizada", "", this.override);
+            } else {
+                this.toast.error(data.message || "Error en la consulta", "", this.override);
+            }
+            this.spinner.hide("sp1");
+        },
+        (error) => {
+            this.spinner.hide("sp1");
+            this.toast.error("Error de conexión", "", this.override);
+            console.error(error);
         }
-        this.spinner.hide("sp1");
-      },
-      (error) =>{
-      }
     );
-  }
+}
 
 // LIMPIAR FORMULARIO AVANZADO
 clear(){
